@@ -16,11 +16,11 @@ export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
-      headerTransparent:true,
+      headerTransparent: true,
       headerStyle: {
-        opacity:params.headerOpacity,
+        opacity: params.headerOpacity,
         // display:params.headerDisplay,
-        backgroundColor:'#008bed'
+        backgroundColor: "#008bed"
       }
     };
   };
@@ -30,42 +30,52 @@ export default class index extends Component {
     this.state = {
       itemId: id,
       stories: {
-        images:[]
+        images: []
       },
-      headerDisplay:'flex',
-      headerOpacity:1,
-      offset: {}
+      headerDisplay: "flex",
+      headerOpacity: 1,
+      offset: {},
+      bodyed: false
     };
     this.props.navigation.setParams({
-      headerOpacity:1,
-      headerDisplay:'flex',
-    })
+      headerOpacity: 1,
+      headerDisplay: "flex"
+    });
   }
   componentDidMount() {
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          stories: responseJson,
+          stories: responseJson
         });
+        this.webview.postMessage(
+          responseJson.image + "RNDaFaHao" + responseJson.body
+        );
       })
-      .catch(error => {
-       
-      });
+      .catch(error => {});
   }
-  onMessage = (event) => {
+  onMessage = event => {
     //webview中的html页面传过来的的数据在event.nativeEvent.data上
-    let direction=event.nativeEvent.data;
-    if(direction=='up'){
-      this.props.navigation.setParams({
-        headerOpacity:1
-      })
-    }else if(direction=='down'){
-      this.props.navigation.setParams({
-        headerOpacity:0
-      })
-   }
-  }
+    if ((event.nativeEvent.data = "loaded")) {
+      this.setState({
+        bodyed: true
+      });
+    } else {
+      let direction = event.nativeEvent.data;
+      if (direction == "up") {
+        this.props.navigation.setParams({
+          headerOpacity: 1
+        });
+      } else if (direction == "down") {
+        this.props.navigation.setParams({
+          headerOpacity: 0
+        });
+
+
+      }
+    }
+  };
 
   render() {
     const injectedJavaScript = `
@@ -93,30 +103,35 @@ export default class index extends Component {
      * 	  当滚动条处于banner高度区间时，使标题栏渐隐与渐显。
      * 
      */
-    var dom = document.getElementsByClassName('detail-wrapper')[0];
-    var y;
+    var dom = document.getElementsByClassName('detail-banner')[0];
+    var y;  
     document.onscroll = function() {
       var scrollTop = document.body.scrollTop;
       if(scrollTop <= 250) { //banner+bar高度
         var  top = parseInt(50 - scrollTop / 2) + 'px';
         dom.style.top = top;
+        var scrollDirection=y>scrollTop?'up':'down';
+        y=scrollTop;
+        if(!!window.postMessage) {
+          throttle(window.postMessage,scrollDirection,250,500)
+        }
       }
-      var scrollDirection=y>scrollTop?'up':'down';
-      y=scrollTop;
-      if(!!window.postMessage) {
-        throttle(window.postMessage,scrollDirection,350,1000 )
-      }
+
     }
 }());
 `;
 
-let bootstrap= `
+    let bootstrap = `
 <!DOCTYPE html>
       <html>
         <head>
-          <link href="${this.state.stories.css}" rel="stylesheet" />
+          <link href="http://news.at.zhihu.com/css/news_qa.auto.css?v=4b3e3" rel="stylesheet" />
           <style>
-          .detail-wrapper {
+          .root-wrapper{
+            with:100%;
+            overflow:hidden;
+          }
+          .detail-banner {
             width: 100%;
             height: 200px;
             background-position: center center;
@@ -127,12 +142,12 @@ let bootstrap= `
             left: 0;
             z-index: 1;
           }
-          .detail-wrapper:after {
+          .detail-banner:after {
             content: '';
             position: absolute;
             left: 0;
             right: 0;
-            top: 55px;
+            top: 0;
             bottom: 0;
             background-image: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .8));
             z-index: 5;
@@ -166,41 +181,68 @@ let bootstrap= `
             height:250px !important;
             background:transparent !important;
           }
-          .content-inner,
-			.headline-background {
-				background: #fff;
-			}
-			
+          .content-inner,.headline-background {
+				    background: #fff;
+			    }
           .content-wrap {
             background: none;
           }
           </style>
           <script>
-          window.onload=function(){
-          var dom = document.getElementsByClassName('detail-wrapper')[0];
-          document.addEventListener('message', function(e) {
-            dom.style.top = e.data;
-         })
-        }
+            /*  图片加载
+            *  
+            *  @param {String} url  图片url地址
+            *  @param {Function} callback  图片加载完成回调函数
+            */
+           function loadImage(url, callback) {
+             var img = new Image();
+             img.src = url;
+             img.onload = function() {
+               callback.call(img);
+             }
+           }
+            document.addEventListener('message', function(e) {
+
+              var msgArray=e.data.split('RNDaFaHao');
+              // 处理分割结果异常 , 将超出项合并
+              if(msgArray.length>2){
+                var copy=msgArray;
+                copy.splice(0,1);
+                msgArray[1]=copy.join('');
+              }
+              loadImage(msgArray[0], function() {
+                  var dom = document.getElementsByClassName('detail-banner')[0];
+                  dom.setAttribute("style", "background-image:url('" + this.src + "')");
+                  setTimeout(function(){
+                    document.getElementById('detailBody').innerHTML = msgArray[1];
+                  },250)
+              });
+            })
           </script>
         <body>
-          <div class="detail-wrapper" style="background-image:url('${this.state.stories.image}')">
+        <div class="root-wrapper">
+          <div class="detail-banner">
 				    <!--日报标题-->
-				    <p class="title">${this.state.stories.title?this.state.stories.title:''}</p>
+				    <p class="title">哇哇哇阿瓦达瓦安慰多瓦</p>
 				    <!--图片来源-->
-				    <span class="image_source">${this.state.stories.image_source?this.state.stories.image_source:''}</span>
-			    </div>
-          ${this.state.stories.body?this.state.stories.body:''}
+				    <span class="image_source">666666</span>
+          </div>
+          <div id='detailBody'></div> 
+          </div>
         </body>
 </html>`;
 
     return (
       <WebView
-      style={styles.wrapper}
-         source={{ html:bootstrap, baseUrl: "" }}
-         injectedJavaScript={injectedJavaScript}
-         onMessage={this.onMessage}
-       />      
+        ref={webview => {
+          this.webview = webview;
+        }}
+        style={styles.wrapper}
+        startInLoadingState={true}
+        source={{ html: bootstrap, baseUrl: "" }}
+        injectedJavaScript={injectedJavaScript}
+        onMessage={this.onMessage}
+      />
     );
   }
 }
@@ -209,7 +251,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f3f3f3"
   },
   wrapper: {
-    height:'100%'
+    height: "100%"
   },
   title: {
     backgroundColor: "rgba(0,0,0,0.2)",
