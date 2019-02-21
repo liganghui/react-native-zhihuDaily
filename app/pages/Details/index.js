@@ -89,7 +89,7 @@ export default class index extends Component {
           scrollEventThrottle={16}
        >
       <AutoHeightWebView
-        source={{ html: this.state.news.body}}
+        source={{ url:'https://reactnative.cn/docs/0.51/getting-started.html'}}
         files={[{
           href: this.state.news.css[0],
           type: 'text/css',
