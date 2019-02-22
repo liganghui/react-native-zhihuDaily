@@ -1,5 +1,5 @@
 //  日报详情页
-import Storage from 'react-native-storage';
+import Storage from "react-native-storage";
 import React, { Component } from "react";
 import {
   View,
@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { Tile } from "react-native-elements";
 import HTML from "./html";
-import AutoHeightWebView from 'react-native-autoheight-webview'
-const HEADER_MAX_HEIGHT = 160;
+import AutoHeightWebView from "react-native-autoheight-webview";
+const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = 0;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default class index extends Component {
@@ -34,9 +34,10 @@ export default class index extends Component {
     const id = this.props.navigation.getParam("itemId");
     this.state = {
       itemId: id,
-      news:{
+      news: {
         css:[]
-      }
+      },
+      scrollY: new Animated.Value(0)
     };
     this.props.navigation.setParams({
       headerOpacity: 1
@@ -51,52 +52,51 @@ export default class index extends Component {
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          news:responseJson
-        })
-          // 数据传输只支持字符串类型   "$R%N*D5A+F4HAA0O"  用于方便分割字符串
-        // this.webview.postMessage(responseJson.image + "$R%N*D5A+F4HAA0O" +responseJson.body +"$R%N*D5A+F4HAA0O" +responseJson.image_source +"$R%N*D5A+F4HAA0O" +responseJson.title);
-        // storage.save({
-        //   key: 'details', // 注意:请不要在key中使用_下划线符号!
-        //   id:  this.state.itemId, // 注意:请不要在id中使用_下划线符号!
-        //   data: responseJson,
-        // });
+          news: responseJson
+        });
       })
       .catch(error => {
         // TODO:接口异常处理
       });
   }
-
-  onMessage = event => {
-    //webview中的html页面传过来的的数据在event.nativeEvent.data上
-    let data = event.nativeEvent.data;
-    if (data === "up") {
-      this.props.navigation.setParams({
-        headerOpacity: 1
-      });
-    } else if (data === "down") {
-      this.props.navigation.setParams({
-        headerOpacity: 0
-      });
-    } else if (data.indexOf("error")) {
-      // TODO:数据异常处理
-    }
-  };
   render() {
+    const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+      extrapolate: "clamp"
+    });
+    const imageTranslate = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      outputRange: [0, -50],
+      extrapolate: "clamp"
+    });
     return (
       <View style={styles.fill}>
-       <ScrollView
-          style={styles.fill}
-          scrollEventThrottle={16}
-       >
-      <AutoHeightWebView
-        source={{ url:'https://reactnative.cn/docs/0.51/getting-started.html'}}
-        files={[{
-          href: this.state.news.css[0],
-          type: 'text/css',
-          rel: 'stylesheet'
-      }]}
-      />
-      </ScrollView>
+        <ScrollView style={styles.fill} scrollEventThrottle={16}  onScroll={Animated.event([
+            { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
+          ])}>
+          <AutoHeightWebView
+            source={{ html: this.state.news.body }}
+            files={[
+              {
+                href: this.state.news.css[0],
+                type: "text/css",
+                rel: "stylesheet"
+              }
+            ]}
+          />
+        </ScrollView>
+        <Animated.View style={[styles.header, { height: headerHeight }]}>
+          <Animated.Image
+            style={[
+              styles.backgroundImage,
+              {
+                transform: [{ translateY: imageTranslate }]
+              }
+            ]}
+            source={{uri:this.state.news.image}}
+          />
+        </Animated.View>
       </View>
     );
   }
@@ -106,42 +106,25 @@ const styles = StyleSheet.create({
   fill: {
     flex: 1
   },
-  row: {
-    height: 40,
-    margin: 16,
-    backgroundColor: "#D3D3D3",
-    alignItems: "center",
-    justifyContent: "center"
-  },
   header: {
     position: "absolute",
-    top: 0,
+    top: 50,
     left: 0,
     right: 0,
-    backgroundColor: "#03A9F4",
     overflow: "hidden"
-  },
-  bar: {
-    marginTop: 28,
-    height: 32,
-    alignItems: "center",
-    justifyContent: "center"
   },
   title: {
     backgroundColor: "transparent",
     color: "white",
     fontSize: 18
   },
-  scrollViewContent: {
-    marginTop: HEADER_MAX_HEIGHT
-  },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     width: null,
     height: HEADER_MAX_HEIGHT,
-    resizeMode: 'cover',
-  },
+    resizeMode: "cover"
+  }
 });
