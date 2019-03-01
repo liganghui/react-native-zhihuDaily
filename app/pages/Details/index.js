@@ -6,25 +6,25 @@ import {
   Text,
   StyleSheet,
   Dimensions,
-  WebView,
   Animated,
   AsyncStorage,
   ScrollView,
   Image
 } from "react-native";
 import { Tile } from "react-native-elements";
-import HTML from "./html";
 import AutoHeightWebView from "react-native-autoheight-webview";
-const HEADER_MAX_HEIGHT = 200;
-const HEADER_MIN_HEIGHT = 0;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+import LinearGradient from "react-native-linear-gradient";
+
+const IMG_MAX_HEIGHT = 200;
+const IMG_MIN_HEIGHT = 0;
+const IMG_SCROLL_DISTANCE = IMG_MAX_HEIGHT - IMG_MIN_HEIGHT;
+const HEAD_HEIGHT = 50;
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
       headerStyle: {
-        opacity: params.headerOpacity ? params.headerOpacity : 1,
         backgroundColor: "#00a2ed"
       }
     };
@@ -34,9 +34,10 @@ export default class index extends Component {
     const id = this.props.navigation.getParam("itemId");
     this.state = {
       itemId: id,
-      news: {
-        css:[]
+      daily: {
+        css: []
       },
+      webviewWidth: null,
       scrollY: new Animated.Value(0)
     };
     this.props.navigation.setParams({
@@ -51,8 +52,10 @@ export default class index extends Component {
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"><link rel="stylesheet" href="${responseJson.css[0]}"></head><body>${responseJson.body}</body></html>`;
+        responseJson.body = html;
         this.setState({
-          news: responseJson
+          daily: responseJson
         });
       })
       .catch(error => {
@@ -61,29 +64,42 @@ export default class index extends Component {
   }
   render() {
     const headerHeight = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
-      outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+      inputRange: [0, IMG_SCROLL_DISTANCE],
+      outputRange: [IMG_MAX_HEIGHT, IMG_MIN_HEIGHT],
+      extrapolate: "clamp"
+    });
+    const titleBottom = this.state.scrollY.interpolate({
+      inputRange: [0, IMG_SCROLL_DISTANCE],
+      outputRange: [25, 60],
+      extrapolate: "clamp"
+    });
+    const sourceBottom = this.state.scrollY.interpolate({
+      inputRange: [0, IMG_SCROLL_DISTANCE],
+      outputRange: [10, 50],
       extrapolate: "clamp"
     });
     const imageTranslate = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_SCROLL_DISTANCE],
+      inputRange: [0, IMG_SCROLL_DISTANCE],
       outputRange: [0, -50],
       extrapolate: "clamp"
     });
     return (
-      <View style={styles.fill}>
-        <ScrollView style={styles.fill} scrollEventThrottle={16}  onScroll={Animated.event([
+      <View
+        style={styles.fill}
+        onLayout={event => {
+          this.setState({ webviewWidth: event.nativeEvent.layout.width });
+        }}
+      >
+        <ScrollView
+          scrollEventThrottle={16}
+          onScroll={Animated.event([
             { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
-          ])}>
+          ])}
+        >
+          {/* TODO : Webview在安卓7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
-            source={{ html: this.state.news.body }}
-            files={[
-              {
-                href: this.state.news.css[0],
-                type: "text/css",
-                rel: "stylesheet"
-              }
-            ]}
+            style={[styles.webview, { width: this.state.webviewWidth }]}
+            source={{ html: this.state.daily.body }}
           />
         </ScrollView>
         <Animated.View style={[styles.header, { height: headerHeight }]}>
@@ -94,8 +110,33 @@ export default class index extends Component {
                 transform: [{ translateY: imageTranslate }]
               }
             ]}
-            source={{uri:this.state.news.image}}
+            source={{ uri: this.state.daily.image }}
           />
+          <LinearGradient
+            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
+            style={styles.linearGradient}
+          >
+            <Animated.Text
+              style={[
+                styles.title,
+                {
+                  bottom: titleBottom
+                }
+              ]}
+            >
+              {this.state.daily.title}
+            </Animated.Text>
+            <Animated.Text
+              style={[
+                styles.source,
+                {
+                  bottom: sourceBottom
+                }
+              ]}
+            >
+              {this.state.daily.image_source}
+            </Animated.Text>
+          </LinearGradient>
         </Animated.View>
       </View>
     );
@@ -108,7 +149,7 @@ const styles = StyleSheet.create({
   },
   header: {
     position: "absolute",
-    top: 50,
+    top: HEAD_HEIGHT,
     left: 0,
     right: 0,
     overflow: "hidden"
@@ -118,13 +159,38 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 18
   },
+  linearGradient: {
+    width: "100%",
+    height: IMG_MAX_HEIGHT,
+    position: "absolute",
+    zIndex: 2
+  },
   backgroundImage: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    zIndex: 1,
     width: null,
-    height: HEADER_MAX_HEIGHT,
+    height: IMG_MAX_HEIGHT,
     resizeMode: "cover"
+  },
+  webview: {
+    marginTop: HEAD_HEIGHT
+  },
+  title: {
+    fontSize: 20,
+    color: "#fff",
+    position: "absolute",
+    paddingHorizontal: 20,
+    bottom: 25,
+    textAlign: "left"
+  },
+  source: {
+    fontSize: 14,
+    color: "#fff",
+    position: "absolute",
+    bottom: 10,
+    right: 20
   }
 });

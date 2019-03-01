@@ -1718,7 +1718,7 @@ fbjs-scripts@^1.0.0:
     semver "^5.1.0"
     through2 "^2.0.0"
 
-fbjs@^0.8.0, fbjs@^0.8.9:
+fbjs@^0.8.0, fbjs@^0.8.17, fbjs@^0.8.9:
   version "0.8.17"
   resolved "http://registry.npm.taobao.org/fbjs/download/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   dependencies:
@@ -4054,9 +4054,9 @@ react-is@^16.5.2, react-is@^16.6.3, react-is@^16.7.0:
   resolved "http://registry.npm.taobao.org/react-is/download/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
 
 react-is@^16.8.1:
-  version "16.8.2"
-  resolved "http://registry.npm.taobao.org/react-is/download/react-is-16.8.2.tgz#09891d324cad1cb0c1f2d91f70a71a4bee34df0f"
-  integrity sha1-CYkdMkytHLDB8tkfcKcaS+403w8=
+  version "16.8.3"
+  resolved "http://registry.npm.taobao.org/react-is/download/react-is-16.8.3.tgz#4ad8b029c2a718fc0cfc746c8d4e1b7221e5387d"
+  integrity sha1-StiwKcKnGPwM/HRsjU4bciHlOH0=
 
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
@@ -4144,6 +4144,19 @@ react-native-vector-icons@^6.2.0:
     lodash "^4.0.0"
     prop-types "^15.6.2"
     yargs "^8.0.2"
+
+react-native-webview-autoheight@^1.0.6:
+  version "1.0.6"
+  resolved "http://registry.npm.taobao.org/react-native-webview-autoheight/download/react-native-webview-autoheight-1.0.6.tgz#08d6ece62877f5ef33ef857102193760085afc3a"
+  integrity sha1-CNbs5ih39e8z74VxAhk3YAha/Do=
+
+react-native-webview@^5.2.4:
+  version "5.2.4"
+  resolved "http://registry.npm.taobao.org/react-native-webview/download/react-native-webview-5.2.4.tgz#9fbcc67e99f3cc9b1ca0eb102e5550026ac3f8e2"
+  integrity sha1-n7zGfpnzzJscoOsQLlVQAmrD+OI=
+  dependencies:
+    escape-string-regexp "^1.0.5"
+    fbjs "^0.8.17"
 
 react-native@0.57.8:
   version "0.57.8"
