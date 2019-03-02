@@ -9,9 +9,10 @@ import {
   Animated,
   AsyncStorage,
   ScrollView,
+  TouchableOpacity,
   Image
 } from "react-native";
-import { Tile } from "react-native-elements";
+import { Tile, Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -25,7 +26,8 @@ export default class index extends Component {
     return {
       headerTransparent: true,
       headerStyle: {
-        backgroundColor: "#00a2ed"
+        backgroundColor: "#00a2ed",
+        headerOpacity: 0
       }
     };
   };
@@ -35,7 +37,8 @@ export default class index extends Component {
     this.state = {
       itemId: id,
       daily: {
-        css: []
+        css: [],
+        section:null
       },
       webviewWidth: null,
       scrollY: new Animated.Value(0)
@@ -52,7 +55,9 @@ export default class index extends Component {
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"><link rel="stylesheet" href="${responseJson.css[0]}"></head><body>${responseJson.body}</body></html>`;
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"><link rel="stylesheet" href="${
+          responseJson.css[0]
+        }"></head><body>${responseJson.body}</body></html>`;
         responseJson.body = html;
         this.setState({
           daily: responseJson
@@ -96,12 +101,22 @@ export default class index extends Component {
             { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
           ])}
         >
-          {/* TODO : Webview在安卓7.0+以上版本时 存在内容被裁切情况  */}
+          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
             style={[styles.webview, { width: this.state.webviewWidth }]}
             source={{ html: this.state.daily.body }}
           />
+          {/* 栏目信息  */}
+           {this.state.daily.section?
+          <TouchableOpacity style={styles.sectionWrapper}  onPress={()=>{console.warn( this.state.daily.section.id)}}>
+            <Image  style={styles.thumbnailImg} source={{ uri: this.state.daily.section.thumbnail }} /> 
+            <Text   style={styles.thumbnailName}>本文来自：{this.state.daily.section.name} · 合集</Text>
+            <Icon   iconStyle={styles.iconRightArrow} name="angle-right" type="font-awesome" color="#333" size={22} />
+        </TouchableOpacity>:null
+       } 
+     
         </ScrollView>
+        {/*  */}
         <Animated.View style={[styles.header, { height: headerHeight }]}>
           <Animated.Image
             style={[
@@ -137,7 +152,7 @@ export default class index extends Component {
               {this.state.daily.image_source}
             </Animated.Text>
           </LinearGradient>
-        </Animated.View>
+        </Animated.View>      
       </View>
     );
   }
@@ -188,9 +203,28 @@ const styles = StyleSheet.create({
   },
   source: {
     fontSize: 14,
-    color: "#fff",
+    color: "rgba(255,255,255,0.5)",
     position: "absolute",
     bottom: 10,
     right: 20
+  },
+  sectionWrapper:{
+    backgroundColor:"#f0f0f0",
+    marginHorizontal:20,
+    marginBottom: 30,    
+    flexDirection:"row",
+    alignItems:'center',
+  },
+  thumbnailImg:{
+    height:50,width:50
+  },
+  thumbnailName:{
+    flex:1,
+    color:"#000",
+    marginLeft:10
+  },
+  iconRightArrow:{
+    right:10,
+    position:'absolute',
   }
 });
