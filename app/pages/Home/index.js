@@ -11,10 +11,14 @@ import {
 import { Header, Icon, Button } from "react-native-elements";
 // 数据接口
 import API from "../../config/api";
+// 函数工具库 
+import TOOLS from "../../config/tools";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
-// 上滑触底加载状态组件
-import PullUpLoad from "../../componetns/PullUpLoad";
+// 上滑触底加载状态
+import PullUpLoad from "../../componetns/PullUpLoading";
+// 集成触底和上拉加载的滚动容器 
+import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
 
@@ -25,6 +29,7 @@ export default class index extends Component {
       headerLeft:(
         <Button
           type="clear"
+          title=""
           onPress={()=>{navigation.openDrawer()}}
           icon={
           <Icon
@@ -34,17 +39,11 @@ export default class index extends Component {
             color="white"
           />
         }
-        title=""
       />
       ),
       headerRight:(
         <View style={styles.headLeftWrapper}>
-         <Button  onPress={()=>{
-
-         }}
-          title=""
-          type="clear"
-          icon={
+         <Button title=""type="clear" icon={
           <Icon
             type="ionicon"
             name="ios-calendar"
@@ -53,13 +52,7 @@ export default class index extends Component {
           />
         }
       />
-        <Button
-          title=""
-          type="clear"
-          onPress={()=>{
-          
-          }}
-          icon={
+        <Button title="" type="clear" icon={
             <Icon
               type="material"
               name="more-vert"
@@ -76,7 +69,7 @@ export default class index extends Component {
     super(props);
     this.state = {
       stories: [],
-      top_stories: [],
+      topStories: [],
       pullUpLoading: false,
       title: "",
       refreshing: false
@@ -90,7 +83,7 @@ export default class index extends Component {
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          top_stories: responseJson.top_stories,
+          topStories: responseJson.top_stories,
           stories: [
             {
               key: responseJson.date,
@@ -103,21 +96,10 @@ export default class index extends Component {
         console.error(error);
       });
   }
-  // 监听滚动结束事件
-  _handleViewScroll=(e)=>{
-    let offsetY = e.nativeEvent.contentOffset.y; //滑动距离
-    let contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
-    let oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
-    let offsetVal =60; // 距离底部多少高度触发检测
-    if (offsetY + oriageScrollHeight >= contentSizeHeight - offsetVal) {
-      this._pullupfresh();
-    }
-  }
-
   /* 
    *  上滑触底数据加载
    */
-  _pullupfresh=()=>{
+  pullupfresh=()=>{
     //避免重复请求
     if (this.state.pullUpLoading) {
       return false;
@@ -130,7 +112,6 @@ export default class index extends Component {
     fetch(API.before + beforeDay)
       .then(response => response.json())
       .then(responseJson => {
-  
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
@@ -169,7 +150,8 @@ export default class index extends Component {
   /*
      下拉刷新
   */ 
-  _onRefresh = () => {
+  onRefresh = () => {
+    // TODO : 日报下拉刷新
     this.setState({ refreshing: true });
     setTimeout(() => {
       this.setState({ refreshing: false });
@@ -183,22 +165,12 @@ export default class index extends Component {
   *  @param {String} val 日期字符串
   *  @return {String}  格式化后的日期
   */
-  _formatDate (value){
-      let val=String(value);
-      if (val.length !== 8 || !val) {
-        return "";
-      }
-      let dateStr =val.substring(0, 4) + "/" +val.substring(4, 6) + "/" +val.substring(6, 8);
-      let dailyDate = new Date(dateStr);
-      let presentDate = new Date();
-      if (presentDate.toDateString() === dailyDate.toDateString()) {
+  _formatDate (date){
+      let currentDate=TOOLS.getDate();
+      if(currentDate===date){
         return "今日热闻";
-      } else {
-        let day = dailyDate.getDay();
-        let weekAry = new Array( "星期日", "星期一", "星期二", "星期三", "星期四","星期五","星期六");
-        let result =
-          val.substring(4, 6) + "月" + val.substring(6, 8) + "日 " + weekAry[day];
-        return result;
+      }else{
+        return  TOOLS.formatMonthDay(date)+" "+TOOLS.formatWeek(date);
       }
     }
   // 日报列表分组头部组件
@@ -206,22 +178,11 @@ export default class index extends Component {
   renderSectioHeader=(items)=>{
     return <Text style={styles.sectionTitle}>{this._formatDate(items.section.key)}</Text>
   }
-
-
-
+  
   render() {
     return (
-      <ScrollView 
-        style={styles.wrapper} 
-        onMomentumScrollEnd={this._handleViewScroll}
-        refreshControl={
-        <RefreshControl
-        colors={["#008bed"]}
-          refreshing={this.state.refreshing}
-          onRefresh={this._onRefresh}
-        />
-      }>
-        <HomeSwiper data={this.state.top_stories} />
+      <MyScrollView pullupfresh={this.pullupfresh} refreshing={this.state.refreshing} onRefresh={this.onRefresh}>
+        <HomeSwiper data={this.state.topStories} />
         <StoriesList data={this.state.stories}   bindOnPress={this.handleListTap}  sectionHeader={this.renderSectioHeader} />
         {
           this.state.stories.length>0?
@@ -229,7 +190,7 @@ export default class index extends Component {
           :
           null
         }
-      </ScrollView>
+      </MyScrollView>
     );
   }
 }
