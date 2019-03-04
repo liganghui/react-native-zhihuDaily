@@ -40,7 +40,10 @@ export default class index extends Component {
         css: [],
         section:null
       },
+      // 动态调整webview为设备的宽度
       webviewWidth: null,
+      // 记录webviewI初始化状态 
+      webviewInit:false,
       scrollY: new Animated.Value(0)
     };
     this.props.navigation.setParams({
@@ -67,6 +70,15 @@ export default class index extends Component {
         // TODO:接口异常处理
       });
   }
+  bindMessage(event){
+    let data=event.nativeEvent.data;
+    if(String(data).indexOf("url:")!==-1){
+      let url=data.split('url:')[1].replace('"','');
+      this.props.navigation.navigate("ImgView", {
+          url
+      });
+    }
+  }
   render() {
     const headerHeight = this.state.scrollY.interpolate({
       inputRange: [0, IMG_SCROLL_DISTANCE],
@@ -75,12 +87,12 @@ export default class index extends Component {
     });
     const titleBottom = this.state.scrollY.interpolate({
       inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [25, 60],
+      outputRange: [30, 90],
       extrapolate: "clamp"
     });
     const sourceBottom = this.state.scrollY.interpolate({
       inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [10, 50],
+      outputRange: [10, 70],
       extrapolate: "clamp"
     });
     const imageTranslate = this.state.scrollY.interpolate({
@@ -97,17 +109,37 @@ export default class index extends Component {
       >
         <ScrollView
           scrollEventThrottle={16}
+          onMessage={this.bindMessage}
           onScroll={Animated.event([
             { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
           ])}
+         
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
             style={[styles.webview, { width: this.state.webviewWidth }]}
             source={{ html: this.state.daily.body }}
+            onMessage={this.bindMessage.bind(this)}
+            onLoadEnd={this.setState({webviewInit:true})}
+            // 为webview图片绑定点击事件 , 触发查看大图
+            customScript={
+              `
+              window.onload=function(){
+                var imgs = document.getElementsByTagName("img");
+                if(imgs){
+                  for(var i=0;i<imgs.length;i++){
+                    imgs[i].addEventListener('click',function(e){
+                      var src=this.src;
+                      window.ReactNativeWebView.postMessage(JSON.stringify("url:"+src));
+                    })
+                  }
+                }
+              }
+              `
+            }
           />
           {/* 栏目信息  */}
-           {this.state.daily.section?
+           {this.state.daily.section&&this.state.webviewInit?
           <TouchableOpacity style={styles.sectionWrapper}  onPress={()=>{console.warn( this.state.daily.section.id)}}>
             <Image  style={styles.thumbnailImg} source={{ uri: this.state.daily.section.thumbnail }} /> 
             <Text   style={styles.thumbnailName}>本文来自：{this.state.daily.section.name} · 合集</Text>
@@ -116,7 +148,6 @@ export default class index extends Component {
        } 
      
         </ScrollView>
-        {/*  */}
         <Animated.View style={[styles.header, { height: headerHeight }]}>
           <Animated.Image
             style={[
@@ -194,11 +225,11 @@ const styles = StyleSheet.create({
     marginTop: HEAD_HEIGHT
   },
   title: {
-    fontSize: 20,
+    fontSize: 19,
     color: "#fff",
     position: "absolute",
-    paddingHorizontal: 20,
-    bottom: 25,
+    paddingHorizontal: 15,
+    bottom: 30,
     textAlign: "left"
   },
   source: {

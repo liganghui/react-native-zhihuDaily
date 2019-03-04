@@ -4,6 +4,8 @@ import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackV
 import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
+import ImgScreen from "./pages/ImgView";
+
 // import './config/storage';
 
 /*
@@ -21,7 +23,10 @@ const MainScreen = createStackNavigator({
     },
     Details: {
         screen: DetailsScreen
-    }
+    },
+    ImgView: {
+        screen: ImgScreen
+    },
 }, {
     // 设置header默认样式
     defaultNavigationOptions: {

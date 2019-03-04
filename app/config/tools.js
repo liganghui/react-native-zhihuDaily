@@ -26,7 +26,7 @@ export default TOOLS = {
         }
     },
     // 获取年月日
-    // @return xxxx-xx-xx
+    // @return xxxx xx xx
     getDate(){
         let nowDate = new Date(+new Date() + 8 * 3600 * 1000);
         let year = nowDate.getFullYear();

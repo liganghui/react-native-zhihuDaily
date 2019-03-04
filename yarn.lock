@@ -4096,6 +4096,18 @@ react-native-gesture-handler@^1.0.15, react-native-gesture-handler@~1.0.14:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
+react-native-image-pan-zoom@^2.1.9:
+  version "2.1.11"
+  resolved "http://registry.npm.taobao.org/react-native-image-pan-zoom/download/react-native-image-pan-zoom-2.1.11.tgz#61bcb69219d95e76a9797d23e4a2e8e0bd654ae9"
+  integrity sha1-Yby2khnZXnapeX0j5KLo4L1lSuk=
+
+react-native-image-zoom-viewer@^2.2.25:
+  version "2.2.25"
+  resolved "http://registry.npm.taobao.org/react-native-image-zoom-viewer/download/react-native-image-zoom-viewer-2.2.25.tgz#61d0978b26d5a07bbbdfe04791818e49d1e538a0"
+  integrity sha1-YdCXiybVoHu73+BHkYGOSdHlOKA=
+  dependencies:
+    react-native-image-pan-zoom "^2.1.9"
+
 react-native-linear-gradient@^2.5.3:
   version "2.5.3"
   resolved "http://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.3.tgz#d90cf19a13fcccfa8bb32025ac40a15ae1b49e99"
