@@ -6,6 +6,7 @@ import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
 
+import Header from "./componetns/Header"
 // import './config/storage';
 
 /*
@@ -22,7 +23,12 @@ const MainScreen = createStackNavigator({
         screen: HomeScreen
     },
     Details: {
-        screen: DetailsScreen
+        screen: DetailsScreen,
+        navigationOptions: ({ navigation, screenProps }) => {
+            return {
+                header: <Header {...navigation} {...screenProps} />
+            };
+        }
     },
     ImgView: {
         screen: ImgScreen
@@ -54,6 +60,7 @@ const AppNavigator = createDrawerNavigator({
     },
     Drawer: {
         screen: DrawerScreen
+       
     }
 });
 

@@ -4227,6 +4227,13 @@ react-native@0.57.8:
     xmldoc "^0.4.0"
     yargs "^9.0.0"
 
+react-navigation-collapsible@^3.0.3:
+  version "3.0.3"
+  resolved "http://registry.npm.taobao.org/react-navigation-collapsible/download/react-navigation-collapsible-3.0.3.tgz#181252f7fe3117a8792aaac7ca58cd5f3f05cd1b"
+  integrity sha1-GBJS9/4xF6h5KqrHyljNXz8FzRs=
+  dependencies:
+    hoist-non-react-statics "^3.0.1"
+
 react-navigation-drawer@1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/react-navigation-drawer/download/react-navigation-drawer-1.1.0.tgz#e39dbf493c77890c90f8ed4d83d06c87af65abf0"

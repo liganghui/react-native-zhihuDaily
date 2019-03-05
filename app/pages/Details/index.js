@@ -27,7 +27,6 @@ export default class index extends Component {
       headerTransparent: true,
       headerStyle: {
         backgroundColor: "#00a2ed",
-        headerOpacity: 0
       }
     };
   };
@@ -46,12 +45,18 @@ export default class index extends Component {
       webviewInit:false,
       scrollY: new Animated.Value(0)
     };
-    this.props.navigation.setParams({
-      headerOpacity: 1
-    });
   }
   componentDidMount() {
     this.init();
+    this.scrollY = new Animated.Value(0);
+    this.changingHeight = this.scrollY.interpolate({
+        inputRange: [0, 50],
+        outputRange: [120, 60],
+        extrapolate: "clamp"
+    });
+    this.props.navigation.setParams({
+        changingHeight: this.changingHeight
+    });
   }
   init() {
     // TODO:封装接口
@@ -78,6 +83,15 @@ export default class index extends Component {
           url
       });
     }
+  }
+  handleOnScroll =(event)=>{
+    let xx=event.nativeEvent;
+      Animated.event([
+        { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
+      ])
+      Animated.event([
+        { nativeEvent: { contentOffset: { y: this.scrollY } } }
+      ])
   }
   render() {
     const headerHeight = this.state.scrollY.interpolate({
@@ -110,17 +124,14 @@ export default class index extends Component {
         <ScrollView
           scrollEventThrottle={16}
           onMessage={this.bindMessage}
-          onScroll={Animated.event([
-            { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
-          ])}
-         
+          onScroll={e => this.handleOnScroll(e) }
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
             style={[styles.webview, { width: this.state.webviewWidth }]}
             source={{ html: this.state.daily.body }}
             onMessage={this.bindMessage.bind(this)}
-            onLoadEnd={this.setState({webviewInit:true})}
+            onLoadEnd={()=>{this.setState({webviewInit:true})}}
             // 为webview图片绑定点击事件 , 触发查看大图
             customScript={
               `
