@@ -20,52 +20,56 @@ const IMG_MAX_HEIGHT = 200;
 const IMG_MIN_HEIGHT = 0;
 const IMG_SCROLL_DISTANCE = IMG_MAX_HEIGHT - IMG_MIN_HEIGHT;
 const HEAD_HEIGHT = 50;
+const HEADER_MAX_HEIGHT = 50;
+const HEADER_MIN_HEIGHT = 0;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
+      // header: null,
       headerStyle: {
         backgroundColor: "#00a2ed",
+        opacity: !params ? 0 : params.animatedValue
       }
     };
   };
   constructor(props) {
     super(props);
+
+    this._animatedValue = new Animated.Value(0);
     const id = this.props.navigation.getParam("itemId");
     this.state = {
       itemId: id,
       daily: {
         css: [],
-        section:null
+        section: null
       },
       // 动态调整webview为设备的宽度
       webviewWidth: null,
-      // 记录webviewI初始化状态 
-      webviewInit:false,
+      // 记录webviewI初始化状态
+      webviewInit: false,
       scrollY: new Animated.Value(0)
     };
   }
   componentDidMount() {
     this.init();
-    this.scrollY = new Animated.Value(0);
-    this.changingHeight = this.scrollY.interpolate({
-        inputRange: [0, 50],
-        outputRange: [120, 60],
-        extrapolate: "clamp"
+    const headerOpacity = this.state.scrollY.interpolate({
+      inputRange: [0, 200],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
     });
-    this.props.navigation.setParams({
-        changingHeight: this.changingHeight
-    });
+    this.props.navigation.setParams({ animatedValue: headerOpacity });
   }
   init() {
     // TODO:封装接口
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"><link rel="stylesheet" href="${
-          responseJson.css[0]
-        }"></head><body>${responseJson.body}</body></html>`;
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head><body>${
+          responseJson.body
+        }</body></html>`;
         responseJson.body = html;
         this.setState({
           daily: responseJson
@@ -75,43 +79,24 @@ export default class index extends Component {
         // TODO:接口异常处理
       });
   }
-  bindMessage(event){
-    let data=event.nativeEvent.data;
-    if(String(data).indexOf("url:")!==-1){
-      let url=data.split('url:')[1].replace('"','');
+  bindMessage(event) {
+    let data = event.nativeEvent.data;
+    if (String(data).indexOf("url:") !== -1) {
+      let url = data.split("url:")[1].replace('"', "");
       this.props.navigation.navigate("ImgView", {
-          url
+        url
       });
     }
   }
-  handleOnScroll =(event)=>{
-    let xx=event.nativeEvent;
-      Animated.event([
-        { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
-      ])
-      Animated.event([
-        { nativeEvent: { contentOffset: { y: this.scrollY } } }
-      ])
-  }
   render() {
     const headerHeight = this.state.scrollY.interpolate({
-      inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [IMG_MAX_HEIGHT, IMG_MIN_HEIGHT],
+      inputRange: [0, 350],
+      outputRange: [200, 0],
       extrapolate: "clamp"
     });
-    const titleBottom = this.state.scrollY.interpolate({
-      inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [30, 90],
-      extrapolate: "clamp"
-    });
-    const sourceBottom = this.state.scrollY.interpolate({
-      inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [10, 70],
-      extrapolate: "clamp"
-    });
-    const imageTranslate = this.state.scrollY.interpolate({
-      inputRange: [0, IMG_SCROLL_DISTANCE],
-      outputRange: [0, -50],
+    const headerTop = this.state.scrollY.interpolate({
+      inputRange: [0, 250],
+      outputRange: [50, -50],
       extrapolate: "clamp"
     });
     return (
@@ -124,17 +109,33 @@ export default class index extends Component {
         <ScrollView
           scrollEventThrottle={16}
           onMessage={this.bindMessage}
-          onScroll={e => this.handleOnScroll(e) }
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            {
+              listener: event => {
+                const offsetY = event.nativeEvent.contentOffset.y;
+                // console.warn(offsetY)
+              }
+            }
+          )}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
             style={[styles.webview, { width: this.state.webviewWidth }]}
             source={{ html: this.state.daily.body }}
             onMessage={this.bindMessage.bind(this)}
-            onLoadEnd={()=>{this.setState({webviewInit:true})}}
+            onLoadEnd={() => {
+              this.setState({ webviewInit: true });
+            }}
+            files={[
+              {
+                href:this.state.daily.css[0],
+                type: "text/css",
+                rel: "stylesheet"
+              }
+            ]}
             // 为webview图片绑定点击事件 , 触发查看大图
-            customScript={
-              `
+            customScript={`
               window.onload=function(){
                 var imgs = document.getElementsByTagName("img");
                 if(imgs){
@@ -146,55 +147,52 @@ export default class index extends Component {
                   }
                 }
               }
-              `
-            }
+              `}
           />
           {/* 栏目信息  */}
-           {this.state.daily.section&&this.state.webviewInit?
-          <TouchableOpacity style={styles.sectionWrapper}  onPress={()=>{console.warn( this.state.daily.section.id)}}>
-            <Image  style={styles.thumbnailImg} source={{ uri: this.state.daily.section.thumbnail }} /> 
-            <Text   style={styles.thumbnailName}>本文来自：{this.state.daily.section.name} · 合集</Text>
-            <Icon   iconStyle={styles.iconRightArrow} name="angle-right" type="font-awesome" color="#333" size={22} />
-        </TouchableOpacity>:null
-       } 
-     
+          {this.state.daily.section && this.state.webviewInit ? (
+            <TouchableOpacity
+              style={styles.sectionWrapper}
+              onPress={() => {
+                console.warn(this.state.daily.section.id);
+              }}
+            >
+              <Image
+                style={styles.thumbnailImg}
+                source={{ uri: this.state.daily.section.thumbnail }}
+              />
+              <Text style={styles.thumbnailName}>
+                本文来自：{this.state.daily.section.name} · 合集
+              </Text>
+              <Icon
+                iconStyle={styles.iconRightArrow}
+                name="angle-right"
+                type="font-awesome"
+                color="#333"
+                size={22}
+              />
+            </TouchableOpacity>
+          ) : null}
         </ScrollView>
-        <Animated.View style={[styles.header, { height: headerHeight }]}>
+        <Animated.View
+          style={[styles.header, { height: headerHeight, top: headerTop }]}
+        >
           <Animated.Image
-            style={[
-              styles.backgroundImage,
-              {
-                transform: [{ translateY: imageTranslate }]
-              }
-            ]}
+            style={[styles.backgroundImage]}
             source={{ uri: this.state.daily.image }}
           />
           <LinearGradient
             colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
             style={styles.linearGradient}
           >
-            <Animated.Text
-              style={[
-                styles.title,
-                {
-                  bottom: titleBottom
-                }
-              ]}
-            >
+            <Animated.Text style={[styles.title]}>
               {this.state.daily.title}
             </Animated.Text>
-            <Animated.Text
-              style={[
-                styles.source,
-                {
-                  bottom: sourceBottom
-                }
-              ]}
-            >
+            <Animated.Text style={[styles.source]}>
               {this.state.daily.image_source}
             </Animated.Text>
           </LinearGradient>
-        </Animated.View>      
+        </Animated.View>
       </View>
     );
   }
@@ -236,7 +234,7 @@ const styles = StyleSheet.create({
     marginTop: HEAD_HEIGHT
   },
   title: {
-    fontSize: 19,
+    fontSize: 22,
     color: "#fff",
     position: "absolute",
     paddingHorizontal: 15,
@@ -245,28 +243,29 @@ const styles = StyleSheet.create({
   },
   source: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.5)",
+    color: "rgba(255,255,255,0.8)",
     position: "absolute",
     bottom: 10,
     right: 20
   },
-  sectionWrapper:{
-    backgroundColor:"#f0f0f0",
-    marginHorizontal:20,
-    marginBottom: 30,    
-    flexDirection:"row",
-    alignItems:'center',
+  sectionWrapper: {
+    backgroundColor: "#f0f0f0",
+    marginHorizontal: 20,
+    marginBottom: 30,
+    flexDirection: "row",
+    alignItems: "center"
   },
-  thumbnailImg:{
-    height:50,width:50
+  thumbnailImg: {
+    height: 50,
+    width: 50
   },
-  thumbnailName:{
-    flex:1,
-    color:"#000",
-    marginLeft:10
+  thumbnailName: {
+    flex: 1,
+    color: "#000",
+    marginLeft: 10
   },
-  iconRightArrow:{
-    right:10,
-    position:'absolute',
+  iconRightArrow: {
+    right: 10,
+    position: "absolute"
   }
 });
