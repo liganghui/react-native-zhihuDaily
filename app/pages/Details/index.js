@@ -28,8 +28,8 @@ export default class index extends Component {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
-      // header: null,
       headerStyle: {
+        height: !params ? 55 : params.height,
         backgroundColor: "#00a2ed",
         opacity: !params ? 0 : params.animatedValue
       }
@@ -50,7 +50,8 @@ export default class index extends Component {
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
-      scrollY: new Animated.Value(0)
+      scrollY: new Animated.Value(0),
+      headerHeight: new Animated.Value(55)
     };
   }
   componentDidMount() {
@@ -61,6 +62,15 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     this.props.navigation.setParams({ animatedValue: headerOpacity });
+    this.props.navigation.setParams({ height:this.state.headerHeight });
+    this.fadeOutAnimated = Animated.timing(
+      this.state.headerHeight,
+      {
+          toValue: 55,  //透明度动画最终值
+          duration: 2000 //动画时长3000毫秒
+      }
+    );
+
   }
   init() {
     // TODO:封装接口
@@ -99,6 +109,7 @@ export default class index extends Component {
       outputRange: [50, -50],
       extrapolate: "clamp"
     });
+   
     return (
       <View
         style={styles.fill}
@@ -114,6 +125,13 @@ export default class index extends Component {
             {
               listener: event => {
                 const offsetY = event.nativeEvent.contentOffset.y;
+                console.warn(offsetY);
+                if(offsetY>=190){
+
+                }else if(offsetY>=400){
+                  this.props.navigation.setParams({ animatedValue: headerOpacity });
+                  this.fadeOutAnimated.start(() => this.state.fadeOutOpacity.setValue(1));
+                }
                 // console.warn(offsetY)
               }
             }
@@ -129,7 +147,7 @@ export default class index extends Component {
             }}
             files={[
               {
-                href:this.state.daily.css[0],
+                href: this.state.daily.css[0],
                 type: "text/css",
                 rel: "stylesheet"
               }
