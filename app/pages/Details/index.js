@@ -10,7 +10,8 @@ import {
   AsyncStorage,
   ScrollView,
   TouchableOpacity,
-  Image
+  Image,
+  Easing
 } from "react-native";
 import { Tile, Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
@@ -23,22 +24,22 @@ const HEAD_HEIGHT = 50;
 const HEADER_MAX_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
+let Y='';
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
       headerStyle: {
-        height: !params ? 55 : params.height,
+        overflow:'hidden',
+        height: params ? params.height :55 ,
         backgroundColor: "#00a2ed",
-        opacity: !params ? 0 : params.animatedValue
+        opacity: params ? params.animatedValue :0 
       }
     };
   };
   constructor(props) {
     super(props);
-
-    this._animatedValue = new Animated.Value(0);
     const id = this.props.navigation.getParam("itemId");
     this.state = {
       itemId: id,
@@ -51,24 +52,38 @@ export default class index extends Component {
       // 记录webviewI初始化状态
       webviewInit: false,
       scrollY: new Animated.Value(0),
-      headerHeight: new Animated.Value(55)
+      headerOpacity: new Animated.Value(10),
+      headerHeight:new Animated.Value(55),
+      height:55
     };
   }
   componentDidMount() {
     this.init();
     const headerOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 200],
-      outputRange: [1, 0],
+      inputRange: [0, 200,300,500],
+      outputRange: [1, 0,1,1],
       extrapolate: "clamp"
     });
-    this.props.navigation.setParams({ animatedValue: headerOpacity });
+  
     this.props.navigation.setParams({ height:this.state.headerHeight });
+    this.props.navigation.setParams({ animatedValue: headerOpacity });
+
+
     this.fadeOutAnimated = Animated.timing(
       this.state.headerHeight,
       {
           toValue: 55,  //透明度动画最终值
-          duration: 2000 //动画时长3000毫秒
-      }
+          duration: 200, //动画时长3000毫秒
+          easing: Easing.easeIn,
+        }
+    );
+    this.fadeInAnimated = Animated.timing(
+      this.state.headerHeight,
+      {
+          toValue: 0,  //透明度动画最终值
+          duration: 200, //动画时长3000毫秒
+          easing: Easing.easeIn,
+        }
     );
 
   }
@@ -98,13 +113,56 @@ export default class index extends Component {
       });
     }
   }
+  bindOnScroll=(event)=>{
+      const offsetY = event.nativeEvent.contentOffset.y;
+      let direction=offsetY>Y?'down':'up';
+      Y=offsetY;
+      let height=this.state.height;
+      console.warn(offsetY);
+      // if(offsetY>200){
+      //   this.setState({
+      //     height:0
+      //   })
+      // }
+      if(offsetY>300){
+      if(direction=='down'){
+        if(height==55){
+          this.fadeInAnimated.start(()=>{
+            this.setState({
+              height:0
+            })
+          });
+        }
+      }else if(direction=='up'){
+        if(height==0){
+          this.fadeOutAnimated.start(()=>{
+            setTimeout(()=>{
+              this.setState({
+                height:55
+              })
+            })
+          });
+        }
+      }
+    }
+
+      
+      // if(offsetY>=400){
+      //   console.warn('11111')
+      //   navigation.getParam()
+      //   if()
+    
+      //   this.fadeOutAnimated.start();
+      // }
+      // console.warn(offsetY)
+  }
   render() {
-    const headerHeight = this.state.scrollY.interpolate({
+    const imgHeight = this.state.scrollY.interpolate({
       inputRange: [0, 350],
       outputRange: [200, 0],
       extrapolate: "clamp"
     });
-    const headerTop = this.state.scrollY.interpolate({
+    const imgTop = this.state.scrollY.interpolate({
       inputRange: [0, 250],
       outputRange: [50, -50],
       extrapolate: "clamp"
@@ -123,17 +181,7 @@ export default class index extends Component {
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
             {
-              listener: event => {
-                const offsetY = event.nativeEvent.contentOffset.y;
-                console.warn(offsetY);
-                if(offsetY>=190){
-
-                }else if(offsetY>=400){
-                  this.props.navigation.setParams({ animatedValue: headerOpacity });
-                  this.fadeOutAnimated.start(() => this.state.fadeOutOpacity.setValue(1));
-                }
-                // console.warn(offsetY)
-              }
+              listener: this.bindOnScroll
             }
           )}
         >
@@ -193,7 +241,7 @@ export default class index extends Component {
           ) : null}
         </ScrollView>
         <Animated.View
-          style={[styles.header, { height: headerHeight, top: headerTop }]}
+          style={[styles.header, { height: imgHeight, top: imgTop }]}
         >
           <Animated.Image
             style={[styles.backgroundImage]}
