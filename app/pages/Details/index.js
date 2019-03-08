@@ -24,68 +24,48 @@ const HEAD_HEIGHT = 50;
 const HEADER_MAX_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-let Y='';
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
       headerStyle: {
-        overflow:'hidden',
-        height: params ? params.height :55 ,
+        overflow: "hidden",
+        height: !params.height ? 55 : params.height,
         backgroundColor: "#00a2ed",
-        opacity: params ? params.animatedValue :0 
+        opacity:params.animatedValue
       }
     };
   };
   constructor(props) {
     super(props);
     const id = this.props.navigation.getParam("itemId");
+    // 记录Y轴滚动坐标 用户计算滚动方向
+    let oldOffsetY = "";
     this.state = {
       itemId: id,
       daily: {
-        css: [],
-        section: null
+        css: [],//weview样式文件地址
+        section: null //栏目分类信息
       },
       // 动态调整webview为设备的宽度
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
-      scrollY: new Animated.Value(0),
-      headerOpacity: new Animated.Value(10),
-      headerHeight:new Animated.Value(55),
-      height:55
+      height: 55
     };
+    this.scrollY = new Animated.Value(0);
+    // this.headerHeight= new Animated.Value(55),
+    // this.props.navigation.setParams({ height: this.state.headerHeight });
+    this.props.navigation.setParams({animatedValue:this.scrollY.interpolate({
+      inputRange: [0, 200],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
+    })});
   }
   componentDidMount() {
     this.init();
-    const headerOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, 200,300,500],
-      outputRange: [1, 0,1,1],
-      extrapolate: "clamp"
-    });
-  
-    this.props.navigation.setParams({ height:this.state.headerHeight });
-    this.props.navigation.setParams({ animatedValue: headerOpacity });
-
-
-    this.fadeOutAnimated = Animated.timing(
-      this.state.headerHeight,
-      {
-          toValue: 55,  //透明度动画最终值
-          duration: 200, //动画时长3000毫秒
-          easing: Easing.easeIn,
-        }
-    );
-    this.fadeInAnimated = Animated.timing(
-      this.state.headerHeight,
-      {
-          toValue: 0,  //透明度动画最终值
-          duration: 200, //动画时长3000毫秒
-          easing: Easing.easeIn,
-        }
-    );
-
+ 
   }
   init() {
     // TODO:封装接口
@@ -113,61 +93,52 @@ export default class index extends Component {
       });
     }
   }
-  bindOnScroll=(event)=>{
-      const offsetY = event.nativeEvent.contentOffset.y;
-      let direction=offsetY>Y?'down':'up';
-      Y=offsetY;
-      let height=this.state.height;
-      console.warn(offsetY);
-      // if(offsetY>200){
-      //   this.setState({
-      //     height:0
-      //   })
-      // }
-      if(offsetY>300){
-      if(direction=='down'){
-        if(height==55){
-          this.fadeInAnimated.start(()=>{
+  bindOnScroll = event => {
+    let y =Number.parseInt(event.nativeEvent.contentOffset.y);
+    let direction = y > this.oldOffsetY ? "down" : "up";
+    this.oldOffsetY = y;
+    let height = this.state.height;
+   if (y > 240) {
+      if (direction == "down") {
+        if (height == 55) {
+          this.props.navigation.setParams({height:0})
+          this.props.navigation.setParams({animatedValue:0})
+          setTimeout(()=>{
             this.setState({
               height:0
             })
-          });
+          },100)
         }
-      }else if(direction=='up'){
-        if(height==0){
-          this.fadeOutAnimated.start(()=>{
-            setTimeout(()=>{
-              this.setState({
-                height:55
-              })
+      } else if (direction == "up") {
+        if (height == 0) {
+          console.warn('触发222');
+          // this.state.headerOpacity.setValue(1)
+          this.props.navigation.setParams({height:55})
+          // this.props.navigation.setParams({animatedValue:1})
+          setTimeout(()=>{
+            this.setState({
+              height:55
             })
-          });
+          },100)
         }
       }
     }
-
-      
-      // if(offsetY>=400){
-      //   console.warn('11111')
-      //   navigation.getParam()
-      //   if()
-    
-      //   this.fadeOutAnimated.start();
-      // }
-      // console.warn(offsetY)
-  }
+  };
   render() {
-    const imgHeight = this.state.scrollY.interpolate({
+  
+    // 图片高度动画
+    const imgHeight = this.scrollY.interpolate({
       inputRange: [0, 350],
       outputRange: [200, 0],
       extrapolate: "clamp"
     });
-    const imgTop = this.state.scrollY.interpolate({
+    // 
+    const imgTop = this.scrollY.interpolate({
       inputRange: [0, 250],
       outputRange: [50, -50],
       extrapolate: "clamp"
     });
-   
+
     return (
       <View
         style={styles.fill}
@@ -179,7 +150,7 @@ export default class index extends Component {
           scrollEventThrottle={16}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollY } } }],
+            [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
               listener: this.bindOnScroll
             }
