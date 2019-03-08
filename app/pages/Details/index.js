@@ -18,12 +18,8 @@ import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
 const IMG_MAX_HEIGHT = 200;
-const IMG_MIN_HEIGHT = 0;
-const IMG_SCROLL_DISTANCE = IMG_MAX_HEIGHT - IMG_MIN_HEIGHT;
-const HEAD_HEIGHT = 50;
-const HEADER_MAX_HEIGHT = 50;
+const HEAD_HEIGHT = 55;
 const HEADER_MIN_HEIGHT = 0;
-const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -33,7 +29,7 @@ export default class index extends Component {
         overflow: "hidden",
         height: !params.height ? 55 : params.height,
         backgroundColor: "#00a2ed",
-        opacity:params.animatedValue
+        opacity:params.opacity
       }
     };
   };
@@ -45,27 +41,28 @@ export default class index extends Component {
     this.state = {
       itemId: id,
       daily: {
-        css: [],//weview样式文件地址
+        css: [], //weview样式文件地址
         section: null //栏目分类信息
       },
       // 动态调整webview为设备的宽度
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
-      height: 55
+      height: HEAD_HEIGHT,
+      opacity: new Animated.Value(0),
+      headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
     this.scrollY = new Animated.Value(0);
-    // this.headerHeight= new Animated.Value(55),
-    // this.props.navigation.setParams({ height: this.state.headerHeight });
-    this.props.navigation.setParams({animatedValue:this.scrollY.interpolate({
-      inputRange: [0, 200],
-      outputRange: [1, 0],
-      extrapolate: "clamp"
-    })});
+    let opacity = this.scrollY.interpolate({
+      inputRange: [0, 200,210,211],
+      outputRange: [1, 0,0,1],
+      extrapolate: "clamp",
+    });
+    this.props.navigation.setParams({ height: this.state.headerHeight });
+    this.props.navigation.setParams({ opacity: opacity});
   }
   componentDidMount() {
     this.init();
- 
   }
   init() {
     // TODO:封装接口
@@ -94,51 +91,44 @@ export default class index extends Component {
     }
   }
   bindOnScroll = event => {
-    let y =Number.parseInt(event.nativeEvent.contentOffset.y);
+    let y =event.nativeEvent.contentOffset.y;
     let direction = y > this.oldOffsetY ? "down" : "up";
     this.oldOffsetY = y;
     let height = this.state.height;
-   if (y > 240) {
+    if (y > 205) {
       if (direction == "down") {
-        if (height == 55) {
-          this.props.navigation.setParams({height:0})
-          this.props.navigation.setParams({animatedValue:0})
-          setTimeout(()=>{
+        if (height == HEAD_HEIGHT) {
+          this.state.headerHeight.setValue(HEADER_MIN_HEIGHT)
+          setTimeout(() => {
             this.setState({
-              height:0
-            })
-          },100)
+              height: HEADER_MIN_HEIGHT
+            });
+          }, 100);
         }
       } else if (direction == "up") {
-        if (height == 0) {
-          console.warn('触发222');
-          // this.state.headerOpacity.setValue(1)
-          this.props.navigation.setParams({height:55})
-          // this.props.navigation.setParams({animatedValue:1})
-          setTimeout(()=>{
-            this.setState({
-              height:55
-            })
-          },100)
+        if (height == HEADER_MIN_HEIGHT) {
+          this.state.headerHeight.setValue(HEAD_HEIGHT)
+            setTimeout(() => {
+              this.setState({
+                height: HEAD_HEIGHT
+              });
+            }, 100);
         }
       }
     }
   };
   render() {
-  
     // 图片高度动画
     const imgHeight = this.scrollY.interpolate({
       inputRange: [0, 350],
       outputRange: [200, 0],
       extrapolate: "clamp"
     });
-    // 
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 250],
       outputRange: [50, -50],
       extrapolate: "clamp"
     });
-
     return (
       <View
         style={styles.fill}
@@ -147,13 +137,14 @@ export default class index extends Component {
         }}
       >
         <ScrollView
-          scrollEventThrottle={16}
+          scrollEventThrottle={1}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
-              listener: this.bindOnScroll
-            }
+              listener: this.bindOnScroll,
+            },
+            { useNativeDriver: true }
           )}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
