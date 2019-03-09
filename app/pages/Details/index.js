@@ -17,7 +17,7 @@ import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
-const IMG_MAX_HEIGHT = 200;
+const IMG_MAX_HEIGHT = 205;
 const HEAD_HEIGHT = 55;
 const HEADER_MIN_HEIGHT = 0;
 export default class index extends Component {
@@ -27,9 +27,9 @@ export default class index extends Component {
       headerTransparent: true,
       headerStyle: {
         overflow: "hidden",
-        height: params.height,
+        height: params.height?params.height:55,
         backgroundColor: "#00a2ed",
-        opacity:params.opacity
+        opacity: params.opacity
       }
     };
   };
@@ -54,12 +54,12 @@ export default class index extends Component {
     };
     this.scrollY = new Animated.Value(0);
     let opacity = this.scrollY.interpolate({
-      inputRange: [0, 200,210,211],
-      outputRange: [1, 0,0,1],
-      extrapolate: "clamp",
+      inputRange: [0, 205, 210, 211],
+      outputRange: [1, 0, 0, 1],
+      extrapolate: "clamp"
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
-    this.props.navigation.setParams({ opacity: opacity});
+    this.props.navigation.setParams({ opacity: opacity });
   }
   componentDidMount() {
     this.init();
@@ -91,28 +91,27 @@ export default class index extends Component {
     }
   }
   bindOnScroll = event => {
-    let y =event.nativeEvent.contentOffset.y;
+    let y = event.nativeEvent.contentOffset.y;
     let direction = y > this.oldOffsetY ? "down" : "up";
     this.oldOffsetY = y;
     let height = this.state.height;
-    if (y > 205) {
+    if (y < 205) {
+      this.state.headerHeight.setValue(HEAD_HEIGHT);
+    }else{
       if (direction == "down") {
         if (height == HEAD_HEIGHT) {
-          this.state.headerHeight.setValue(HEADER_MIN_HEIGHT)
-          setTimeout(() => {
+          this.state.headerHeight.setValue(HEADER_MIN_HEIGHT);
+         
             this.setState({
               height: HEADER_MIN_HEIGHT
             });
-          }, 100);
         }
       } else if (direction == "up") {
         if (height == HEADER_MIN_HEIGHT) {
-          this.state.headerHeight.setValue(HEAD_HEIGHT)
-            setTimeout(() => {
-              this.setState({
-                height: HEAD_HEIGHT
-              });
-            }, 100);
+          this.state.headerHeight.setValue(HEAD_HEIGHT);
+            this.setState({
+              height: HEAD_HEIGHT
+            });
         }
       }
     }
@@ -121,12 +120,13 @@ export default class index extends Component {
     // 图片高度动画
     const imgHeight = this.scrollY.interpolate({
       inputRange: [0, 350],
-      outputRange: [200, 0],
-      extrapolate: "clamp"
+      outputRange: [205, 0],
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 250],
-      outputRange: [50, -50],
+      outputRange: [55, -55],
       extrapolate: "clamp",
       useNativeDriver: true
     });
@@ -138,13 +138,13 @@ export default class index extends Component {
         }}
       >
         <ScrollView
-          scrollEventThrottle={16}
+          scrollEventThrottle={1}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
-              listener: this.bindOnScroll,
-            }
+              listener: this.bindOnScroll
+            },
           )}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
@@ -203,7 +203,7 @@ export default class index extends Component {
           ) : null}
         </ScrollView>
         <Animated.View
-          style={[styles.header, { height: imgHeight, translateY: imgTop, }]}
+          style={[styles.header, { height: imgHeight, translateY: imgTop }]}
         >
           <Animated.Image
             style={[styles.backgroundImage]}
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    right:0,
-    overflow: "hidden"
+    right: 0,
+    overflow:'hidden'
   },
   title: {
     backgroundColor: "transparent",
