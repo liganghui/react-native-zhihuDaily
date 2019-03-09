@@ -13,7 +13,7 @@ import {
   Image,
   Easing
 } from "react-native";
-import { Tile, Icon } from "react-native-elements";
+import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -27,7 +27,7 @@ export default class index extends Component {
       headerTransparent: true,
       headerStyle: {
         overflow: "hidden",
-        height: !params.height ? 55 : params.height,
+        height: params.height,
         backgroundColor: "#00a2ed",
         opacity:params.opacity
       }
@@ -127,7 +127,8 @@ export default class index extends Component {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 250],
       outputRange: [50, -50],
-      extrapolate: "clamp"
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     return (
       <View
@@ -137,14 +138,13 @@ export default class index extends Component {
         }}
       >
         <ScrollView
-          scrollEventThrottle={1}
+          scrollEventThrottle={16}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
               listener: this.bindOnScroll,
-            },
-            { useNativeDriver: true }
+            }
           )}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
@@ -203,7 +203,7 @@ export default class index extends Component {
           ) : null}
         </ScrollView>
         <Animated.View
-          style={[styles.header, { height: imgHeight, top: imgTop }]}
+          style={[styles.header, { height: imgHeight, translateY: imgTop, }]}
         >
           <Animated.Image
             style={[styles.backgroundImage]}
@@ -232,9 +232,9 @@ const styles = StyleSheet.create({
   },
   header: {
     position: "absolute",
-    top: HEAD_HEIGHT,
+    top: 0,
     left: 0,
-    right: 0,
+    right:0,
     overflow: "hidden"
   },
   title: {
