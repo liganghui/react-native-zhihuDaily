@@ -1,9 +1,14 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Dimensions, ScrollView, Text } from "react-native";
+import { View, StyleSheet, Text,TouchableOpacity  } from "react-native";
 import Swiper from "react-native-swiper";
-import { Tile, Image } from "react-native-elements";
+import { Image } from "react-native-elements";
 import LinearGradient from "react-native-linear-gradient";
-
+/*
+ *  首页轮播组件
+ *
+ *  @param  {Object}  data  需要渲染的列表数据对象            [必填]
+ *  @param  {Function} onPress   列表项点击事件               [必填]
+ */
 export default class HomeSwiper extends Component {
   render() {
     return (
@@ -22,13 +27,15 @@ export default class HomeSwiper extends Component {
           >
             {this.props.data.map(item => {
               return (
-                <View style={styles.sliderWrapper} key={item.id}>
-                  <Image source={{ uri: item.image }} style={styles.image} />
+                <View style={styles.sliderWrapper} key={item.id} >
+                  <Image source={{ uri: item.image }} style={styles.image}  />
                   <LinearGradient
                     colors={["rgba(0,0,0,0)", "rgba(0,0,0,.9)"]}
                     style={styles.linearGradient}
                   >
+                  <TouchableOpacity   style={styles.mask} activeOpacity={1}  onPress={this.props.onPress.bind(this, item.id)}>
                     <Text style={styles.title}>{item.title}</Text>
+                  </TouchableOpacity >
                   </LinearGradient>
                 </View>
               );
@@ -48,7 +55,6 @@ const styles = StyleSheet.create({
     position: "relative",
     flex: 1
   },
- 
   image: {
     width: "100%",
     height: 230
@@ -58,14 +64,13 @@ const styles = StyleSheet.create({
     height: 230,
     zIndex: 2,
     position: "absolute",
-    justifyContent:'flex-end',
   },
   title: {
-    fontSize: 22, 
+    fontSize: 24, 
     fontWeight:'400',
     paddingBottom: 30,
     marginHorizontal: 20 ,
-    color: "#fff"
+    color: "#fff",
   },
   // 轮播图指示器样式
   dotStyle:{
@@ -73,5 +78,11 @@ const styles = StyleSheet.create({
     height:6,
     marginBottom: 6,
   },
-  
+  mask:{
+    width:'100%',
+    height:'100%',
+    position:'absolute',
+    zIndex:100,
+    justifyContent:'flex-end',
+  }
 });

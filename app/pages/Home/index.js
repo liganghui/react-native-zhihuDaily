@@ -25,7 +25,7 @@ import HomeSwiper from "./HomeSwiper";
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('title', '首页'),
+      title: navigation.getParam('title'),
       headerLeft:(
         <Button
           type="clear"
@@ -72,11 +72,13 @@ export default class index extends Component {
       topStories: [],
       pullUpLoading: false,
       title: "",
-      refreshing: false
+      refreshing: false,
+      listHeight:[]//记录日报列表高度变化
     };
+    this.props.navigation.setParams({ title: '首页' });
   }
   componentDidMount() {
-      this._init()
+      this._init();
   }
   _init() {
     fetch(API.latest)
@@ -141,7 +143,7 @@ export default class index extends Component {
     监听列表点击
     @param {Number} ID 日报ID
   */
-  handleListTap=(id)=> {
+  bindListTap=(id)=> {
     this.props.navigation.navigate("Details", {
       itemId: id
     });
@@ -172,18 +174,48 @@ export default class index extends Component {
       }else{
         return  TOOLS.formatMonthDay(date)+" "+TOOLS.formatWeek(date);
       }
+  }
+  // 滚动监听
+  bindOnScroll(event){
+    let y = event.nativeEvent.contentOffset.y-230;
+    let heightArr=this.state.listHeight;
+    if(y<0){
+      this.props.navigation.setParams({title:'首页'});
+    }else {
+      for(let i=0;i<heightArr.length;i++){
+        if(heightArr[i]>=y){
+          let title=this._formatDate(this.state.stories[i].key)
+          this.props.navigation.setParams({title});
+          break;
+        }
+      }
     }
+  }
+  /* 
+    监听列表高度变化
+    @param {Number} height 列表高度数值
+  */
+  listenListHeight(event){
+    var {x, y, width, height} = event.nativeEvent.layout;
+    let heightArr=this.state.listHeight;
+    heightArr.push(Number.parseInt(height))
+    if(heightArr.length>this.state.stories.length){
+      heightArr.splice(heightArr.length-2,1)
+    }
+    this.setState({
+      listHeight:heightArr
+    })
+  }
   // 日报列表分组头部组件
   // @param  {Object}   分组日报数据
   renderSectioHeader=(items)=>{
     return <Text style={styles.sectionTitle}>{this._formatDate(items.section.key)}</Text>
   }
-  
   render() {
     return (
-      <MyScrollView pullupfresh={this.pullupfresh} refreshing={this.state.refreshing} onRefresh={this.onRefresh}>
-        <HomeSwiper data={this.state.topStories} />
-        <StoriesList data={this.state.stories}   bindOnPress={this.handleListTap}  sectionHeader={this.renderSectioHeader} />
+      <MyScrollView pullupfresh={this.pullupfresh}   refreshing={this.state.refreshing} onRefresh={this.onRefresh}  onScroll={this.bindOnScroll.bind(this)}>
+        <HomeSwiper data={this.state.topStories}  onPress={this.bindListTap}/>
+        <StoriesList data={this.state.stories}   onLayout={this.listenListHeight.bind(this)}  onPress={this.bindListTap}  sectionHeader={this.renderSectioHeader}  />
         {
           this.state.stories.length>0?
           <PullUpLoad loading={this.state.pullUpLoading} />

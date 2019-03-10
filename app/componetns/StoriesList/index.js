@@ -2,7 +2,7 @@
  *  日报列表组件
  *
  *  @param  {Object}  data  需要渲染的列表数据对象            [必填]
- *  @param  {Function} bindOnPress   列表项点击事件          [必填]
+ *  @param  {Function} onPress   列表项点击事件          [必填]
  *  @param  {Object}  sectionHeader  分组列表头部组件         [可选]
  */
 
@@ -53,7 +53,7 @@ export default class index extends Component {
           titleStyle={styles.itemTitle}
           stickySectionHeadersEnabled={true}
           titleContainerStyle={styles.titleContainer}
-          onPress={this.props.bindOnPress.bind(this, item.id)}
+          onPress={this.props.onPress.bind(this, item.id)}
         />
       </CardView>
     );
@@ -68,6 +68,7 @@ export default class index extends Component {
         }
         renderItem={this.renderItem}
         style={styles.wrapper}
+        {...this.props}
       />
     );
   }

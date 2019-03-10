@@ -20,12 +20,9 @@ export default class App extends React.Component {
       }
     ];
     return (
-      <View
-        style={{
-          flex: 1
-        }}
+      <View style={{flex: 1}}
       >
-        <ImageViewer imageUrls={images} renderIndicator={() => {}} />{" "}
+        <ImageViewer imageUrls={images} renderIndicator={() => {}} />
       </View>
     );
   }

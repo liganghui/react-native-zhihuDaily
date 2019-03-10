@@ -43,6 +43,7 @@ export default class index extends Component {
             />
           ) : null
         }
+        {...this.props}
       >
         {this.props.children}
       </ScrollView>
