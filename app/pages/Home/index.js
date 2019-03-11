@@ -43,7 +43,8 @@ export default class index extends Component {
       ),
       headerRight:(
         <View style={styles.headLeftWrapper}>
-         <Button title=""type="clear" icon={
+         <Button title=""type="clear" onPress={()=>{navigation.navigate("Test")}} 
+         icon={
           <Icon
             type="ionicon"
             name="ios-calendar"
@@ -52,6 +53,7 @@ export default class index extends Component {
           />
         }
       />
+      
         <Button title="" type="clear" icon={
             <Icon
               type="material"

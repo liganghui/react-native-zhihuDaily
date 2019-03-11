@@ -21,7 +21,8 @@
         "react-native-webview": "^5.2.4",
         "react-native-webview-autoheight": "^1.0.6",
         "react-navigation": "^3.1.2",
-        "react-navigation-collapsible": "^3.0.3"
+        "react-navigation-collapsible": "^3.0.3",
+        "rn-fetch-blob": "^0.10.15"
     },
     "devDependencies": {
         "babel-jest": "24.0.0",

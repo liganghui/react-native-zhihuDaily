@@ -27,7 +27,7 @@ export default class index extends Component {
       headerTransparent: true,
       headerStyle: {
         overflow: "hidden",
-        height: params.height?params.height:55,
+        height: params.height ? params.height : 55,
         backgroundColor: "#00a2ed",
         opacity: params.opacity
       }
@@ -97,21 +97,21 @@ export default class index extends Component {
     let height = this.state.height;
     if (y < 205) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
-    }else{
+    } else {
       if (direction == "down") {
         if (height == HEAD_HEIGHT) {
           this.state.headerHeight.setValue(HEADER_MIN_HEIGHT);
-         
-            this.setState({
-              height: HEADER_MIN_HEIGHT
-            });
+
+          this.setState({
+            height: HEADER_MIN_HEIGHT
+          });
         }
       } else if (direction == "up") {
         if (height == HEADER_MIN_HEIGHT) {
           this.state.headerHeight.setValue(HEAD_HEIGHT);
-            this.setState({
-              height: HEAD_HEIGHT
-            });
+          this.setState({
+            height: HEAD_HEIGHT
+          });
         }
       }
     }
@@ -122,13 +122,15 @@ export default class index extends Component {
       inputRange: [0, 350],
       outputRange: [205, 0],
       extrapolate: "clamp",
-      useNativeDriver: true
+      useNativeDriver: true,
+      easing: Easing.linear
     });
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 250],
       outputRange: [55, -55],
       extrapolate: "clamp",
-      useNativeDriver: true
+      useNativeDriver: true,
+      easing: Easing.linear
     });
     return (
       <View
@@ -144,7 +146,7 @@ export default class index extends Component {
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
               listener: this.bindOnScroll
-            },
+            }
           )}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    overflow:'hidden'
+    overflow: "hidden"
   },
   title: {
     backgroundColor: "transparent",
