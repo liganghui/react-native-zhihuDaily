@@ -8,7 +8,7 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state={
-      url:''
+      uri:''
     }
   }
   imgSave(){
@@ -22,10 +22,11 @@ export default class index extends Component {
       //some headers ..
     })
     .then((res) => {
+      let path=res.path();
       this.setState({
-        uri:res.path()
+        uri:path
       })
-      console.warn('保存的图片路径 ', res.path())
+      console.warn('保存的图片路径 ',path)
     })
   }
   render() {
@@ -36,7 +37,7 @@ export default class index extends Component {
       <Text>保存的图片:</Text>
       <Image source={{uri:'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1552900167&di=25ee7d0026b36b1d95ca04ecc0611dd7&imgtype=jpg&er=1&src=http%3A%2F%2Fimg4q.duitang.com%2Fuploads%2Fitem%2F201303%2F15%2F20130315223944_EvRW3.thumb.700_0.jpeg'}} style={{width:400,height:300}}/>
       <Button onPress={this.imgSave.bind(this)} title="保存图片"/>
-      <Text>{this.state.url}</Text>
+      <Text>{this.state.uri}</Text>
     </View>
     )
   }
