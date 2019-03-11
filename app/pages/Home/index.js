@@ -182,13 +182,16 @@ export default class index extends Component {
     if(y<0){
       this.props.navigation.setParams({title:'首页'});
     }else {
+
       for(let i=0;i<heightArr.length;i++){
         if(heightArr[i]>=y){
-          let title=this._formatDate(this.state.stories[i].key)
-          this.props.navigation.setParams({title});
+          let title=this._formatDate(this.state.stories[i].key);
+          if(this.props.navigation.getParam({title})!==title){
+            this.props.navigation.setParams({title});
+          }
           break;
         }
-      }
+      } 
     }
   }
   /* 
@@ -213,7 +216,7 @@ export default class index extends Component {
   }
   render() {
     return (
-      <MyScrollView pullupfresh={this.pullupfresh}   refreshing={this.state.refreshing} onRefresh={this.onRefresh}  onScroll={this.bindOnScroll.bind(this)}>
+      <MyScrollView pullupfresh={this.pullupfresh}   refreshing={this.state.refreshing} onRefresh={this.onRefresh}  onScroll={this.bindOnScroll.bind(this)}  >
         <HomeSwiper data={this.state.topStories}  onPress={this.bindListTap}/>
         <StoriesList data={this.state.stories}   onLayout={this.listenListHeight.bind(this)}  onPress={this.bindListTap}  sectionHeader={this.renderSectioHeader}  />
         {

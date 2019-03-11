@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "rgba(255,255,255,0.8)",
     position: "absolute",
-    bottom: 10,
+    bottom: 5,
     right: 20
   },
   sectionWrapper: {

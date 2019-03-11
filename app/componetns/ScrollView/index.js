@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 // 下拉加载控件颜色
 const COLOR=["#008bed"];
 // 距离底部多少高度触发加载
-const HEIGHT=60;
+const HEIGHT=100;
 
 
 export default class index extends Component {
@@ -33,6 +33,7 @@ export default class index extends Component {
   render() {
     return (
       <ScrollView
+      {...this.props}
         onMomentumScrollEnd={this._handleViewScroll}
         refreshControl={
           this.props.onRefresh && this.props.refreshing !== null ? (
@@ -43,7 +44,6 @@ export default class index extends Component {
             />
           ) : null
         }
-        {...this.props}
       >
         {this.props.children}
       </ScrollView>
