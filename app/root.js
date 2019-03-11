@@ -7,6 +7,10 @@ import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
 // import './config/storage';
 
+import TestScreen from "./pages/Test";
+
+
+
 /*
  *   构建导航
  *   
@@ -25,6 +29,9 @@ const MainScreen = createStackNavigator({
     },
     ImgView: {
         screen: ImgScreen
+    },
+    Test: {
+        screen: TestScreen
     },
 }, {
     // 设置header默认样式
@@ -53,7 +60,7 @@ const AppNavigator = createDrawerNavigator({
     },
     Drawer: {
         screen: DrawerScreen
-       
+
     }
 });
 

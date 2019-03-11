@@ -57,6 +57,7 @@
 		42EC61E0275E4109A187F692 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B59EBE1A1CF24AC1B9A9037E /* Zocial.ttf */; };
 		A5BC449BA22A476294EDA896 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8FEFCDA52DAF414CA4BA94AB /* libBVLinearGradient.a */; };
 		2A56F65F25914A63887A40E9 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7413A4DF9CFE4D7A80AA792A /* libRNCWebView.a */; };
+		85334251D24A42C5B6A4B7D5 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E9C9CDC19C7A40669464423A /* libRNFetchBlob.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -386,6 +387,8 @@
 		8FEFCDA52DAF414CA4BA94AB /* libBVLinearGradient.a */ = {isa = PBXFileReference; name = "libBVLinearGradient.a"; path = "libBVLinearGradient.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		2FBAC79AE2B24602BD3E839B /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		7413A4DF9CFE4D7A80AA792A /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		730209D567FA4363B46899C8 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; name = "RNFetchBlob.xcodeproj"; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		E9C9CDC19C7A40669464423A /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -417,6 +420,7 @@
 				1A7ADC5AE076494DB7320070 /* libRNVectorIcons.a in Frameworks */,
 				A5BC449BA22A476294EDA896 /* libBVLinearGradient.a in Frameworks */,
 				2A56F65F25914A63887A40E9 /* libRNCWebView.a in Frameworks */,
+				85334251D24A42C5B6A4B7D5 /* libRNFetchBlob.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +612,7 @@
 				C17B56D99FB147AEBCDAE06B /* RNVectorIcons.xcodeproj */,
 				E55AB1639B0E41359A3EC7C2 /* BVLinearGradient.xcodeproj */,
 				2FBAC79AE2B24602BD3E839B /* RNCWebView.xcodeproj */,
+				730209D567FA4363B46899C8 /* RNFetchBlob.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1279,6 +1284,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1286,6 +1292,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Debug;
@@ -1312,6 +1319,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1319,6 +1327,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Release;
@@ -1345,6 +1354,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Debug;
@@ -1370,6 +1380,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Release;
@@ -1404,6 +1415,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1411,6 +1423,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Debug;
@@ -1445,6 +1458,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1452,6 +1466,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Release;
@@ -1485,6 +1500,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1492,6 +1508,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Debug;
@@ -1525,6 +1542,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1532,6 +1550,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-vector-icons\RNVectorIconsManager",
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 				);
 			};
 			name = Release;
