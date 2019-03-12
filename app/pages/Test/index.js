@@ -22,24 +22,39 @@ export default class index extends Component {
   }
   saveToCameraRoll = () => {
     const { selectedImage, downlaodUrl } = this.state;
-    let dirs = RNFetchBlob.fs.dirs;
-    let url = "https://pic3.zhimg.com/v2-2e3aaa3b1b34273062e5a06822a984ce.jpg";
+    let dirs = RNFetchBlob.fs.dirs.DocumentDir;
+    let url = "http://img1.xcarimg.com/exp/2872/2875/2937/m_20101220130532576554.jpg";
     ToastAndroid.show("图片保存中...", ToastAndroid.SHORT);
     if (Platform.OS === "android") {
       RNFetchBlob.config({
         fileCache: true,
         appendExt: "jpg",
-        path: dirs.DocumentDir + "/测试文件夹"
       })
         .fetch("GET", url)
         .then(res => {
-          CameraRoll.saveToCameraRoll(res.path())
-            .then(res => {
-              ToastAndroid.show("保存成功", ToastAndroid.SHORT);
-            })
-            .catch(error => {
+          RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.PictureDir}/asdasd`)
+          RNFetchBlob.fs.mv(
+            res.path(), 
+            `${RNFetchBlob.fs.dirs.PictureDir}/asdasd/56556566.jpg`
+        ).then(()=>{
+          ToastAndroid.show("保存成功", ToastAndroid.SHORT);
+        }).catch(error => {
               ToastAndroid.show("保存失败", ToastAndroid.SHORT);
-            });
+         });
+         RNFetchBlob.fs.scanFile([ { path :   `${RNFetchBlob.fs.dirs.PictureDir}/asdasd/56556566.jpg` } ])
+         .then(() => {
+           console.log("scan file success")
+         })
+         .catch((err) => {
+           console.log("scan file error")
+         })
+               // CameraRoll.saveToCameraRoll(res.path())
+          //   .then(res => {
+          //     ToastAndroid.show("保存成功", ToastAndroid.SHORT);
+          //   })
+          //   .catch(error => {
+          //     ToastAndroid.show("保存失败", ToastAndroid.SHORT);
+          //   });
         });
     } else {
       CameraRoll.saveToCameraRoll(url).then(alert("成功", "图片已保存在相册"));
@@ -55,7 +70,7 @@ export default class index extends Component {
         <Image
           source={{
             uri:
-              "https://pic3.zhimg.com/v2-2e3aaa3b1b34273062e5a06822a984ce.jpg"
+              "http://img1.xcarimg.com/exp/2872/2875/2937/m_20101220130532576554.jpg"
           }}
           style={{ width: 400, height: 300 }}
         />
