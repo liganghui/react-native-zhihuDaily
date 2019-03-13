@@ -906,6 +906,7 @@ balanced-match@^1.0.0:
 base-64@0.1.0:
   version "0.1.0"
   resolved "http://registry.npm.taobao.org/base-64/download/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
+  integrity sha1-eAqZyE59YAJgNhURxId2E78k9rs=
 
 base64-js@1.1.2:
   version "1.1.2"
@@ -1939,6 +1940,7 @@ glob-parent@^2.0.0:
 glob@7.0.6:
   version "7.0.6"
   resolved "http://registry.npm.taobao.org/glob/download/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
+  integrity sha1-IRuvr0nlJbjNkyYNFKsTYVKz9Xo=
   dependencies:
     fs.realpath "^1.0.0"
     inflight "^1.0.4"
@@ -4536,6 +4538,7 @@ rimraf@~2.2.6:
 rn-fetch-blob@0.10.13:
   version "0.10.13"
   resolved "http://registry.npm.taobao.org/rn-fetch-blob/download/rn-fetch-blob-0.10.13.tgz#e0fd5eac1a3a872563b35061353d96c4e51ae1cc"
+  integrity sha1-4P1erBo6hyVjs1BhNT2WxOUa4cw=
   dependencies:
     base-64 "0.1.0"
     glob "7.0.6"
