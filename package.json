@@ -15,6 +15,8 @@
         "react-native-gesture-handler": "^1.0.15",
         "react-native-image-zoom-viewer": "^2.2.25",
         "react-native-linear-gradient": "^2.5.3",
+        "react-native-popup-menu": "^0.15.4",
+        "react-native-root-toast": "^3.0.2",
         "react-native-storage": "^1.0.0-beta.1",
         "react-native-swiper": "^1.5.14",
         "react-native-vector-icons": "^6.2.0",
