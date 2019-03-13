@@ -21,7 +21,7 @@ export default class App extends React.Component {
           type="clear"
           onPress={params.handleMore}
           icon={
-            <Icon type="material" name="more-vert" size={24} color="white" />
+            <Icon type="material" name="get-app" size={24} color="white" />
           }
         />
       )
