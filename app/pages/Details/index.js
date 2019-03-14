@@ -17,9 +17,11 @@ import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
-const IMG_MAX_HEIGHT = 205;
+const IMG_MAX_HEIGHT = 203;
 const HEAD_HEIGHT = 55;
 const HEADER_MIN_HEIGHT = 0;
+// 记录当前Header高度
+var  tempHeight=HEAD_HEIGHT;
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -48,16 +50,16 @@ export default class index extends Component {
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
-      height: HEAD_HEIGHT,
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
     this.scrollY = new Animated.Value(0);
     let opacity = this.scrollY.interpolate({
-      inputRange: [0, 205, 210, 211],
+      inputRange: [0, IMG_MAX_HEIGHT, 210, 211],
       outputRange: [1, 0, 0, 1],
       extrapolate: "clamp"
     });
+
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
   }
@@ -94,44 +96,34 @@ export default class index extends Component {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > this.oldOffsetY ? "down" : "up";
     this.oldOffsetY = y;
-    let height = this.state.height;
-    if (y < 205) {
+    if (y < IMG_MAX_HEIGHT) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {
       if (direction == "down") {
-        if (height == HEAD_HEIGHT) {
+        if (tempHeight == HEAD_HEIGHT) {
           this.state.headerHeight.setValue(HEADER_MIN_HEIGHT);
-
-          this.setState({
-            height: HEADER_MIN_HEIGHT
-          });
+          tempHeight= HEADER_MIN_HEIGHT;
         }
       } else if (direction == "up") {
-        if (height == HEADER_MIN_HEIGHT) {
+        if (tempHeight == HEADER_MIN_HEIGHT) {
           this.state.headerHeight.setValue(HEAD_HEIGHT);
-          this.setState({
-            height: HEAD_HEIGHT
-          });
+          tempHeight=HEAD_HEIGHT;
         }
       }
     }
   };
   render() {
-    // 图片高度动画
-    const imgHeight = this.scrollY.interpolate({
-      inputRange: [0, 350],
-      outputRange: [205, 0],
-      extrapolate: "clamp",
-      useNativeDriver: true,
-      easing: Easing.linear
-    });
-    const imgTop = this.scrollY.interpolate({
-      inputRange: [0, 250],
-      outputRange: [55, -55],
-      extrapolate: "clamp",
-      useNativeDriver: true,
-      easing: Easing.linear
-    });
+        // 图片高度动画
+        const imgHeight = this.scrollY.interpolate({
+          inputRange: [0, 360],
+          outputRange: [IMG_MAX_HEIGHT, 0],
+          extrapolate: "clamp"
+        });
+        const imgTop = this.scrollY.interpolate({
+          inputRange: [0, 260],
+          outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
+          extrapolate: "clamp"
+        });
     return (
       <View
         style={styles.fill}
@@ -139,8 +131,8 @@ export default class index extends Component {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
       >
-        <ScrollView
-          scrollEventThrottle={1}
+        <Animated.ScrollView
+          scrollEventThrottle={16}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
@@ -155,7 +147,9 @@ export default class index extends Component {
             source={{ html: this.state.daily.body }}
             onMessage={this.bindMessage.bind(this)}
             onLoadEnd={() => {
-              this.setState({ webviewInit: true });
+              setTimeout(() => {
+                this.setState({ webviewInit: true });
+              }, 500);
             }}
             files={[
               {
@@ -203,7 +197,7 @@ export default class index extends Component {
               />
             </TouchableOpacity>
           ) : null}
-        </ScrollView>
+        </Animated.ScrollView>
         <Animated.View
           style={[styles.header, { height: imgHeight, translateY: imgTop }]}
         >
@@ -272,10 +266,10 @@ const styles = StyleSheet.create({
     textAlign: "left"
   },
   source: {
-    fontSize: 14,
+    fontSize: 12,
     color: "rgba(255,255,255,0.8)",
     position: "absolute",
-    bottom: 5,
+    bottom: 10,
     right: 20
   },
   sectionWrapper: {

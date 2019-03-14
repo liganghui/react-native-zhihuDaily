@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   title: {
-    fontSize: 24, 
+    fontSize: 22, 
     fontWeight:'400',
     paddingBottom: 30,
     marginHorizontal: 20 ,
