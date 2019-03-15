@@ -127,7 +127,7 @@ export default class index extends Component {
           stories: newData,
         });
         // 短暂地显示滚动指示器。
-        // this._ScrollView.flashScrollIndicators()
+        this.scrollView.flashScrollIndicators();
         // 等待数据渲染完成,避免loading状态早于渲染结束
         setTimeout(()=>{
           this.setState({
@@ -221,7 +221,7 @@ export default class index extends Component {
   }
   render() {
     return (
-      <MyScrollView  pullupfresh={this.pullupfresh}   refreshing={this.state.refreshing} onRefresh={this.onRefresh}  onScroll={this.bindOnScroll.bind(this)}  >
+      <MyScrollView   ref={(ref) => this.scrollView = ref}  pullupfresh={this.pullupfresh}    refreshing={this.state.refreshing} onRefresh={this.onRefresh}  onScroll={this.bindOnScroll.bind(this)}  >
         <HomeSwiper data={this.state.topStories}  onPress={this.bindListTap}/>
         <StoriesList data={this.state.stories}   onLayout={this.listenListHeight.bind(this)}  onPress={this.bindListTap}  sectionHeader={this.renderSectioHeader}  />
         {

@@ -5,10 +5,10 @@ import android.app.Application;
 import com.facebook.react.ReactApplication;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
-import com.BV.LinearGradient.LinearGradientPackage;
-import com.kishanjvaghela.cardview.RNCardViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import com.BV.LinearGradient.LinearGradientPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.kishanjvaghela.cardview.RNCardViewPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -31,10 +31,10 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RNFetchBlobPackage(),
             new RNCWebViewPackage(),
-            new LinearGradientPackage(),
-            new RNCardViewPackage(),
             new VectorIconsPackage(),
-            new RNGestureHandlerPackage()
+            new LinearGradientPackage(),
+            new RNGestureHandlerPackage(),
+            new RNCardViewPackage()
       );
     }
 

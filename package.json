@@ -1,38 +1,38 @@
 {
-    "name": "demo",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-        "start": "node node_modules/react-native/local-cli/cli.js start",
-        "test": "jest"
-    },
-    "dependencies": {
-        "react": "16.6.3",
-        "react-native": "0.57.8",
-        "react-native-autoheight-webview": "^1.0.1",
-        "react-native-cardview": "^2.0.2",
-        "react-native-elements": "^1.0.0",
-        "react-native-gesture-handler": "^1.0.15",
-        "react-native-image-zoom-viewer": "^2.2.25",
-        "react-native-linear-gradient": "^2.5.3",
-        "react-native-popup-menu": "^0.15.4",
-        "react-native-root-toast": "^3.0.2",
-        "react-native-storage": "^1.0.0-beta.1",
-        "react-native-swiper": "^1.5.14",
-        "react-native-vector-icons": "^6.2.0",
-        "react-native-webview": "^5.2.4",
-        "react-native-webview-autoheight": "^1.0.6",
-        "react-navigation": "^3.1.2",
-        "react-navigation-collapsible": "^3.0.3",
-        "rn-fetch-blob": "0.10.13"
-    },
-    "devDependencies": {
-        "babel-jest": "24.0.0",
-        "jest": "24.0.0",
-        "metro-react-native-babel-preset": "0.51.1",
-        "react-test-renderer": "16.6.3"
-    },
-    "jest": {
-        "preset": "react-native"
-    }
+  "name": "demo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "16.8.3",
+    "react-native": "0.59.1",
+    "react-native-autoheight-webview": "^1.0.1",
+    "react-native-cardview": "^2.0.2",
+    "react-native-elements": "^1.1.0",
+    "react-native-gesture-handler": "^1.1.0",
+    "react-native-image-zoom-viewer": "^2.2.25",
+    "react-native-linear-gradient": "^2.5.3",
+    "react-native-popup-menu": "^0.15.4",
+    "react-native-root-toast": "^3.0.2",
+    "react-native-storage": "^1.0.0-beta.1",
+    "react-native-swiper": "^1.5.14",
+    "react-native-vector-icons": "^6.4.1",
+    "react-native-webview": "^5.3.1",
+    "react-navigation": "^3.3.2",
+    "rn-fetch-blob": "^0.10.15"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/runtime": "^7.3.4",
+    "babel-jest": "^24.5.0",
+    "jest": "^24.5.0",
+    "metro-react-native-babel-preset": "^0.53.1",
+    "react-test-renderer": "16.8.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
 }
