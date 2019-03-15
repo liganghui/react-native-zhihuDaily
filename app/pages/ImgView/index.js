@@ -32,13 +32,17 @@ export default class App extends React.Component {
     this.props.navigation.setParams({ handleMore: this.bindMoreBtn });
   }
   bindMoreBtn=()=> {
-    this.requestReadPermission().then((res)=>{
-      if (res === PermissionsAndroid.RESULTS.GRANTED) {
-        this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
-      } else {
-        this.toast('保存失败：缺少存储权限')
-      }
-    })
+    if(Platform.OS === "android"){
+      this.requestReadPermission().then((res)=>{
+        if (res === PermissionsAndroid.RESULTS.GRANTED) {
+          this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
+        } else {
+          this.toast('保存失败：缺少存储权限')
+        }
+      })
+    }else{
+      this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
+    }
   }
   // 获取读写权限
   async requestReadPermission() {
