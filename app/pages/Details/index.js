@@ -17,7 +17,7 @@ import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 
-const IMG_MAX_HEIGHT = 203;
+const IMG_MAX_HEIGHT = 205;
 const HEAD_HEIGHT = 55;
 const HEADER_MIN_HEIGHT = 0;
 // 记录当前Header高度
@@ -115,12 +115,12 @@ export default class index extends Component {
   render() {
         // 图片高度动画
         const imgHeight = this.scrollY.interpolate({
-          inputRange: [0, 350],
+          inputRange: [0, 360],
           outputRange: [IMG_MAX_HEIGHT, 0],
           extrapolate: "clamp"
         });
         const imgTop = this.scrollY.interpolate({
-          inputRange: [0, 255],
+          inputRange: [0, 260],
           outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
           extrapolate: "clamp"
         });
