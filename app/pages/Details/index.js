@@ -5,23 +5,22 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   Animated,
   AsyncStorage,
-  ScrollView,
   TouchableOpacity,
   Image,
-  Easing
 } from "react-native";
 import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
+import ParallaxScrollView from 'react-native-parallax-scroll-view';
 
-const IMG_MAX_HEIGHT = 205;
-const HEAD_HEIGHT = 55;
+const IMG_MAX_HEIGHT = 200;
+const HEAD_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 // 记录当前Header高度
 var  tempHeight=HEAD_HEIGHT;
+
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -29,7 +28,7 @@ export default class index extends Component {
       headerTransparent: true,
       headerStyle: {
         overflow: "hidden",
-        height: params.height ? params.height : 55,
+        height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor: "#00a2ed",
         opacity: params.opacity
       }
@@ -112,18 +111,32 @@ export default class index extends Component {
       }
     }
   };
+  renderSectioHeader=()=>{
+    const imgTop = this.scrollY.interpolate({
+      inputRange: [0, 400],
+      outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
+      extrapolate: "clamp"
+    });
+    return <Animated.View key="background" style={{translateY: imgTop}} >
+    <Image
+      style={[styles.backgroundImage]}
+      source={{ uri: this.state.daily.image }}
+    />
+    <LinearGradient
+      colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
+      style={styles.linearGradient}
+    >
+      <Text style={[styles.title]}>
+        {this.state.daily.title}
+      </Text>
+      <Text style={[styles.source]}>
+        {this.state.daily.image_source}
+      </Text>
+    </LinearGradient>
+  </Animated.View>
+  }
   render() {
-        // 图片高度动画
-        const imgHeight = this.scrollY.interpolate({
-          inputRange: [0, 360],
-          outputRange: [IMG_MAX_HEIGHT, 0],
-          extrapolate: "clamp"
-        });
-        const imgTop = this.scrollY.interpolate({
-          inputRange: [0, 260],
-          outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
-          extrapolate: "clamp"
-        });
+   
     return (
       <View
         style={styles.fill}
@@ -131,7 +144,8 @@ export default class index extends Component {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
       >
-        <Animated.ScrollView
+        <ParallaxScrollView
+          backgroundColor={'#fff'}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
@@ -139,6 +153,8 @@ export default class index extends Component {
               listener: this.bindOnScroll
             }
           )}
+          parallaxHeaderHeight={250}
+          renderBackground={this.renderSectioHeader}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
@@ -170,7 +186,12 @@ export default class index extends Component {
                   }
                 }
               }
-              `}
+            `}
+            customStyle={`
+              .img-place-holder{
+                display:none
+              } 
+            `}
           />
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
@@ -196,26 +217,8 @@ export default class index extends Component {
               />
             </TouchableOpacity>
           ) : null}
-        </Animated.ScrollView>
-        <Animated.View
-          style={[styles.header, { height: imgHeight, translateY: imgTop }]}
-        >
-          <Image
-            style={[styles.backgroundImage]}
-            source={{ uri: this.state.daily.image }}
-          />
-          <LinearGradient
-            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
-            style={styles.linearGradient}
-          >
-            <Text style={[styles.title]}>
-              {this.state.daily.title}
-            </Text>
-            <Text style={[styles.source]}>
-              {this.state.daily.image_source}
-            </Text>
-          </LinearGradient>
-        </Animated.View>
+        </ParallaxScrollView>
+        
       </View>
     );
   }
@@ -224,12 +227,6 @@ export default class index extends Component {
 const styles = StyleSheet.create({
   fill: {
     flex: 1
-  },
-  header: {
-    position: "absolute",
-    top: 0,
-    width:"100%",
-    overflow: "hidden"
   },
   title: {
     backgroundColor: "transparent",
@@ -242,6 +239,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 2
   },
+  
   backgroundImage: {
     position: "absolute",
     top: 0,
@@ -249,9 +247,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     height: IMG_MAX_HEIGHT,
     resizeMode: "cover"
-  },
-  webview: {
-    marginTop: HEAD_HEIGHT
   },
   title: {
     fontSize: 22,
