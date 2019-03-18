@@ -115,12 +115,12 @@ export default class index extends Component {
   render() {
         // 图片高度动画
         const imgHeight = this.scrollY.interpolate({
-          inputRange: [0, 360],
+          inputRange: [0, 350],
           outputRange: [IMG_MAX_HEIGHT, 0],
           extrapolate: "clamp"
         });
         const imgTop = this.scrollY.interpolate({
-          inputRange: [0, 260],
+          inputRange: [0, 255],
           outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
           extrapolate: "clamp"
         });
@@ -132,7 +132,6 @@ export default class index extends Component {
         }}
       >
         <Animated.ScrollView
-          scrollEventThrottle={16}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
@@ -201,7 +200,7 @@ export default class index extends Component {
         <Animated.View
           style={[styles.header, { height: imgHeight, translateY: imgTop }]}
         >
-          <Animated.Image
+          <Image
             style={[styles.backgroundImage]}
             source={{ uri: this.state.daily.image }}
           />
@@ -209,12 +208,12 @@ export default class index extends Component {
             colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
             style={styles.linearGradient}
           >
-            <Animated.Text style={[styles.title]}>
+            <Text style={[styles.title]}>
               {this.state.daily.title}
-            </Animated.Text>
-            <Animated.Text style={[styles.source]}>
+            </Text>
+            <Text style={[styles.source]}>
               {this.state.daily.image_source}
-            </Animated.Text>
+            </Text>
           </LinearGradient>
         </Animated.View>
       </View>
@@ -229,8 +228,7 @@ const styles = StyleSheet.create({
   header: {
     position: "absolute",
     top: 0,
-    left: 0,
-    right: 0,
+    width:"100%",
     overflow: "hidden"
   },
   title: {
@@ -247,10 +245,8 @@ const styles = StyleSheet.create({
   backgroundImage: {
     position: "absolute",
     top: 0,
-    left: 0,
-    right: 0,
+    width: "100%",
     zIndex: 1,
-    width: null,
     height: IMG_MAX_HEIGHT,
     resizeMode: "cover"
   },
