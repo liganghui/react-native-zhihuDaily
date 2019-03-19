@@ -70,9 +70,7 @@ export default class index extends Component {
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head><body>${
-          responseJson.body
-        }</body></html>`;
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head><body>${ responseJson.body }</body></html>`;
         responseJson.body = html;
         this.setState({
           daily: responseJson
@@ -89,6 +87,8 @@ export default class index extends Component {
       this.props.navigation.navigate("ImgView", {
         url
       });
+    }else if (String(data).indexOf("init:") !== -1) {
+      this.setState({ webviewInit: true });
     }
   }
   bindOnScroll = event => {
@@ -158,14 +158,9 @@ export default class index extends Component {
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
-            style={[styles.webview, { width: this.state.webviewWidth }]}
+            style={{ width: this.state.webviewWidth }}
             source={{ html: this.state.daily.body }}
             onMessage={this.bindMessage.bind(this)}
-            onLoadEnd={() => {
-              setTimeout(() => {
-                this.setState({ webviewInit: true });
-              }, 500);
-            }}
             files={[
               {
                 href: this.state.daily.css[0],
@@ -176,6 +171,7 @@ export default class index extends Component {
             // 为webview图片绑定点击事件 , 触发查看大图
             customScript={`
               window.onload=function(){
+                window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
                 var imgs = document.getElementsByTagName("img");
                 if(imgs){
                   for(var i=0;i<imgs.length;i++){
@@ -188,9 +184,12 @@ export default class index extends Component {
               }
             `}
             customStyle={`
-              .img-place-holder{
+              .img-place-holder{ 
                 display:none
-              } 
+              }
+              body{
+                background:none !important;
+              }
             `}
           />
           {/* 栏目信息  */}
