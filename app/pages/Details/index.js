@@ -42,7 +42,6 @@ export default class index extends Component {
     this.state = {
       itemId: id,
       daily: {
-        css: [], //weview样式文件地址
         section: null //栏目分类信息
       },
       // 动态调整webview为设备的宽度
@@ -70,7 +69,9 @@ export default class index extends Component {
     fetch(API.details + this.state.itemId)
       .then(response => response.json())
       .then(responseJson => {
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head><body>${ responseJson.body }</body></html>`;
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
+        <link rel="stylesheet" href="${responseJson.css[0]}" />
+        <body>${ responseJson.body }</body></html>`;
         responseJson.body = html;
         this.setState({
           daily: responseJson
@@ -161,13 +162,6 @@ export default class index extends Component {
             style={{ width: this.state.webviewWidth }}
             source={{ html: this.state.daily.body }}
             onMessage={this.bindMessage.bind(this)}
-            files={[
-              {
-                href: this.state.daily.css[0],
-                type: "text/css",
-                rel: "stylesheet"
-              }
-            ]}
             // 为webview图片绑定点击事件 , 触发查看大图
             customScript={`
               window.onload=function(){

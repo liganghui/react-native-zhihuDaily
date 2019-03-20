@@ -61,7 +61,7 @@ export default class index extends Component {
   render() {
     return (
       <SectionList
-      {...this.props}
+        {...this.props}
         keyExtractor={this.keyExtractor}
         sections={this.props.data}
         renderSectionHeader={
