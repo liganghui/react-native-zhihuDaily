@@ -64,22 +64,23 @@ export default class index extends Component {
   componentDidMount() {
     this.init();
   }
-  init() {
+   init() {
     // TODO:封装接口
-    fetch(API.details + this.state.itemId)
-      .then(response => response.json())
-      .then(responseJson => {
+    storage.load({
+      key: 'details',
+      id: this.state.itemId
+    }).then(response => {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
-        <link rel="stylesheet" href="${responseJson.css[0]}" />
-        <body>${ responseJson.body }</body></html>`;
-        responseJson.body = html;
+        <link rel="stylesheet" href="${response.css[0]}" />
+        <body>${ response.body }</body></html>`;
+        response.body = html;
         this.setState({
-          daily: responseJson
+          daily: response
         });
       })
       .catch(error => {
         // TODO:接口异常处理
-      });
+    });
   }
   bindMessage(event) {
     let data = event.nativeEvent.data;

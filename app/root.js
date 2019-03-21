@@ -5,7 +5,7 @@ import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
-// import './config/storage';
+import './config/storage';
 
 import TestScreen from "./pages/Test";
 
