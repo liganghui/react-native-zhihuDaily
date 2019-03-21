@@ -82,47 +82,7 @@ export default class index extends Component {
     this.bindOnRefresh();
   }
 
-  /*
-   *  上滑触底数据加载
-   */
-  pullupfresh = () => {
-    //避免重复请求
-    if (this.state.pullUpLoading) {
-      return false;
-    }
-    this.setState({
-      pullUpLoading: true
-    });
-    // 获得请求日期
-    let beforeDay = this.state.stories[this.state.stories.length - 1].key;
-    fetch(API.before + beforeDay)
-      .then(response => response.json())
-      .then(responseJson => {
-        // 合并数据
-        let newData = this.state.stories.concat({
-          key: responseJson.date,
-          data: responseJson.stories
-        });
-        // 更新数据
-        this.setState({
-          stories: newData
-        });
-        // 短暂地显示滚动指示器。 TODO: 函数无效
-        // this.scrollView.flashScrollIndicators();
-        // 等待数据渲染完成,避免loading状态早于渲染结束
-        setTimeout(() => {
-          this.setState({
-            pullUpLoading: false
-          });
-        }, 500);
-      })
-      .catch(error => {
-        this.setState({
-          pullUpLoading: false
-        });
-        console.warn(error);
-      });
-  };
+ 
   /*
    * 下拉刷新
    */
@@ -149,6 +109,11 @@ export default class index extends Component {
           this.setState({
             topStories: responseJson.top_stories,
             stories: data
+          },()=>{
+            // 当日报数据数量不足一屏时 , 触发刷新填充内容
+            if(this.state.stories[0].data.length<=3){
+              this.pullupfresh()
+            }
           });
         }
         this.setState({ refreshing: false });
@@ -158,7 +123,48 @@ export default class index extends Component {
         console.warn(error);
       });
   }
-
+ /*
+   *  上滑触底数据加载
+   */
+  pullupfresh = () => {
+    //避免重复请求
+    if (this.state.pullUpLoading) {
+      return false;
+    }
+    this.setState({
+      pullUpLoading: true
+    });
+    // 获得请求日期
+    let beforeDay = this.state.stories[this.state.stories.length - 1].key;
+    fetch(API.before + beforeDay)
+      .then(response => response.json())
+      .then(responseJson => {
+        // 合并数据
+        let newData = this.state.stories.concat({
+          key: responseJson.date,
+          data: responseJson.stories
+        });
+        // 更新数据
+        this.setState({
+          stories: newData
+        },()=>{
+          // 短暂地显示滚动指示器。 TODO: 函数无效
+          // this.scrollView.flashScrollIndicators();
+           // 等待数据渲染完成,避免loading状态早于渲染结束
+          setTimeout(()=>{
+            this.setState({
+              pullUpLoading: false
+            });
+          },500)
+        });
+      })
+      .catch(error => {
+        this.setState({
+          pullUpLoading: false
+        });
+        console.warn(error);
+      });
+  };
   /*
    * 监听列表点击
    * @param {Number} ID 日报ID
@@ -176,10 +182,10 @@ export default class index extends Component {
    */
   _formatDate(date) {
     let currentDate = TOOLS.getDate();
-    if (currentDate === date) {
+    if (currentDate == date) {
       return "今日热闻";
     } else {
-      return TOOLS.formatMonthDay(date) + " " + TOOLS.formatWeek(date);
+      return String(date).length==8?TOOLS.formatMonthDay(date) + " " + TOOLS.formatWeek(date):null;
     }
   }
   /* 
@@ -189,6 +195,7 @@ export default class index extends Component {
   */
 
   bindOnScroll(event) {
+
     // 减去标题和轮播图高度
     let y = event.nativeEvent.contentOffset.y - 230;
     let heightArr = this.state.listHeight;
@@ -237,9 +244,9 @@ export default class index extends Component {
       <MyScrollView
         ref={ref => (this.scrollView = ref)}
         pullupfresh={this.pullupfresh}
+        onScroll={this.bindOnScroll.bind(this)}
         refreshing={this.state.refreshing}
         onRefresh={this.bindOnRefresh.bind(this)}
-        onScroll={this.bindOnScroll.bind(this)}
       >
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
         <StoriesList

@@ -4440,6 +4440,12 @@ react-native-linear-gradient@^2.5.3:
   version "2.5.3"
   resolved "http://registry.npm.taobao.org/react-native-linear-gradient/download/react-native-linear-gradient-2.5.3.tgz#d90cf19a13fcccfa8bb32025ac40a15ae1b49e99"
 
+react-native-material-ripple@^0.8.0:
+  version "0.8.0"
+  resolved "http://registry.npm.taobao.org/react-native-material-ripple/download/react-native-material-ripple-0.8.0.tgz#b8c24e6fdea2af2a21e8468b1f40b35483019e2f"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-parallax-scroll-view@^0.21.3:
   version "0.21.3"
   resolved "http://registry.npm.taobao.org/react-native-parallax-scroll-view/download/react-native-parallax-scroll-view-0.21.3.tgz#d956ad224ce3b0a2725b80574bcbf688bbeda14e"

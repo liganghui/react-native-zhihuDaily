@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 // 下拉加载控件颜色
 const COLOR=["#008bed"];
 // 距离底部多少高度触发加载
-const HEIGHT=100;
+const HEIGHT=80;
 
 
 export default class index extends Component {
