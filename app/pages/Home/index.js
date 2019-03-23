@@ -89,9 +89,9 @@ export default class index extends Component {
 
   bindOnRefresh() {
     this.setState({ refreshing: true });
-    fetch(API.latest)
-      .then(response => response.json())
-      .then(responseJson => {
+    storage.load({
+      key: 'latest',
+    }).then(responseJson => {
         let data = this.state.stories;
         if (data.length && data[0].key == responseJson.date) {
           data[0].data = responseJson.stories;
@@ -136,9 +136,18 @@ export default class index extends Component {
     });
     // 获得请求日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
-    fetch(API.before + beforeDay)
-      .then(response => response.json())
-      .then(responseJson => {
+    storage.load({
+      key: 'before',
+     // 你还可以给sync方法传递额外的参数
+     syncParams: {
+      extraFetchOptions: {
+        // 各种参数
+        date:beforeDay
+      },
+    },
+    }).then(responseJson => {
+      console.warn(responseJson);
+      return false
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
@@ -195,7 +204,6 @@ export default class index extends Component {
   */
 
   bindOnScroll(event) {
-
     // 减去标题和轮播图高度
     let y = event.nativeEvent.contentOffset.y - 230;
     let heightArr = this.state.listHeight;
