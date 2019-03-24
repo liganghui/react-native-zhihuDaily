@@ -1,14 +1,16 @@
 import API from "./api";
+import  Fly from "flyio";
+
 // sync方法的名字必须和所存数据的key完全相同
 // 方法接受的参数为一整个object，所有参数从object中解构取出
 // 这里可以使用promise。或是使用普通回调函数，但需要调用resolve或reject。
 sync = {
     details(params) {
         let { id } = params;
-        return fetch(API.details + id).then(response => {
+        return Fly.get(API.details + id).then(response => {
             return response.json();
         }).then(json => {
-            if (json && json.date) {
+            if (json && json.bodsssy) {
                 global.storage.save({
                     key: 'details',
                     id,
@@ -16,20 +18,17 @@ sync = {
                 });
                 return json;
             } else {
-                return new Error(`detail JSON data parse error param : ${id}`);
+               return null
             }
         }).catch(err => {
-            return new Error(`detail data loading error param : ${id}`);
+           return err;
         });
     },
     before(params) {
         let date = params.syncParams.extraFetchOptions.date || '';
-        console.warn(date)
         return fetch(API.before + date).then(response => {
             return response.json();
         }).then(json => {
-            console.warn(json)
-
             if (json && json.stories) {
                 global.storage.save({
                     key: 'before',
@@ -38,14 +37,14 @@ sync = {
                 });
                 return json;
             } else {
-                return new Error(`before JSON data parse error param : ${date}`);
+               return null
             }
         }).catch(err => {
-            return new Error(`before data loading error param : ${date}`);
+            return err
         });
     },
     latest(params) {
-        return fetch(API.latest).then(response => {
+        return Fly.get(API.latest).then(response => {
             return response.json();
         }).then(json => {
             if (json) {
@@ -57,10 +56,10 @@ sync = {
                 });
                 return json;
             } else {
-                return new Error(`latest JSON data parse error param`);
+                return null
             }
         }).catch(err => {
-            return new Error(`latest data loading error param`);
+            return err
         });
 
     }

@@ -14,6 +14,7 @@ import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from 'react-native-parallax-scroll-view';
+import Toast from "react-native-root-toast";
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
@@ -70,7 +71,11 @@ export default class index extends Component {
       key: 'details',
       id: this.state.itemId
     }).then(response => {
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
+      if(!response){
+        this.toast('日报数据格式异常');
+        return false;
+      }
+      let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${ response.body }</body></html>`;
         response.body = html;
@@ -79,6 +84,9 @@ export default class index extends Component {
         });
       })
       .catch(error => {
+        console.warn('1')
+
+        console.warn(error)
         // TODO:接口异常处理
     });
   }

@@ -2058,6 +2058,13 @@ find-up@^3.0.0:
   dependencies:
     locate-path "^3.0.0"
 
+flyio@^0.6.14:
+  version "0.6.14"
+  resolved "http://registry.npm.taobao.org/flyio/download/flyio-0.6.14.tgz#c5d83eb7a9b4fc1c915a463d2ea6dfce755c2d6f"
+  integrity sha1-xdg+t6m0/ByRWkY9LqbfznVcLW8=
+  dependencies:
+    request "^2.85.0"
+
 for-in@^1.0.1, for-in@^1.0.2:
   version "1.0.2"
   resolved "http://registry.npm.taobao.org/for-in/download/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -4395,6 +4402,7 @@ react-native-autoheight-webview@^1.0.1:
 react-native-cardview@^2.0.2:
   version "2.0.2"
   resolved "http://registry.npm.taobao.org/react-native-cardview/download/react-native-cardview-2.0.2.tgz#e07c13c61fbfce2152c1a2c18579895c7d9e7956"
+  integrity sha1-4HwTxh+/ziFSwaLBhXmJXH2eeVY=
   dependencies:
     prop-types "^15.6.0"
 
@@ -4770,7 +4778,7 @@ request-promise-native@^1.0.5:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.87.0:
+request@^2.85.0, request@^2.87.0:
   version "2.88.0"
   resolved "http://registry.npm.taobao.org/request/download/request-2.88.0.tgz#9c2fca4f7d35b592efe57c7f0a55e81052124fef"
   dependencies:

@@ -71,6 +71,10 @@ export default class App extends React.Component {
 
     // 安卓下保存到指定文件夹中
     if (Platform.OS === "android") {
+
+        console.warn(imgSrc.toLowerCase().split('.')[1])
+
+
       // 下载文件
       RNFetchBlob.config({
         fileCache: true, //保存称临时文件
@@ -104,7 +108,7 @@ export default class App extends React.Component {
           })
         })
     } else {
-      // IOS 调用系统方法
+    // IOS 调用系统方法
       CameraRoll.saveToCameraRoll(url).then(
         this.toast('保存成功')
       ).catch(

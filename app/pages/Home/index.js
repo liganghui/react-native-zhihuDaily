@@ -50,7 +50,6 @@ export default class index extends Component {
               />
             }
           />
-
           <Button
             title=""
             type="clear"
@@ -136,6 +135,7 @@ export default class index extends Component {
     });
     // 获得请求日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
+
     storage.load({
       key: 'before',
      // 你还可以给sync方法传递额外的参数
@@ -146,8 +146,6 @@ export default class index extends Component {
       },
     },
     }).then(responseJson => {
-      console.warn(responseJson);
-      return false
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
