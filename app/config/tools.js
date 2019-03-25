@@ -1,6 +1,6 @@
 //  工具函数库
 
-export default TOOLS = {
+const Tools = {
     /*
         格式化日期 返回月日
         @param  {String}  数字格式的日期
@@ -38,3 +38,4 @@ export default TOOLS = {
     }
 
 }
+export {Tools}

@@ -6,10 +6,8 @@ import {
   Text,
 } from "react-native";
 import {  Icon, Button } from "react-native-elements";
-// 数据接口
-import API from "../../config/api";
-// 函数工具库
-import TOOLS from "../../config/tools";
+import {Api,Tools,Axios} from "../../config";
+
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
 // 上滑触底加载状态
@@ -18,6 +16,7 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
+import Toast from "react-native-root-toast";
 
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -91,6 +90,10 @@ export default class index extends Component {
     storage.load({
       key: 'latest',
     }).then(responseJson => {
+      if(!responseJson.date){
+        this.Toast('服务器数据错误')
+        return false;
+      }
         let data = this.state.stories;
         if (data.length && data[0].key == responseJson.date) {
           data[0].data = responseJson.stories;
@@ -135,7 +138,6 @@ export default class index extends Component {
     });
     // 获得请求日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
-
     storage.load({
       key: 'before',
      // 你还可以给sync方法传递额外的参数
@@ -146,6 +148,11 @@ export default class index extends Component {
       },
     },
     }).then(responseJson => {
+      if(!responseJson){
+        this.Toast('服务器数据错误')
+        return false;
+
+      }
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
@@ -188,11 +195,11 @@ export default class index extends Component {
    *  @return {String}  格式化后的日期
    */
   _formatDate(date) {
-    let currentDate = TOOLS.getDate();
+    let currentDate = Tools.getDate();
     if (currentDate == date) {
       return "今日热闻";
     } else {
-      return String(date).length==8?TOOLS.formatMonthDay(date) + " " + TOOLS.formatWeek(date):null;
+      return String(date).length==8?Tools.formatMonthDay(date) + " " + Tools.formatWeek(date):null;
     }
   }
   /* 

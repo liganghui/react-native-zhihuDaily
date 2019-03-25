@@ -1,7 +1,6 @@
 import Storage from 'react-native-storage';
-import {
-    AsyncStorage
-} from 'react-native';
+// 使用@react-native-community中的AsyncStorage 避免警告
+import AsyncStorage from '@react-native-community/async-storage';
 global.storage = new Storage({
     // 最大容量，默认值1000条数据循环存储
     size: 200,

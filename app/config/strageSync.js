@@ -1,16 +1,15 @@
-import API from "./api";
-import  Fly from "flyio";
-
+import {Api,Axios} from "./index";
 // sync方法的名字必须和所存数据的key完全相同
 // 方法接受的参数为一整个object，所有参数从object中解构取出
 // 这里可以使用promise。或是使用普通回调函数，但需要调用resolve或reject。
 sync = {
     details(params) {
         let { id } = params;
-        return Fly.get(API.details + id).then(response => {
+        return Axios.get(Api.details + id).then(response => {
             return response.json();
         }).then(json => {
-            if (json && json.bodsssy) {
+            console.warn(json)
+            if (json && json.body) {
                 global.storage.save({
                     key: 'details',
                     id,
@@ -26,10 +25,11 @@ sync = {
     },
     before(params) {
         let date = params.syncParams.extraFetchOptions.date || '';
-        return fetch(API.before + date).then(response => {
+        return Fetch(Api.before + date).then(response => {
             return response.json();
         }).then(json => {
-            if (json && json.stories) {
+            console.warn(json)
+            if (json && json.data.stories) {
                 global.storage.save({
                     key: 'before',
                     id: date,
@@ -44,9 +44,8 @@ sync = {
         });
     },
     latest(params) {
-        return Fly.get(API.latest).then(response => {
-            return response.json();
-        }).then(json => {
+        return Axios.get(Api.latest).then(json => {
+            console.warn('111'+json)
             if (json) {
                 global.storage.save({
                     key: 'latest',

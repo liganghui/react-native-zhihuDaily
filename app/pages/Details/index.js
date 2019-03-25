@@ -84,8 +84,6 @@ export default class index extends Component {
         });
       })
       .catch(error => {
-        console.warn('1')
-
         console.warn(error)
         // TODO:接口异常处理
     });

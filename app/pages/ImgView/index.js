@@ -4,7 +4,7 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import Toast from "react-native-root-toast";
 import { Header, Icon, Button } from "react-native-elements";
 import RNFetchBlob from "rn-fetch-blob";
-import TOOLS from "../../config/tools";
+import {Tools}from "../../config";
 
 
 export default class App extends React.Component {
@@ -82,7 +82,7 @@ export default class App extends React.Component {
       }).fetch("GET", imgSrc)
         .then(res => {
           // 图片文件名
-          const fileName=TOOLS.getDate()+'_'+res.taskId
+          const fileName=Tools.getDate()+'_'+res.taskId
           // 判断文件夹是否存在
           RNFetchBlob.fs.isDir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`).then((isDir) => {
            if(!isDir){
