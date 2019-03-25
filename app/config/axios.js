@@ -24,10 +24,12 @@ const Axios = {
                 ...config
             })
             .then(data => {
+                console.warn('打印请求数据!!!');
+                console.warn(data);
                 return data;
             })
             .catch(error => {
-                throw error;
+               return error;
             });
     },
     post: async(url, params, config) => {
@@ -41,7 +43,7 @@ const Axios = {
                 return data;
             })
             .catch(error => {
-                throw error;
+                return error;
             });
     }
 };

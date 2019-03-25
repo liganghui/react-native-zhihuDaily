@@ -90,6 +90,9 @@ export default class index extends Component {
     storage.load({
       key: 'latest',
     }).then(responseJson => {
+      console.warn('首页接受的数据');
+      console.warn(responseJson);
+
       if(!responseJson.date){
         this.Toast('服务器数据错误')
         return false;
@@ -114,7 +117,7 @@ export default class index extends Component {
           },()=>{
             // 当日报数据数量不足一屏时 , 触发刷新填充内容
             if(this.state.stories[0].data.length<=3){
-              this.pullupfresh()
+              // this.pullupfresh()
             }
           });
         }
@@ -122,6 +125,7 @@ export default class index extends Component {
       })
       .catch(error => {
         this.setState({ refreshing: false });
+        console.warn('storage.load错误');
         console.warn(error);
       });
   }
