@@ -71,8 +71,8 @@ export default class index extends Component {
       key: 'details',
       id: this.state.itemId
     }).then(response => {
-      if(!response){
-        this.toast('日报数据格式异常');
+      if(!response||!response.body){
+        this.toast('服务器数据异常');
         return false;
       }
       let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>

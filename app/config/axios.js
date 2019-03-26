@@ -24,8 +24,6 @@ const Axios = {
                 ...config
             })
             .then(data => {
-                console.warn('打印请求数据!!!');
-                console.warn(data);
                 return data;
             })
             .catch(error => {

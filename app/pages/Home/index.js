@@ -90,15 +90,12 @@ export default class index extends Component {
     storage.load({
       key: 'latest',
     }).then(responseJson => {
-      console.warn('首页接受的数据');
-      console.warn(responseJson);
-
-      if(!responseJson.date){
-        this.Toast('服务器数据错误')
+        if(!responseJson||!responseJson.stories){
+          this.toast('服务器数据异常');
         return false;
-      }
+        }
         let data = this.state.stories;
-        if (data.length && data[0].key == responseJson.date) {
+        if (data.length>0&& data[0].key == responseJson.date) {
           data[0].data = responseJson.stories;
           this.setState({
             topStories: responseJson.top_stories,
@@ -114,10 +111,11 @@ export default class index extends Component {
           this.setState({
             topStories: responseJson.top_stories,
             stories: data
+
           },()=>{
             // 当日报数据数量不足一屏时 , 触发刷新填充内容
             if(this.state.stories[0].data.length<=3){
-              // this.pullupfresh()
+              this.pullupfresh()
             }
           });
         }
@@ -125,7 +123,6 @@ export default class index extends Component {
       })
       .catch(error => {
         this.setState({ refreshing: false });
-        console.warn('storage.load错误');
         console.warn(error);
       });
   }
@@ -152,10 +149,9 @@ export default class index extends Component {
       },
     },
     }).then(responseJson => {
-      if(!responseJson){
-        this.Toast('服务器数据错误')
+      if(!responseJson||!responseJson.stories){
+        this.toast('服务器数据异常');
         return false;
-
       }
         // 合并数据
         let newData = this.state.stories.concat({
