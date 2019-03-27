@@ -1,11 +1,17 @@
 import React, { Component } from "react";
-import { View, Text, Platform, CameraRoll,ToastAndroid,PermissionsAndroid} from "react-native";
+import {
+  View,
+  Text,
+  Platform,
+  CameraRoll,
+  ToastAndroid,
+  PermissionsAndroid
+} from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import Toast from "react-native-root-toast";
 import { Header, Icon, Button } from "react-native-elements";
 import RNFetchBlob from "rn-fetch-blob";
-import {Tools}from "../../config";
-
+import { Tools } from "../../config";
 
 export default class App extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -20,9 +26,7 @@ export default class App extends React.Component {
           title=""
           type="clear"
           onPress={params.handleMore}
-          icon={
-            <Icon type="material" name="get-app" size={24} color="white" />
-          }
+          icon={<Icon type="material" name="get-app" size={24} color="white" />}
         />
       )
     };
@@ -31,34 +35,34 @@ export default class App extends React.Component {
     super(props);
     this.props.navigation.setParams({ handleMore: this.bindMoreBtn });
   }
-  bindMoreBtn=()=> {
-    if(Platform.OS === "android"){
-      this.requestReadPermission().then((res)=>{
+  bindMoreBtn = () => {
+    if (Platform.OS === "android") {
+      this.requestReadPermission().then(res => {
         if (res === PermissionsAndroid.RESULTS.GRANTED) {
           this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
         } else {
-          this.toast('保存失败：缺少存储权限')
+          this.toast("保存失败：缺少存储权限");
         }
-      })
-    }else{
+      });
+    } else {
       this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
     }
-  }
+  };
   // 获取读写权限
   async requestReadPermission() {
     try {
-        const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-                'title': '提示',
-                'message': '保存图片需要使用您的本地存储，请允许权限。'
-            }
-        )
-        return granted;
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: "提示",
+          message: "保存图片需要使用您的本地存储，请允许权限。"
+        }
+      );
+      return granted;
     } catch (err) {
-        console.warn(err.toString())
+      console.warn(err.toString());
     }
-  } 
+  }
   /*
     保存图片文件到本地
     Android中使用rn-fetch-blob保存 , IOS使用RN组件:CameraRoll.
@@ -67,55 +71,61 @@ export default class App extends React.Component {
     @param folderName {String} 安卓中存放图片的文件夹名称
   
   */
-  saveImg=(imgSrc, folderName)=>{
-
+  saveImg = (imgSrc, folderName) => {
     // 安卓下保存到指定文件夹中
     if (Platform.OS === "android") {
-
-        console.warn(imgSrc.toLowerCase().split('.')[1])
-
-
+      //获取图片格式
+      let srcAry = imgSrc.toLowerCase().split(".");
+      let imgFormat = srcAry[srcAry.length - 1];
+      if (!/\.(gif|jpg|jpeg|png)$/.test(imgFormat)) {  
+        this.toast("保存失败：图片格式异常");
+        return;
+      }  
       // 下载文件
       RNFetchBlob.config({
         fileCache: true, //保存称临时文件
-        appendExt: "jpg" //临时文件扩展名
-      }).fetch("GET", imgSrc)
+        appendExt: imgFormat //临时文件扩展名
+      })
+        .fetch("GET", imgSrc)
         .then(res => {
           // 图片文件名
-          const fileName=Tools.getDate()+'_'+res.taskId
+          const fileName = Tools.getDate() + "_" + res.taskId;
           // 判断文件夹是否存在
-          RNFetchBlob.fs.isDir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`).then((isDir) => {
-           if(!isDir){
-            //  创建文件夹
-            RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`)
-           }
-        }).then(()=>{
-          // 移动临时文件到文件夹
-          RNFetchBlob.fs.mv(res.path(),`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.jpg`)
-        }).then(()=>{
-          // 刷新相册
-          RNFetchBlob.fs.scanFile([ { path :`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.jpg`}])
-          this.toast('保存成功')
-        }).catch(()=>{
-            // 当RNFetchBlob异常时, 尝试系统方法
-            CameraRoll.saveToCameraRoll(res.path())
-            .then(res => {
-              this.toast('保存成功')
+          RNFetchBlob.fs
+            .isDir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`)
+            .then(isDir => {
+              if (!isDir) {
+                //  创建文件夹
+                RNFetchBlob.fs.mkdir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`);
+              }
             })
-            .catch(error => {
-              this.toast('保存失败')
+            .then(() => {
+              // 移动临时图片文件到文件夹
+              RNFetchBlob.fs.mv( res.path(),`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.${imgFormat}`);
+            })
+            .then(() => {
+              // 刷新相册
+              RNFetchBlob.fs.scanFile([{path: `${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.${imgFormat}`}]);
+              this.toast("保存成功");
+            })
+            .catch(() => {
+              // 当RNFetchBlob异常时, 尝试系统方法
+              CameraRoll.saveToCameraRoll(res.path())
+                .then(res => {
+                  this.toast("保存成功");
+                })
+                .catch(error => {
+                  this.toast("保存失败");
+                });
             });
-          })
-        })
+        });
     } else {
-    // IOS 调用系统方法
-      CameraRoll.saveToCameraRoll(url).then(
-        this.toast('保存成功')
-      ).catch(
-        this.toast('保存失败')
-      );
+      // IOS 调用系统方法
+      CameraRoll.saveToCameraRoll(imgSrc)
+        .then(this.toast("保存成功"))
+        .catch(this.toast("保存失败"));
     }
-  }
+  };
   toast(text) {
     let toast = Toast.show(text, {
       position: Toast.positions.BOTTOM,

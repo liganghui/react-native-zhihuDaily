@@ -10,14 +10,14 @@ sync = {
                 global.storage.save({
                     key: 'details',
                     id,
-                    data: json,
+                    data: json.data,
                 });
                 return json.data;
             } else {
                return null
             }
         }).catch(err => {
-           return err
+            return Promise.reject(err);
         });
     },
     before(params) {
@@ -27,14 +27,14 @@ sync = {
                 global.storage.save({
                     key: 'before',
                     id: date,
-                    data: json,
+                    data: json.data,
                 });
                 return json.data;
             } else {
                return null
             }
         }).catch(err => {
-            return err
+            return Promise.reject(err);
         });
     },
     latest(params) {
@@ -51,7 +51,7 @@ sync = {
                 return null
             }
         }).catch(err => {
-            return err
+            return Promise.reject(err);
         });
 
     }

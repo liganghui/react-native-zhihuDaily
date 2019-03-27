@@ -92,7 +92,7 @@ export default class index extends Component {
     }).then(responseJson => {
         if(!responseJson||!responseJson.stories){
           this.toast('服务器数据异常');
-        return false;
+          return false;
         }
         let data = this.state.stories;
         if (data.length>0&& data[0].key == responseJson.date) {
@@ -111,12 +111,6 @@ export default class index extends Component {
           this.setState({
             topStories: responseJson.top_stories,
             stories: data
-
-          },()=>{
-            // 当日报数据数量不足一屏时 , 触发刷新填充内容
-            if(this.state.stories[0].data.length<=3){
-              this.pullupfresh()
-            }
           });
         }
         this.setState({ refreshing: false });
