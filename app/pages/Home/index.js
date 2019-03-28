@@ -94,7 +94,7 @@ export default class index extends Component {
     this.setState({ refreshing: true });
     Axios.get(Api.latest)
       .then(responseJson => {
-        this._handleDataRender(responseJson)
+        this._handleDataRender(responseJson.data)
         this.setState({ refreshing: false });
       })
       .catch(error => {
