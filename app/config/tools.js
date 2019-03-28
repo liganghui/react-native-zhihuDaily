@@ -1,5 +1,6 @@
-//  工具函数库
+import Toast from "react-native-root-toast";
 
+//  工具函数库
 const Tools = {
     /*
         格式化日期 返回月日
@@ -35,6 +36,16 @@ const Tools = {
         let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
                   .getDate();
         return year+month+day;
+    },
+    // 显示提示框
+    // @param {String} text 提示
+    toast(text) {
+       Toast.show(text, {
+          position: Toast.positions.BOTTOM,
+          shadow: false,
+          backgroundColor: "#353434",
+          textColor: "#ffffff"
+        });
     }
 
 }

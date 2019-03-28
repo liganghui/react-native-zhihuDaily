@@ -8,19 +8,20 @@ import {
   Animated,
   AsyncStorage,
   TouchableOpacity,
-  Image,
+  Image
 } from "react-native";
 import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
-import ParallaxScrollView from 'react-native-parallax-scroll-view';
-import Toast from "react-native-root-toast";
+import ParallaxScrollView from "react-native-parallax-scroll-view";
+import {Tools} from "../../config";
+
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 // 记录当前Header高度
-var  tempHeight=HEAD_HEIGHT;
+var tempHeight = HEAD_HEIGHT;
 
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -65,28 +66,32 @@ export default class index extends Component {
   componentDidMount() {
     this.init();
   }
-   init() {
-    // TODO:封装接口
-    storage.load({
-      key: 'details',
-      id: this.state.itemId
-    }).then(response => {
-      if(!response||!response.body){
-        this.toast('服务器数据异常');
-        return false;
-      }
-      let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
+  init() {
+    storage
+      .load({
+        key: "details",
+        id: this.state.itemId
+      })
+      .then(response => {
+        if (!response || !response.body) {
+          Tools.toast("服务器数据异常");
+          return false;
+        }
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
-        <body>${ response.body }</body></html>`;
+        <body>${response.body}</body></html>`;
         response.body = html;
         this.setState({
           daily: response
         });
       })
       .catch(error => {
-        // TODO:接口异常处理
-        console.warn(error)
-    });
+        if (error.message) {
+          Tools.toast(error.message);
+        } else {
+          Tools.toast("咦，好像出现了一些问题...");
+        }
+      });
   }
   bindMessage(event) {
     let data = event.nativeEvent.data;
@@ -95,7 +100,7 @@ export default class index extends Component {
       this.props.navigation.navigate("ImgView", {
         url
       });
-    }else if (String(data).indexOf("init:") !== -1) {
+    } else if (String(data).indexOf("init:") !== -1) {
       this.setState({ webviewInit: true });
     }
   }
@@ -109,51 +114,46 @@ export default class index extends Component {
       if (direction == "down") {
         if (tempHeight == HEAD_HEIGHT) {
           this.state.headerHeight.setValue(HEADER_MIN_HEIGHT);
-          tempHeight= HEADER_MIN_HEIGHT;
+          tempHeight = HEADER_MIN_HEIGHT;
         }
       } else if (direction == "up") {
         if (tempHeight == HEADER_MIN_HEIGHT) {
           this.state.headerHeight.setValue(HEAD_HEIGHT);
-          tempHeight=HEAD_HEIGHT;
+          tempHeight = HEAD_HEIGHT;
         }
       }
     }
   };
-  renderSectioHeader=()=>{
+  renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 400],
       outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
       extrapolate: "clamp"
     });
-    return <Animated.View key="background" style={{translateY: imgTop}} >
-    <Image
-      style={[styles.backgroundImage]}
-      source={{ uri: this.state.daily.image }}
-    />
-    <LinearGradient
-      colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
-      style={styles.linearGradient}
-    >
-      <Text style={[styles.title]}>
-        {this.state.daily.title}
-      </Text>
-      <Text style={[styles.source]}>
-        {this.state.daily.image_source}
-      </Text>
-    </LinearGradient>
-  </Animated.View>
-  }
+    return (
+      <Animated.View key='background' style={{ translateY: imgTop }}>
+        <Image
+          style={[styles.backgroundImage]}
+          source={{ uri: this.state.daily.image }}
+        />
+        <LinearGradient
+          colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
+          style={styles.linearGradient}>
+          <Text style={[styles.title]}>{this.state.daily.title}</Text>
+          <Text style={[styles.source]}>{this.state.daily.image_source}</Text>
+        </LinearGradient>
+      </Animated.View>
+    );
+  };
   render() {
-   
     return (
       <View
         style={styles.fill}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
-        }}
-      >
+        }}>
         <ParallaxScrollView
-          backgroundColor={'#fff'}
+          backgroundColor={"#fff"}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
@@ -162,8 +162,7 @@ export default class index extends Component {
             }
           )}
           parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}
-        >
+          renderBackground={this.renderSectioHeader}>
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
           <AutoHeightWebView
             style={{ width: this.state.webviewWidth }}
@@ -199,8 +198,7 @@ export default class index extends Component {
               style={styles.sectionWrapper}
               onPress={() => {
                 console.warn(this.state.daily.section.id);
-              }}
-            >
+              }}>
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}
@@ -210,15 +208,14 @@ export default class index extends Component {
               </Text>
               <Icon
                 iconStyle={styles.iconRightArrow}
-                name="angle-right"
-                type="font-awesome"
-                color="#333"
+                name='angle-right'
+                type='font-awesome'
+                color='#333'
                 size={22}
               />
             </TouchableOpacity>
           ) : null}
         </ParallaxScrollView>
-        
       </View>
     );
   }
@@ -239,7 +236,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 2
   },
-  
+
   backgroundImage: {
     position: "absolute",
     top: 0,

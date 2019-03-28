@@ -14,49 +14,15 @@ const _Axios = axios.create({
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
     },
 });
-_Axios.defaults.retry = 2;//重试次数
-_Axios.defaults.retryDelay = 1000;//重试延时
-_Axios.defaults.shouldRetry = (error) => true;//重试条件，默认只要是错误都需要重试
-_Axios.interceptors.response.use(undefined, (err) => {
-    var config = err.config;
-    // 判断是否配置了重试
-    if(!config || !config.retry) return Promise.reject(err);
-
-    if(!config.shouldRetry || typeof config.shouldRetry != 'function') {
-       return Promise.reject(err);
-    }
-    //判断是否满足重试条件
-    if(!config.shouldRetry(err)) {
-      return Promise.reject(err);
-    }
-    // 设置重置次数，默认为0
-    config.__retryCount = config.__retryCount || 0;
-    // 判断是否超过了重试次数
-    if(config.__retryCount >= config.retry) {
-        return Promise.reject(err);
-    }
-    //重试次数自增
-    config.__retryCount += 1;
-    //延时处理
-    var backoff = new Promise(function(resolve) {
-        setTimeout(function() {
-            resolve();
-        }, config.retryDelay || 1);
-    });
-    //重新发起axios请求
-    return backoff.then(function() {
-        return axios(config);
-    });
-});
 // 处理请求错误
 const  errorHandler=(err)=>{
     let errData={
-        status:'',
-        message:''
+        status:null,
+        message:null
     }
     if(!err.status){
         errData.status=0;
-        errData.message='网络错误';
+        errData.message='网络连接异常,请检查网络';
     }else if (err && err.response) {
         errData.status=err.response.status;
         switch (err.response.status) {
@@ -73,7 +39,7 @@ const  errorHandler=(err)=>{
           errData.message = `请求地址出错: ${err.response.config.url}`
             break
           case 408:
-          errData.message = '请求超时'
+          errData.message = '网络连接超时'
             break
           case 500:
           errData.message = '服务器内部错误'
@@ -85,10 +51,10 @@ const  errorHandler=(err)=>{
           errData.message = '网络错误'
             break
           case 503:
-          errData.message = '服务不可用'
+          errData.message = '服务器异常'
             break
           case 504:
-            err.message = '网络超时'
+            err.message = '服务器连接超时'
             break
           case 505:
           errData.message = 'HTTP协议不受支持'

@@ -1,12 +1,7 @@
 import React, { Component } from "react";
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  Text,
-} from "react-native";
-import {  Icon, Button } from "react-native-elements";
-import {Api,Tools,Axios} from "../../config";
+import { View, Dimensions, StyleSheet, Text } from "react-native";
+import { Icon, Button } from "react-native-elements";
+import { Api, Tools, Axios } from "../../config";
 
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
@@ -16,7 +11,6 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
-import Toast from "react-native-root-toast";
 
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -24,36 +18,36 @@ export default class index extends Component {
       title: navigation.getParam("title"),
       headerLeft: (
         <Button
-          type="clear"
-          title=""
+          type='clear'
+          title=''
           onPress={() => {
             navigation.openDrawer();
           }}
-          icon={<Icon type="material" name="menu" size={24} color="white" />}
+          icon={<Icon type='material' name='menu' size={24} color='white' />}
         />
       ),
       headerRight: (
         <View style={styles.headLeftWrapper}>
           <Button
-            title=""
-            type="clear"
+            title=''
+            type='clear'
             onPress={() => {
               navigation.navigate("Test");
             }}
             icon={
               <Icon
-                type="ionicon"
-                name="ios-calendar"
+                type='ionicon'
+                name='ios-calendar'
                 size={24}
-                color="white"
+                color='white'
               />
             }
           />
           <Button
-            title=""
-            type="clear"
+            title=''
+            type='clear'
             icon={
-              <Icon type="material" name="more-vert" size={24} color="white" />
+              <Icon type='material' name='more-vert' size={24} color='white' />
             }
           />
         </View>
@@ -77,50 +71,69 @@ export default class index extends Component {
   }
 
   _init() {
-    this.bindOnRefresh();
+    // 优先读取缓存数据
+    storage
+      .load({ key: "latest" })
+      .then(responseJson => {
+        this._handleDataRender(responseJson);
+      })
+      .catch(error => {
+        if (error.message) {
+          Tools.toast(error.message);
+        } else {
+          Tools.toast("咦，好像出现了一些问题...");
+          console.warn(error);
+        }
+      });
   }
-
- 
   /*
    * 下拉刷新
    */
-
   bindOnRefresh() {
+    // 下拉刷新请求最新数据
     this.setState({ refreshing: true });
-    storage.load({
-      key: 'latest',
-    }).then(responseJson => {
-        if(!responseJson||!responseJson.stories){
-          this.toast('服务器数据异常');
-          return false;
-        }
-        let data = this.state.stories;
-        if (data.length>0&& data[0].key == responseJson.date) {
-          data[0].data = responseJson.stories;
-          this.setState({
-            topStories: responseJson.top_stories,
-            stories: data
-          });
-        } else {
-          data = [
-            {
-              key: responseJson.date,
-              data: responseJson.stories
-            }
-          ];
-          this.setState({
-            topStories: responseJson.top_stories,
-            stories: data
-          });
-        }
+    Axios.get(Api.latest)
+      .then(responseJson => {
+        this._handleDataRender(responseJson)
         this.setState({ refreshing: false });
       })
       .catch(error => {
+        if (error.message) {
+          Tools.toast(error.message);
+        } else {
+          Tools.toast("咦，好像出现了一些问题...");
+          console.warn(error);
+        }
         this.setState({ refreshing: false });
-        console.warn(error);
       });
   }
- /*
+
+  /*
+    处理首屏数据渲染
+    @oaram  {responseJson} data 数据对象
+  */
+
+   _handleDataRender(responseJson) {
+    if (!responseJson || !responseJson.stories) {
+      Tools.toast("服务器数据格式异常");
+      return false;
+    }
+    let data = this.state.stories;
+    if (data.length>0&& data[0].key == responseJson.date) {
+      data[0].data = responseJson.stories;
+    } else {
+      data = [{
+          key: responseJson.date,
+          data: responseJson.stories
+        }];
+    }
+    this.setState({
+      topStories: responseJson.top_stories,
+      stories: data
+    });
+  }
+
+  /*
    *  上滑触底数据加载
    */
   pullupfresh = () => {
@@ -131,46 +144,51 @@ export default class index extends Component {
     this.setState({
       pullUpLoading: true
     });
-    // 获得请求日期
+    // 获得日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
-    storage.load({
-      key: 'before',
-     // 你还可以给sync方法传递额外的参数
-     syncParams: {
-      extraFetchOptions: {
-        // 各种参数
-        date:beforeDay
-      },
-    },
-    }).then(responseJson => {
-      if(!responseJson||!responseJson.stories){
-        this.toast('服务器数据异常');
-        return false;
-      }
+    storage
+      .load({
+        key: "before",
+        // 传递额外的参数
+        syncParams: {
+          extraFetchOptions: {
+            // 传递日期参数
+            date: beforeDay
+          }
+        }
+      })
+      .then(responseJson => {
+        if (!responseJson || !responseJson.stories) {
+          Tools.toast('数据格式异常');
+          return false;
+        }
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
           data: responseJson.stories
         });
         // 更新数据
-        this.setState({
-          stories: newData
-        },()=>{
+        this.setState({ stories: newData }, () => {
           // 短暂地显示滚动指示器。 TODO: 函数无效
           // this.scrollView.flashScrollIndicators();
-           // 等待数据渲染完成,避免loading状态早于渲染结束
-          setTimeout(()=>{
+          // 等待数据渲染完成,避免loading状态早于渲染结束
+          setTimeout(() => {
             this.setState({
               pullUpLoading: false
             });
-          },500)
+          }, 500);
         });
       })
       .catch(error => {
+        if (error.message) {
+          Tools.toast(error.message);
+        } else {
+          Tools.toast("咦，好像出现了一些问题...");
+          console.warn(error);
+        }
         this.setState({
           pullUpLoading: false
         });
-        console.warn(error);
       });
   };
   /*
@@ -193,7 +211,9 @@ export default class index extends Component {
     if (currentDate == date) {
       return "今日热闻";
     } else {
-      return String(date).length==8?Tools.formatMonthDay(date) + " " + Tools.formatWeek(date):null;
+      return String(date).length == 8
+        ? Tools.formatMonthDay(date) + " " + Tools.formatWeek(date)
+        : null;
     }
   }
   /* 
@@ -253,8 +273,7 @@ export default class index extends Component {
         pullupfresh={this.pullupfresh}
         onScroll={this.bindOnScroll.bind(this)}
         refreshing={this.state.refreshing}
-        onRefresh={this.bindOnRefresh.bind(this)}
-      >
+        onRefresh={this.bindOnRefresh.bind(this)}>
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
         <StoriesList
           data={this.state.stories}

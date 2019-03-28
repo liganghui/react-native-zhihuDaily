@@ -28,6 +28,7 @@ sync = {
                     key: 'before',
                     id: date,
                     data: json.data,
+                    expires:null //数据不过期
                 });
                 return json.data;
             } else {
