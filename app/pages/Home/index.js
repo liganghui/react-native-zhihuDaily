@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Dimensions, StyleSheet, Text } from "react-native";
+import { View, Dimensions, StyleSheet, Text, InteractionManager} from "react-native";
 import { Icon, Button } from "react-native-elements";
 import { Api, Tools, Axios } from "../../config";
 
@@ -196,9 +196,12 @@ export default class index extends Component {
    * @param {Number} ID 日报ID
    */
   bindListTap = id => {
-    this.props.navigation.navigate("Details", {
-      itemId: id
-    });
+      this.props.navigation.navigate("Details", {
+        itemId: id
+  })
+    // InteractionManager.runAfterInteractions(() => {
+     
+    // })
   };
   /*
    * 格式化分组标题日期

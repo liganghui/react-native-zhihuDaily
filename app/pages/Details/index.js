@@ -1,28 +1,28 @@
 //  日报详情页
-import Storage from "react-native-storage";
 import React, { Component } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Animated,
-  AsyncStorage,
   TouchableOpacity,
-  Image
+  Image,
+  Linking,
+  InteractionManager
 } from "react-native";
 import { Icon } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
-import {Tools} from "../../config";
-
+import { Tools } from "../../config";
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 // 记录当前Header高度
 var tempHeight = HEAD_HEIGHT;
-
+// 记录Y轴坐标
+var offsetY;
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -38,14 +38,15 @@ export default class index extends Component {
   };
   constructor(props) {
     super(props);
-    const id = this.props.navigation.getParam("itemId");
+    let id = this.props.navigation.getParam("itemId");
+    this.scrollY = new Animated.Value(0);
     // 记录Y轴滚动坐标 用户计算滚动方向
-    let oldOffsetY = "";
     this.state = {
       itemId: id,
       daily: {
         section: null //栏目分类信息
       },
+      body:'',//供webview渲染的HTML格式内容
       // 动态调整webview为设备的宽度
       webviewWidth: null,
       // 记录webviewI初始化状态
@@ -53,20 +54,18 @@ export default class index extends Component {
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
-    this.scrollY = new Animated.Value(0);
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211],
       outputRange: [1, 0, 0, 1],
       extrapolate: "clamp"
     });
-
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
   }
   componentDidMount() {
-    this.init();
+    this._init();
   }
-  init() {
+  _init() {
     storage
       .load({
         key: "details",
@@ -80,10 +79,15 @@ export default class index extends Component {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
-        response.body = html;
         this.setState({
           daily: response
-        });
+        })
+        // webview等待动画完成后渲染 , 防止造成动画卡顿.
+        InteractionManager.runAfterInteractions(() => {
+          this.setState({
+            body:html
+          });
+        })
       })
       .catch(error => {
         if (error.message) {
@@ -95,19 +99,24 @@ export default class index extends Component {
   }
   bindMessage(event) {
     let data = event.nativeEvent.data;
-    if (String(data).indexOf("url:") !== -1) {
-      let url = data.split("url:")[1].replace('"', "");
+    if (String(data).indexOf("img:") !== -1) {
+      let imgUrl = data.split("img:")[1].replace('"', "");
       this.props.navigation.navigate("ImgView", {
-        url
+        url: imgUrl
       });
     } else if (String(data).indexOf("init:") !== -1) {
       this.setState({ webviewInit: true });
+    } else if (String(data).indexOf("a:") !== -1) {
+      let src = data.split("a:")[1].replace('"', "");
+      Linking.openURL(src).catch(err => {
+        Tools.toast("无法打开浏览器了..");
+      });
     }
   }
   bindOnScroll = event => {
     let y = event.nativeEvent.contentOffset.y;
-    let direction = y > this.oldOffsetY ? "down" : "up";
-    this.oldOffsetY = y;
+    let direction = y > offsetY ? "down" : "up";
+    offsetY = y;
     if (y < IMG_MAX_HEIGHT) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {
@@ -131,14 +140,15 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     return (
-      <Animated.View key='background' style={{ translateY: imgTop }}>
+      <Animated.View key="background" style={{ translateY: imgTop }}>
         <Image
           style={[styles.backgroundImage]}
           source={{ uri: this.state.daily.image }}
         />
         <LinearGradient
           colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
-          style={styles.linearGradient}>
+          style={styles.linearGradient}
+        >
           <Text style={[styles.title]}>{this.state.daily.title}</Text>
           <Text style={[styles.source]}>{this.state.daily.image_source}</Text>
         </LinearGradient>
@@ -151,8 +161,10 @@ export default class index extends Component {
         style={styles.fill}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
-        }}>
+        }}
+      >
         <ParallaxScrollView
+          scrollEnabled={this.body?false:true}
           backgroundColor={"#fff"}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
@@ -162,43 +174,55 @@ export default class index extends Component {
             }
           )}
           parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}>
-          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况  */}
-          <AutoHeightWebView
-            style={{ width: this.state.webviewWidth }}
-            source={{ html: this.state.daily.body }}
-            onMessage={this.bindMessage.bind(this)}
-            // 为webview图片绑定点击事件 , 触发查看大图
-            customScript={`
+          renderBackground={this.renderSectioHeader}
+        >
+          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
+          {this.state.body ? (
+            <AutoHeightWebView
+              style={{ width: this.state.webviewWidth }}
+              source={{ html: this.state.body }}
+              onMessage={this.bindMessage.bind(this)}
+              // 为webview图片绑定点击事件 , 触发查看大图
+              customScript={`
               window.onload=function(){
-                window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-                var imgs = document.getElementsByTagName("img");
-                if(imgs){
-                  for(var i=0;i<imgs.length;i++){
-                    imgs[i].addEventListener('click',function(e){
-                      var src=this.src;
-                      window.ReactNativeWebView.postMessage(JSON.stringify("url:"+src));
-                    })
+              window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+              var imgs = document.getElementsByTagName("img");
+              if(imgs){
+                for(var i=0;i<imgs.length;i++){
+                  imgs[i].addEventListener('click',function(e){
+                    window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                  })
+                }
+              }
+              var a = document.getElementsByTagName('a');
+              if(a){
+                for(var i = 0; i < a.length; i++){
+                  a[i].onclick = function (event) {
+                    window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                    event.preventDefault();
                   }
                 }
               }
-            `}
-            customStyle={`
-              .img-place-holder{ 
-                display:none
-              }
-              body{
-                background:none !important;
-              }
-            `}
-          />
+            }
+          `}
+          customStyle={` 
+            .img-place-holder{ 
+              display:none
+            }
+            body{
+              background:none !important;
+            }
+          `}
+            />
+          ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
               style={styles.sectionWrapper}
               onPress={() => {
                 console.warn(this.state.daily.section.id);
-              }}>
+              }}
+            >
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}
@@ -208,9 +232,9 @@ export default class index extends Component {
               </Text>
               <Icon
                 iconStyle={styles.iconRightArrow}
-                name='angle-right'
-                type='font-awesome'
-                color='#333'
+                name="angle-right"
+                type="font-awesome"
+                color="#333"
                 size={22}
               />
             </TouchableOpacity>

@@ -27,7 +27,7 @@ export default class index extends Component {
         key={item.id}
         style={styles.cardWrapper}
       >
-        <Ripple rippleDuration={600} rippleOpacity={0.2} onPress={this.props.onPress.bind(this, item.id)}>
+        <Ripple rippleDuration={500} rippleOpacity={0.15} onPress={this.props.onPress.bind(this, item.id)}>
           <ListItem
             title={item.title}
             titleStyle={styles.itemTitle}
