@@ -80,14 +80,15 @@ export default class index extends Component {
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
         this.setState({
-          daily: response
+          daily: response,
+          body: html
         });
-        // webview等待动画完成后渲染,减少切换动画卡顿.
-        InteractionManager.runAfterInteractions(() => {
-          this.setState({
-            body: html
-          });
-        });
+        // webview等待切换动画完成后渲染,可以减少切换动画卡顿 ,但会延长页面加载时间.
+        // InteractionManager.runAfterInteractions(() => {
+          // this.setState({
+          //   body: html
+          // });
+        // });
       })
       .catch(error => {});
   }
