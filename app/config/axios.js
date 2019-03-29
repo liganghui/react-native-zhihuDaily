@@ -4,6 +4,7 @@
  * 用于替代Fetch，请求数据。
  */
 import axios from 'axios';
+import {Tools} from "./tools";
 
 
 const _Axios = axios.create({
@@ -78,7 +79,14 @@ const Axios = {
                 return data;
             })
             .catch(error => {
-                return Promise.reject(errorHandler(error));
+              let errData=errorHandler(error)
+              if (errData.message) {
+                Tools.toast(errData.message);
+                return Promise.reject(errData);
+              } else {
+                Tools.toast("咦，好像出现了一些问题...");
+                return Promise.reject(error);
+              }
             });
     },
     post: async(url, params, config) => {
@@ -92,7 +100,14 @@ const Axios = {
                 return data;
             })
             .catch(error => {
-                return Promise.reject(errorHandler(error));
+                let errData=errorHandler(error)
+                if (errData.message) {
+                  Tools.toast(errData.message);
+                  return Promise.reject(errData);
+                } else {
+                  Tools.toast("咦，好像出现了一些问题...");
+                  return Promise.reject(error);
+                }
             });
     }
 };

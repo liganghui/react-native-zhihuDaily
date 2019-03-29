@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { View, Dimensions, StyleSheet, Text, InteractionManager} from "react-native";
 import { Icon, Button } from "react-native-elements";
 import { Api, Tools, Axios } from "../../config";
-
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
 // 上滑触底加载状态
@@ -78,12 +77,7 @@ export default class index extends Component {
         this._handleDataRender(responseJson);
       })
       .catch(error => {
-        if (error.message) {
-          Tools.toast(error.message);
-        } else {
-          Tools.toast("咦，好像出现了一些问题...");
-          console.warn(error);
-        }
+       
       });
   }
   /*
@@ -98,12 +92,6 @@ export default class index extends Component {
         this.setState({ refreshing: false });
       })
       .catch(error => {
-        if (error.message) {
-          Tools.toast(error.message);
-        } else {
-          Tools.toast("咦，好像出现了一些问题...");
-          console.warn(error);
-        }
         this.setState({ refreshing: false });
       });
   }
@@ -180,12 +168,6 @@ export default class index extends Component {
         });
       })
       .catch(error => {
-        if (error.message) {
-          Tools.toast(error.message);
-        } else {
-          Tools.toast("咦，好像出现了一些问题...");
-          console.warn(error);
-        }
         this.setState({
           pullUpLoading: false
         });

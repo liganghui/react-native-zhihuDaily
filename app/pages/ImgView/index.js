@@ -38,7 +38,7 @@ export default class App extends React.Component {
         if (res === PermissionsAndroid.RESULTS.GRANTED) {
           this.saveImg(this.props.navigation.getParam("url"), "日报RN版");
         } else {
-          Toast.show("保存失败：缺少存储权限");
+          Tools.toast("保存失败：缺少存储权限");
         }
       });
     } else {
@@ -74,8 +74,8 @@ export default class App extends React.Component {
       //获取图片格式
       let srcAry = imgSrc.toLowerCase().split(".");
       let imgFormat = srcAry[srcAry.length - 1];
-      if (!/\.(gif|jpg|jpeg|png)$/.test(imgFormat)) {  
-        Toast.show("保存失败：图片格式异常");
+      if (!/^.*[(git)|(jpeg)|(png)|(jpg)].*$/.test(imgFormat)) {  
+        Tools.toast("保存失败：图片格式异常");
         return;
       }  
       // 下载文件
@@ -103,24 +103,24 @@ export default class App extends React.Component {
             .then(() => {
               // 刷新相册
               RNFetchBlob.fs.scanFile([{path: `${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.${imgFormat}`}]);
-              Toast.show("保存成功");
+              Tools.toast("保存成功");
             })
             .catch(() => {
               // 当RNFetchBlob异常时, 尝试系统方法
               CameraRoll.saveToCameraRoll(res.path())
                 .then(res => {
-                  Toast.show("保存成功");
+                  Tools.toast("保存成功");
                 })
                 .catch(error => {
-                  Toast.show("保存失败");
+                  Tools.toast("保存失败");
                 });
             });
         });
     } else {
       // IOS 调用系统方法
       CameraRoll.saveToCameraRoll(imgSrc)
-        .then(Toast.show("保存成功"))
-        .catch(Toast.show("保存失败"));
+        .then(Tools.toast("保存成功"))
+        .catch(Tools.toast("保存失败"));
     }
   };
 

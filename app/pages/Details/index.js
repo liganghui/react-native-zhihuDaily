@@ -80,21 +80,17 @@ export default class index extends Component {
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
         this.setState({
-          daily: response
+          daily: response,
+          body:html
         })
-        // webview等待动画完成后渲染 , 防止造成动画卡顿.
-        InteractionManager.runAfterInteractions(() => {
-          this.setState({
-            body:html
-          });
-        })
+        // webview等待动画完成后渲染,可优化帧数,减少切换动画卡顿.但也会延缓内容呈现
+        // InteractionManager.runAfterInteractions(() => {
+        // this.setState({
+        //   body:html
+        // });
+        // })
       })
       .catch(error => {
-        if (error.message) {
-          Tools.toast(error.message);
-        } else {
-          Tools.toast("咦，好像出现了一些问题...");
-        }
       });
   }
   bindMessage(event) {
@@ -177,44 +173,43 @@ export default class index extends Component {
           renderBackground={this.renderSectioHeader}
         >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
-          {this.state.body ? (
             <AutoHeightWebView
-              style={{ width: this.state.webviewWidth }}
-              source={{ html: this.state.body }}
-              onMessage={this.bindMessage.bind(this)}
-              // 为webview图片绑定点击事件 , 触发查看大图
-              customScript={`
-              window.onload=function(){
-              window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-              var imgs = document.getElementsByTagName("img");
-              if(imgs){
-                for(var i=0;i<imgs.length;i++){
-                  imgs[i].addEventListener('click',function(e){
-                    window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
-                  })
-                }
-              }
-              var a = document.getElementsByTagName('a');
-              if(a){
-                for(var i = 0; i < a.length; i++){
-                  a[i].onclick = function (event) {
-                    window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
-                    event.preventDefault();
-                  }
-                }
+            style={{ width: this.state.webviewWidth }}
+            source={{ html: this.state.body }}
+            onMessage={this.bindMessage.bind(this)}
+            // 为webview图片绑定点击事件 , 触发查看大图
+            customScript={`
+            window.onload=function(){
+            window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+            var imgs = document.getElementsByTagName("img");
+            if(imgs){
+              for(var i=0;i<imgs.length;i++){
+                imgs[i].addEventListener('click',function(e){
+                  window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                })
               }
             }
-          `}
-          customStyle={` 
-            .img-place-holder{ 
-              display:none
+            var a = document.getElementsByTagName('a');
+            if(a){
+              for(var i = 0; i < a.length; i++){
+                a[i].onclick = function (event) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                  event.preventDefault();
+                }
+              }
             }
-            body{
-              background:none !important;
-            }
-          `}
-            />
-          ) : null}
+          }
+        `}
+        customStyle={` 
+          .img-place-holder{ 
+            display:none
+          }
+          body{
+            background:none !important;
+          }
+        `}
+          />
+        
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
