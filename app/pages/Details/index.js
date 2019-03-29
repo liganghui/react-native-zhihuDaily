@@ -46,7 +46,7 @@ export default class index extends Component {
       daily: {
         section: null //栏目分类信息
       },
-      body:'',//供webview渲染的HTML格式内容
+      body: "", //供webview渲染的HTML格式内容
       // 动态调整webview为设备的宽度
       webviewWidth: null,
       // 记录webviewI初始化状态
@@ -80,18 +80,16 @@ export default class index extends Component {
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
         this.setState({
-          daily: response,
-          body:html
-        })
-        // webview等待动画完成后渲染,可优化帧数,减少切换动画卡顿.但也会延缓内容呈现
-        // InteractionManager.runAfterInteractions(() => {
-        // this.setState({
-        //   body:html
-        // });
-        // })
+          daily: response
+        });
+        // webview等待动画完成后渲染,减少切换动画卡顿.
+        InteractionManager.runAfterInteractions(() => {
+          this.setState({
+            body: html
+          });
+        });
       })
-      .catch(error => {
-      });
+      .catch(error => {});
   }
   bindMessage(event) {
     let data = event.nativeEvent.data;
@@ -136,15 +134,14 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     return (
-      <Animated.View key="background" style={{ translateY: imgTop }}>
+      <Animated.View key='background' style={{ translateY: imgTop }}>
         <Image
           style={[styles.backgroundImage]}
           source={{ uri: this.state.daily.image }}
         />
         <LinearGradient
           colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
-          style={styles.linearGradient}
-        >
+          style={styles.linearGradient}>
           <Text style={[styles.title]}>{this.state.daily.title}</Text>
           <Text style={[styles.source]}>{this.state.daily.image_source}</Text>
         </LinearGradient>
@@ -157,10 +154,9 @@ export default class index extends Component {
         style={styles.fill}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
-        }}
-      >
+        }}>
         <ParallaxScrollView
-          scrollEnabled={this.body?false:true}
+          scrollEnabled={this.body ? false : true}
           backgroundColor={"#fff"}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
@@ -170,10 +166,9 @@ export default class index extends Component {
             }
           )}
           parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}
-        >
+          renderBackground={this.renderSectioHeader}>
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
-            <AutoHeightWebView
+          <AutoHeightWebView
             style={{ width: this.state.webviewWidth }}
             source={{ html: this.state.body }}
             onMessage={this.bindMessage.bind(this)}
@@ -200,7 +195,7 @@ export default class index extends Component {
             }
           }
         `}
-        customStyle={` 
+            customStyle={` 
           .img-place-holder{ 
             display:none
           }
@@ -209,15 +204,14 @@ export default class index extends Component {
           }
         `}
           />
-        
+
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
               style={styles.sectionWrapper}
               onPress={() => {
                 console.warn(this.state.daily.section.id);
-              }}
-            >
+              }}>
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}
@@ -227,9 +221,9 @@ export default class index extends Component {
               </Text>
               <Icon
                 iconStyle={styles.iconRightArrow}
-                name="angle-right"
-                type="font-awesome"
-                color="#333"
+                name='angle-right'
+                type='font-awesome'
+                color='#333'
                 size={22}
               />
             </TouchableOpacity>
