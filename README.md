@@ -6,9 +6,8 @@
 * react-native-elements 
 
 
-  #### 这个项目仍处于开发阶段 .  
+  #### 这个项目仍处于开发阶段 , 你可以通过[项目规划](https://github.com/liganghui/react-native-zhihuDaily/projects/2)了解整体开发进度。  
   
-
 
 
 > 注意 :
