@@ -51,6 +51,8 @@ export default class index extends Component {
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
+      // 用于判断页面是否为初次加载
+      first: null,
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -63,7 +65,31 @@ export default class index extends Component {
     this.props.navigation.setParams({ opacity: opacity });
   }
   componentDidMount() {
-    this._init();
+
+    // 检测页面是否为初次加载
+    storage
+      .load({
+        key: "first"
+      })
+      .then((res) => {
+        if (!res) {
+          console.warn('初次加载')
+          this.setState({
+            first: true
+          });
+          global.storage.save({
+            key: "first",
+            data: true
+          });
+        }else{
+          this.setState({
+            first: false
+          });
+        }
+      })
+      .then(() => {
+        this._init();
+      });
   }
   _init() {
     storage
@@ -71,7 +97,7 @@ export default class index extends Component {
         key: "details",
         id: this.state.itemId
       })
-      .then(response => {
+      .then((response) => {
         if (!response || !response.body) {
           Tools.toast("服务器数据异常");
           return false;
@@ -79,18 +105,24 @@ export default class index extends Component {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
-        this.setState({
-          daily: response,
-          body: html
-        });
-        // webview等待切换动画完成后渲染,可以减少切换动画卡顿 ,但会延长页面加载时间.
-        // InteractionManager.runAfterInteractions(() => {
-          // this.setState({
-          //   body: html
-          // });
-        // });
+        if (this.state.first) {
+          this.setState({
+            daily: response
+          });
+          // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
+          InteractionManager.runAfterInteractions(() => {
+            this.setState({
+              body: html
+            });
+          });
+        } else {
+          this.setState({
+            daily: response,
+            body: html
+          });
+        }
       })
-      .catch(error => {});
+      .catch((error) => {});
   }
   bindMessage(event) {
     let data = event.nativeEvent.data;
@@ -103,12 +135,12 @@ export default class index extends Component {
       this.setState({ webviewInit: true });
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
-      Linking.openURL(src).catch(err => {
+      Linking.openURL(src).catch((err) => {
         Tools.toast("无法打开浏览器了..");
       });
     }
   }
-  bindOnScroll = event => {
+  bindOnScroll = (event) => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
     offsetY = y;
@@ -128,6 +160,7 @@ export default class index extends Component {
       }
     }
   };
+
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 400],
@@ -153,7 +186,7 @@ export default class index extends Component {
     return (
       <View
         style={styles.fill}
-        onLayout={event => {
+        onLayout={(event) => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}>
         <ParallaxScrollView
@@ -169,43 +202,45 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}>
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
-          <AutoHeightWebView
-            style={{ width: this.state.webviewWidth }}
-            source={{ html: this.state.body }}
-            onMessage={this.bindMessage.bind(this)}
-            // 为webview图片绑定点击事件 , 触发查看大图
-            customScript={`
-            window.onload=function(){
-            window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-            var imgs = document.getElementsByTagName("img");
-            if(imgs){
-              for(var i=0;i<imgs.length;i++){
-                imgs[i].addEventListener('click',function(e){
-                  window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
-                })
-              }
-            }
-            var a = document.getElementsByTagName('a');
-            if(a){
-              for(var i = 0; i < a.length; i++){
-                a[i].onclick = function (event) {
-                  window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
-                  event.preventDefault();
-                }
-              }
-            }
-          }
-        `}
-            customStyle={` 
-          .img-place-holder{ 
-            display:none
-          }
-          body{
-            background:none !important;
-          }
-        `}
-          />
 
+          {this.state.first===false || this.state.body ? (
+            <AutoHeightWebView
+              style={{ width: this.state.webviewWidth }}
+              source={{ html: this.state.body }}
+              onMessage={this.bindMessage.bind(this)}
+              // 为webview图片绑定点击事件 , 触发查看大图
+              customScript={`
+             window.onload=function(){
+             window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+             var imgs = document.getElementsByTagName("img");
+             if(imgs){
+               for(var i=0;i<imgs.length;i++){
+                 imgs[i].addEventListener('click',function(e){
+                   window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                 })
+               }
+             }
+             var a = document.getElementsByTagName('a');
+             if(a){
+               for(var i = 0; i < a.length; i++){
+                 a[i].onclick = function (event) {
+                   window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                   event.preventDefault();
+                 }
+               }
+             }
+           }
+            `}
+            customStyle={` 
+           .img-place-holder{ 
+             display:none
+           }
+           body{
+             background:none !important;
+           }
+         `}
+            />
+          ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity

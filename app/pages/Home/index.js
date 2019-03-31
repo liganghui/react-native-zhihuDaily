@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, Dimensions, StyleSheet, Text, InteractionManager} from "react-native";
+
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  Text,
+  InteractionManager,
+  AppState
+} from "react-native";
 import { Icon, Button } from "react-native-elements";
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
@@ -67,18 +75,30 @@ export default class index extends Component {
   }
   componentDidMount() {
     this._init();
+    AppState.addEventListener("change", this._handleAppStateChange);
   }
-
+  componentWillUnmount() {
+    AppState.removeEventListener("change", this._handleAppStateChange);
+    global.storage.save({
+      key: "first",
+      data: false
+    });
+  }
   _init() {
     // 优先读取缓存数据
     storage
       .load({ key: "latest" })
       .then(responseJson => {
+        console.warn(responseJson);
         this._handleDataRender(responseJson);
       })
-      .catch(error => {
-       
-      });
+      .catch(error => {});
+    storage
+      .load({ key: "test" })
+      .then(responseJson => {
+        console.warn(responseJson);
+      })
+      .catch(error => {});
   }
   /*
    * 下拉刷新
@@ -88,7 +108,7 @@ export default class index extends Component {
     this.setState({ refreshing: true });
     Axios.get(Api.latest)
       .then(responseJson => {
-        this._handleDataRender(responseJson.data)
+        this._handleDataRender(responseJson.data);
         this.setState({ refreshing: false });
       })
       .catch(error => {
@@ -101,19 +121,21 @@ export default class index extends Component {
     @oaram  {responseJson} data 数据对象
   */
 
-   _handleDataRender(responseJson) {
+  _handleDataRender(responseJson) {
     if (!responseJson || !responseJson.stories) {
       Tools.toast("服务器数据格式异常");
       return false;
     }
     let data = this.state.stories;
-    if (data.length>0&& data[0].key == responseJson.date) {
+    if (data.length > 0 && data[0].key == responseJson.date) {
       data[0].data = responseJson.stories;
     } else {
-      data = [{
+      data = [
+        {
           key: responseJson.date,
           data: responseJson.stories
-        }];
+        }
+      ];
     }
     this.setState({
       topStories: responseJson.top_stories,
@@ -137,17 +159,11 @@ export default class index extends Component {
     storage
       .load({
         key: "before",
-        // 传递额外的参数
-        syncParams: {
-          extraFetchOptions: {
-            // 传递日期参数
-            date: beforeDay
-          }
-        }
+        id: beforeDay
       })
       .then(responseJson => {
         if (!responseJson || !responseJson.stories) {
-          Tools.toast('数据格式异常');
+          Tools.toast("数据格式异常");
           return false;
         }
         // 合并数据
@@ -178,11 +194,11 @@ export default class index extends Component {
    * @param {Number} ID 日报ID
    */
   bindListTap = id => {
-      this.props.navigation.navigate("Details", {
-        itemId: id
-  })
+    this.props.navigation.navigate("Details", {
+      itemId: id
+    });
     // InteractionManager.runAfterInteractions(() => {
-     
+
     // })
   };
   /*
@@ -240,6 +256,20 @@ export default class index extends Component {
       listHeight: heightArr
     });
   }
+
+  /*
+   * 监听监听应用状态的变化
+   */
+
+  _handleAppStateChange = nextAppState => {
+    // 当切换到后台时,更新状态
+    if (nextAppState === "background") {
+      global.storage.save({
+        key: "first",
+        data: false
+      });
+    }
+  };
   /*
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据

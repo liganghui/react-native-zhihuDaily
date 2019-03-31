@@ -6,7 +6,6 @@ import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
 import './config/storage';
-
 import TestScreen from "./pages/Test";
 
 /*
@@ -46,7 +45,7 @@ const MainScreen = createStackNavigator({
     transitionConfig: () => ({
         screenInterpolator: StackViewStyleInterpolator.forHorizontal,
         transitionSpec: {
-            duration: 250,
+            duration: 280,
         },
     })
 });

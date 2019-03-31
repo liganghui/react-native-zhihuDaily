@@ -38,12 +38,12 @@ const Tools = {
         return year+month+day;
     },
     // 显示提示框
-    // @param {String} text 提示
+    // @param {String} text 提示文本
     toast(text) {
        Toast.show(text, {
           position: Toast.positions.BOTTOM,
           shadow: false,
-          backgroundColor: "#353434",
+          backgroundColor: "#525151",
           textColor: "#ffffff"
         });
     }

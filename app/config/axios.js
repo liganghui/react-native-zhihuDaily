@@ -8,7 +8,7 @@ import {Tools} from "./tools";
 
 
 const _Axios = axios.create({
-    timeout: 4500, // 超时时间
+    timeout: 4000, // 超时时间
     responseType: 'json', // 服务器响应的数据类型
     headers: {
         // 请求头 避免数据可能出现乱码
@@ -82,9 +82,9 @@ const Axios = {
               let errData=errorHandler(error)
               if (errData.message) {
                 Tools.toast(errData.message);
-                return Promise.reject(errData);
+                return Promise.reject(errData);//抛出异常信息
               } else {
-                Tools.toast("咦，好像出现了一些问题...");
+                Tools.toast("更新失败，未知错误");
                 return Promise.reject(error);
               }
             });
@@ -105,7 +105,7 @@ const Axios = {
                   Tools.toast(errData.message);
                   return Promise.reject(errData);
                 } else {
-                  Tools.toast("咦，好像出现了一些问题...");
+                  Tools.toast("更新失败，未知错误");
                   return Promise.reject(error);
                 }
             });
