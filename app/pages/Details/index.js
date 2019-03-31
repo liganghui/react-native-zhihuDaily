@@ -73,7 +73,6 @@ export default class index extends Component {
       })
       .then((res) => {
         if (!res) {
-          console.warn('初次加载')
           this.setState({
             first: true
           });

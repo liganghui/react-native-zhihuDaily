@@ -89,14 +89,7 @@ export default class index extends Component {
     storage
       .load({ key: "latest" })
       .then(responseJson => {
-        console.warn(responseJson);
         this._handleDataRender(responseJson);
-      })
-      .catch(error => {});
-    storage
-      .load({ key: "test" })
-      .then(responseJson => {
-        console.warn(responseJson);
       })
       .catch(error => {});
   }

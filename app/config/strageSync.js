@@ -56,7 +56,6 @@ sync = {
                     // 设置数据过期时间(毫秒)
                     expires: 1000,
                 });
-                console.warn('触发数据过期');
                 return json.data
             } else {
                 return null
