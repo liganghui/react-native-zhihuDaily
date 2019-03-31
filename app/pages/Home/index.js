@@ -76,6 +76,10 @@ export default class index extends Component {
   componentDidMount() {
     this._init();
     AppState.addEventListener("change", this._handleAppStateChange);
+    global.storage.save({
+      key: "first",
+      data: false
+    });
   }
   componentWillUnmount() {
     AppState.removeEventListener("change", this._handleAppStateChange);

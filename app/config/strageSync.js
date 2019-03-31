@@ -64,9 +64,6 @@ sync = {
             return Promise.reject(err);
         });
 
-    },
-    first() {
-        return fasle;
     }
 }
 exports.sync = sync;

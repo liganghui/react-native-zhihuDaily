@@ -67,8 +67,7 @@ export default class index extends Component {
   componentDidMount() {
 
     // 检测页面是否为初次加载
-    storage
-      .load({
+    storage.load({
         key: "first"
       })
       .then((res) => {
@@ -86,9 +85,8 @@ export default class index extends Component {
           });
         }
       })
-      .then(() => {
-        this._init();
-      });
+      this._init();
+    
   }
   _init() {
     storage
