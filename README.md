@@ -11,6 +11,7 @@
 
 
 > 注意 :
-     项目依赖项 : react-native-cardview (v2.0.2) 当前不支持react-native0.59+  需手动修改Android编译版本 ,否则可能无法运行项目。 [解决方法](https://github.com/Kishanjvaghela/react-native-cardview/issues/40)
+     项目依赖项 : react-native-cardview (v2.0.2) 当前不支持react-native0.59+  需手动修改Android编译版本 ,否则可能无法运行项目。 [解决方法](https://github.com/Kishanjvaghela/react-native-cardview/issues/40)  
+     另外应用启动后会有一些警告信息,警告来自依赖的开源组件自身问题,可无视。
     
 

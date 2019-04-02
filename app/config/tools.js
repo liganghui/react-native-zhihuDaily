@@ -19,34 +19,36 @@ const Tools = {
     formatWeek(date) {
         let val = String(date);
         if (val.length === 8) {
-            let dateStr =val.substring(0, 4) + "/" +val.substring(4, 6) + "/" +val.substring(6, 8);
+            let dateStr = val.substring(0, 4) + "/" + val.substring(4, 6) + "/" + val.substring(6, 8);
             let dailyDate = new Date(dateStr);
             let day = dailyDate.getDay();
-            let weekAry = new Array( "星期日", "星期一", "星期二", "星期三", "星期四","星期五","星期六");
+            let weekAry = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
             return weekAry[day]
         }
     },
     // 获取年月日
     // @return xxxx xx xx
-    getDate(){
+    getDate() {
         let nowDate = new Date();
         let year = nowDate.getFullYear();
-        let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1)
-                  : nowDate.getMonth() + 1;
+        let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) :
+            nowDate.getMonth() + 1;
         let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
-                  .getDate();
-        return year+month+day;
+            .getDate();
+        return year + month + day;
     },
     // 显示提示框
     // @param {String} text 提示文本
     toast(text) {
-       Toast.show(text, {
-          position: Toast.positions.BOTTOM,
-          shadow: false,
-          backgroundColor: "#525151",
-          textColor: "#ffffff"
+        Toast.show(text, {
+            position: Toast.positions.BOTTOM,
+            shadow: false,
+            backgroundColor: "#d5d5d3",
+            textColor: "#000000",
+            opacity: 0.9,
+            textStyle: { fontSize: 16 }
         });
     }
 
 }
-export {Tools}
+export { Tools }

@@ -4,7 +4,6 @@ import {
 } from "./index";
 // sync方法的名字必须和所存数据的key完全相同
 // 方法接受的参数为一整个object，所有参数从object中解构取出
-// 这里可以使用promise。或是使用普通回调函数，但需要调用resolve或reject。
 sync = {
     details(params) {
         let {
@@ -53,8 +52,8 @@ sync = {
                 global.storage.save({
                     key: 'latest',
                     data: json.data,
-                    // 设置数据过期时间(毫秒)
-                    expires: 1000,
+                    // 设置数据过期时间(毫秒单位)
+                    expires: 1000 * 60 * 10,
                 });
                 return json.data
             } else {

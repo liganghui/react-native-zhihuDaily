@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-
 import {
   View,
   Dimensions,
@@ -8,6 +7,7 @@ import {
   InteractionManager,
   AppState
 } from "react-native";
+import NetInfo from "@react-native-community/netinfo";
 import { Icon, Button } from "react-native-elements";
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
@@ -25,36 +25,36 @@ export default class index extends Component {
       title: navigation.getParam("title"),
       headerLeft: (
         <Button
-          type='clear'
-          title=''
+          type="clear"
+          title=""
           onPress={() => {
             navigation.openDrawer();
           }}
-          icon={<Icon type='material' name='menu' size={24} color='white' />}
+          icon={<Icon type="material" name="menu" size={24} color="white" />}
         />
       ),
       headerRight: (
         <View style={styles.headLeftWrapper}>
           <Button
-            title=''
-            type='clear'
+            title=""
+            type="clear"
             onPress={() => {
               navigation.navigate("Test");
             }}
             icon={
               <Icon
-                type='ionicon'
-                name='ios-calendar'
+                type="ionicon"
+                name="ios-calendar"
                 size={24}
-                color='white'
+                color="white"
               />
             }
           />
           <Button
-            title=''
-            type='clear'
+            title=""
+            type="clear"
             icon={
-              <Icon type='material' name='more-vert' size={24} color='white' />
+              <Icon type="material" name="more-vert" size={24} color="white" />
             }
           />
         </View>
@@ -64,11 +64,11 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      stories: [],
-      topStories: [],
-      pullUpLoading: false,
-      title: "",
-      refreshing: false,
+      stories: [], //列表数据
+      topStories: [], //轮播图数据
+      pullUpLoading: false, //上滑加载loading显示标识符
+      title: "", //header标题
+      refreshing: false, //下拉刷新loading显示标识符
       listHeight: [] //记录日报列表高度变化
     };
     this.props.navigation.setParams({ title: "首页" });
@@ -89,13 +89,19 @@ export default class index extends Component {
     });
   }
   _init() {
-    // 优先读取缓存数据
-    storage
-      .load({ key: "latest" })
+    // 根据网络状态初始化数据
+    // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
+    NetInfo.getConnectionInfo().then(connectionInfo => {
+      let type = connectionInfo.type == ("wifi" || "cellular") ? false :true;
+      storage
+      .load({ key: "latest",syncInBackground: type })
       .then(responseJson => {
-        this._handleDataRender(responseJson);
+        this._handleDataRender(responseJson)
       })
-      .catch(error => {});
+      .catch(error => {
+        console.warn(error);
+      });
+    });
   }
   /*
    * 下拉刷新
@@ -105,8 +111,8 @@ export default class index extends Component {
     this.setState({ refreshing: true });
     Axios.get(Api.latest)
       .then(responseJson => {
-        this._handleDataRender(responseJson.data);
         this.setState({ refreshing: false });
+        this._handleDataRender(responseJson.data);
       })
       .catch(error => {
         this.setState({ refreshing: false });
@@ -124,19 +130,16 @@ export default class index extends Component {
       return false;
     }
     let data = this.state.stories;
-    if (data.length > 0 && data[0].key == responseJson.date) {
-      data[0].data = responseJson.stories;
-    } else {
-      data = [
-        {
-          key: responseJson.date,
-          data: responseJson.stories
-        }
-      ];
-    }
+    data = [
+      {
+        key: responseJson.date,
+        data: responseJson.stories
+      }
+    ];
     this.setState({
       topStories: responseJson.top_stories,
-      stories: data
+      stories: data,
+      listHeight: []
     });
   }
 
@@ -214,11 +217,11 @@ export default class index extends Component {
         : null;
     }
   }
-  /* 
-  * 滚动监听
-
-  * 跟随滚动位置更新Header标题
-  */
+  /*
+   * 滚动监听
+   * 跟随滚动位置更新Header标题
+   * @param {Object} event 滚动事件
+   */
 
   bindOnScroll(event) {
     // 减去标题和轮播图高度
@@ -246,6 +249,7 @@ export default class index extends Component {
     var { x, y, width, height } = event.nativeEvent.layout;
     let heightArr = this.state.listHeight;
     heightArr.push(Number.parseInt(height));
+    // 每次组件高度变化 实际上会触发两次函数 , 只取组件渲染完毕后的高度。
     if (heightArr.length > this.state.stories.length) {
       heightArr.splice(heightArr.length - 2, 1);
     }
@@ -257,7 +261,6 @@ export default class index extends Component {
   /*
    * 监听监听应用状态的变化
    */
-
   _handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
@@ -265,6 +268,8 @@ export default class index extends Component {
         key: "first",
         data: false
       });
+    } else if (nextAppState === "active") {
+      this._init();
     }
   };
   /*
@@ -285,7 +290,8 @@ export default class index extends Component {
         pullupfresh={this.pullupfresh}
         onScroll={this.bindOnScroll.bind(this)}
         refreshing={this.state.refreshing}
-        onRefresh={this.bindOnRefresh.bind(this)}>
+        onRefresh={this.bindOnRefresh.bind(this)}
+      >
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
         <StoriesList
           data={this.state.stories}

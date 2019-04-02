@@ -62,6 +62,8 @@
 		767FE32C35414246840DF9E9 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 74F12FE800F94B4C8A4BF094 /* libRNCWebView.a */; };
 		A15D4ECCFE51416CA071858B /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A3B78421B2F8498BAB2369BE /* libRNFetchBlob.a */; };
 		62A9D75F58464541B7C8269B /* libRNCAsyncStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 11078E717C064FC594454BF8 /* libRNCAsyncStorage.a */; };
+		DFE4C1EF78D14F9E86146DA5 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 982880C01BFC4501B0055928 /* libRNCNetInfo.a */; };
+		AE861814563941029EB6A2D3 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65073D4E98F444B8B5D78CA1 /* libRNCNetInfo-tvOS.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -398,6 +400,9 @@
 		A3B78421B2F8498BAB2369BE /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		452FFD523E3A4BBA81CD9FEE /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; name = "RNCAsyncStorage.xcodeproj"; path = "../node_modules/@react-native-community/async-storage/ios/RNCAsyncStorage.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		11078E717C064FC594454BF8 /* libRNCAsyncStorage.a */ = {isa = PBXFileReference; name = "libRNCAsyncStorage.a"; path = "libRNCAsyncStorage.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		218B8E86559C407CA7AD9A7F /* RNCNetInfo.xcodeproj */ = {isa = PBXFileReference; name = "RNCNetInfo.xcodeproj"; path = "../node_modules/@react-native-community/netinfo/ios/RNCNetInfo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		982880C01BFC4501B0055928 /* libRNCNetInfo.a */ = {isa = PBXFileReference; name = "libRNCNetInfo.a"; path = "libRNCNetInfo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		65073D4E98F444B8B5D78CA1 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -432,6 +437,7 @@
 				767FE32C35414246840DF9E9 /* libRNCWebView.a in Frameworks */,
 				A15D4ECCFE51416CA071858B /* libRNFetchBlob.a in Frameworks */,
 				62A9D75F58464541B7C8269B /* libRNCAsyncStorage.a in Frameworks */,
+				DFE4C1EF78D14F9E86146DA5 /* libRNCNetInfo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +456,7 @@
 				2D02E4C81E0B4AEC006451C7 /* libRCTWebSocket-tvOS.a in Frameworks */,
 				FC6404D08FE547B792AC49F1 /* libRNGestureHandler-tvOS.a in Frameworks */,
 				2E249D976AB34E52BF9B21A0 /* libRNVectorIcons-tvOS.a in Frameworks */,
+				AE861814563941029EB6A2D3 /* libRNCNetInfo-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -629,6 +636,7 @@
 				47C43F113FC043C4805372FB /* RNCWebView.xcodeproj */,
 				46D218F14AE7471C8FD44C26 /* RNFetchBlob.xcodeproj */,
 				452FFD523E3A4BBA81CD9FEE /* RNCAsyncStorage.xcodeproj */,
+				218B8E86559C407CA7AD9A7F /* RNCNetInfo.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1303,6 +1311,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1312,6 +1322,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Debug;
@@ -1341,6 +1352,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1350,6 +1363,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Release;
@@ -1378,6 +1392,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Debug;
@@ -1405,6 +1420,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Release;
@@ -1442,6 +1458,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1451,6 +1469,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Debug;
@@ -1488,6 +1507,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1497,6 +1518,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Release;
@@ -1533,6 +1555,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1542,6 +1566,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Debug;
@@ -1578,6 +1603,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1587,6 +1614,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
+					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 				);
 			};
 			name = Release;
