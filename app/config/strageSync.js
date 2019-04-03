@@ -49,6 +49,7 @@ sync = {
     latest(params) {
         return Axios.get(Api.latest).then(json => {
             if (json && json.data.date) {
+                console.warn(json.data)
                 global.storage.save({
                     key: 'latest',
                     data: json.data,

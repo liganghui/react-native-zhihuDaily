@@ -92,15 +92,15 @@ export default class index extends Component {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
     NetInfo.getConnectionInfo().then(connectionInfo => {
-      let type = connectionInfo.type == ("wifi" || "cellular") ? false :true;
+      let type = connectionInfo.type == ("wifi" || "cellular") ? false : true;
       storage
-      .load({ key: "latest",syncInBackground: type })
-      .then(responseJson => {
-        this._handleDataRender(responseJson)
-      })
-      .catch(error => {
-        console.warn(error);
-      });
+        .load({ key: "latest", syncInBackground: type })
+        .then(responseJson => {
+          this._handleDataRender(responseJson);
+        })
+        .catch(error => {
+          console.warn(error);
+        });
     });
   }
   /*
@@ -112,6 +112,7 @@ export default class index extends Component {
     Axios.get(Api.latest)
       .then(responseJson => {
         this.setState({ refreshing: false });
+        console.warn(responseJson.data)
         this._handleDataRender(responseJson.data);
       })
       .catch(error => {
@@ -190,16 +191,50 @@ export default class index extends Component {
       });
   };
   /*
-   * 监听列表点击
-   * @param {Number} ID 日报ID
+   * 监听列表项点击
+   * @param {Object} item 列表项
+   * @param {Number} index 索引
+   * @param {Object} section 分组列表
    */
-  bindListTap = id => {
+  bindListTap = (item, index, section) => {
+    // 页面跳转
     this.props.navigation.navigate("Details", {
-      itemId: id
+      itemId: item.id
     });
-    // InteractionManager.runAfterInteractions(() => {
-
-    // })
+    let items = this.state.stories.map(obj => {
+      if (obj.key == section.key) {
+        // 列表项标记为已点击
+        obj.data[index].visited = true;
+      }
+      return obj;
+    });
+    this.setState(
+      {
+        stories: items
+      },
+      () => {
+        let data = this.state.stories.filter(obj => {
+          if (obj.key == section.key) {
+            return obj;
+          }
+        });
+        // 判断是否为当天数据 
+        // if (data[0].key == this.state.stories[0].key) {
+        //   storage.save({
+        //     key: "latest",
+        //     data: data[0].data,
+        //     expires: 1000 * 600
+        //   });
+        // } else {
+        //   storage.save({
+        //     key: "before",
+        //     id: section.key,
+        //     data: data[0].data,
+        //     expires: null //数据不过期
+        //   });
+        // }
+      }
+    );
   };
   /*
    * 格式化分组标题日期

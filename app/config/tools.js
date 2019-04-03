@@ -4,10 +4,9 @@ import Toast from "react-native-root-toast";
 const Tools = {
     /*
         格式化日期 返回月日
-        @param  {String}  数字格式的日期
-        @return  {String} 文本格式日期
-        @example 
-            (20150507)=> 5月7日
+        @param  {Number}  日期字符串
+        @return {String} 文本格式日期
+        @example (20150507)=> 5月7日
     */
     formatMonthDay(date) {
         let val = String(date);
@@ -15,7 +14,13 @@ const Tools = {
             return val.substring(4, 6) + "月" + val.substring(6, 8) + "日";
         }
     },
-    //  格式化日期 返回星期几 格式同上
+    //  
+    /*
+        格式化日期 返回星期 
+        @param  {Number} 日期字符串
+        @return {String} 星期
+        @example (20150507)=> 星期四
+    */
     formatWeek(date) {
         let val = String(date);
         if (val.length === 8) {
@@ -46,7 +51,7 @@ const Tools = {
             backgroundColor: "#d5d5d3",
             textColor: "#000000",
             opacity: 0.9,
-            textStyle: { fontSize: 16 }
+            textStyle: { fontSize: 14 }
         });
     }
 

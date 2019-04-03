@@ -2417,10 +2417,6 @@ image-size@^0.6.0:
   version "0.6.3"
   resolved "http://registry.npm.taobao.org/image-size/download/image-size-0.6.3.tgz#e7e5c65bb534bd7cdcedd6cb5166272a85f75fb2"
 
-immutable@^3.8.2:
-  version "3.8.2"
-  resolved "http://registry.npm.taobao.org/immutable/download/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
-
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/import-fresh/download/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -4497,11 +4493,10 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "http://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
-react-native-autoheight-webview@^1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/react-native-autoheight-webview/download/react-native-autoheight-webview-1.0.1.tgz#6e9d3672ec442caaf9be62bd94f87343452d5808"
+react-native-autoheight-webview@^1.1.1:
+  version "1.1.1"
+  resolved "http://registry.npm.taobao.org/react-native-autoheight-webview/download/react-native-autoheight-webview-1.1.1.tgz#04010c7332639d3a1b4f1d02d816ea24227c6f17"
   dependencies:
-    immutable "^3.8.2"
     prop-types "^15.7.2"
 
 react-native-cardview@^2.0.2:

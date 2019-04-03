@@ -13,7 +13,7 @@
     "flyio": "^0.6.14",
     "react": "16.8.3",
     "react-native": "0.59.1",
-    "react-native-autoheight-webview": "^1.0.1",
+    "react-native-autoheight-webview": "^1.1.1",
     "react-native-cardview": "^2.0.2",
     "react-native-elements": "^1.1.0",
     "react-native-gesture-handler": "^1.1.0",

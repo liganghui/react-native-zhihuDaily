@@ -19,7 +19,7 @@ export default class index extends Component {
     return <Text style={styles.headerTitle}>{info.section.key}</Text>;
   };
   //列表项渲染方法
-  renderItem = ({ item }) => {
+  renderItem = ({ item,index, section }) => {
     return (
       <CardView
         cardElevation={1}
@@ -27,10 +27,10 @@ export default class index extends Component {
         key={item.id}
         style={styles.cardWrapper}
       >
-        <Ripple rippleDuration={500} rippleOpacity={0.15} onPress={this.props.onPress.bind(this, item.id)}>
+        <Ripple rippleDuration={500} rippleOpacity={0.15} onPress={this.props.onPress.bind(this, item,index,section)}>
           <ListItem
             title={item.title}
-            titleStyle={styles.itemTitle}
+            titleStyle={[styles.itemTitle,{color:item.visited?'#999':'#000'}]}
             stickySectionHeadersEnabled={true}
             titleContainerStyle={styles.titleContainer}
             rightElement={
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   itemTitle: {
     flex: 1,
     fontSize: 18,
-    color: "#000"
+    // color: "#000"
   },
   multipicWrapper: {
     bottom: 0,
