@@ -112,7 +112,7 @@ export default class index extends Component {
     Axios.get(Api.latest)
       .then(responseJson => {
         this.setState({ refreshing: false });
-        console.warn(responseJson.data)
+        console.warn(responseJson.data);
         this._handleDataRender(responseJson.data);
       })
       .catch(error => {
@@ -201,40 +201,51 @@ export default class index extends Component {
     this.props.navigation.navigate("Details", {
       itemId: item.id
     });
-    let items = this.state.stories.map(obj => {
-      if (obj.key == section.key) {
-        // 列表项标记为已点击
-        obj.data[index].visited = true;
-      }
-      return obj;
-    });
-    this.setState(
-      {
-        stories: items
-      },
-      () => {
-        let data = this.state.stories.filter(obj => {
-          if (obj.key == section.key) {
-            return obj;
+    if (!item.visited) {
+      let items = this.state.stories.map(obj => {
+        if (obj.key == section.key) {
+          // 列表项标记为已点击
+          obj.data[index].visited = true;
+        }
+        return obj;
+      });
+      this.setState(
+        {
+          stories: items
+        },
+        () => {
+          // 判断是否为当天数据
+          if (section.key == this.state.stories[0].key) {
+            let data = {
+              date: section.key,
+              stories: this.state.stories[0].data,
+              top_stories: this.state.topStories
+            };
+            storage.save({
+              key: "latest",
+              data,
+              expires: 1000 * 600
+            });
+          } else {
+            let currentIndex;
+            for (let i = 0; i < this.state.stories.length; i++) {
+              if (this.state.stories[i].key == section.key) {
+                currentIndex = i ;
+              }
+            }
+            let data = {
+              date: this.state.stories[currentIndex].key,
+              stories: this.state.stories[currentIndex].data
+            };
+            storage.save({
+              key: "before",
+              id:this.state.stories[currentIndex-1].key,
+              data
+            });
           }
-        });
-        // 判断是否为当天数据 
-        // if (data[0].key == this.state.stories[0].key) {
-        //   storage.save({
-        //     key: "latest",
-        //     data: data[0].data,
-        //     expires: 1000 * 600
-        //   });
-        // } else {
-        //   storage.save({
-        //     key: "before",
-        //     id: section.key,
-        //     data: data[0].data,
-        //     expires: null //数据不过期
-        //   });
-        // }
-      }
-    );
+        }
+      );
+    }
   };
   /*
    * 格式化分组标题日期

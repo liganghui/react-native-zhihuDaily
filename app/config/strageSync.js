@@ -15,7 +15,6 @@ sync = {
                     key: 'details',
                     id,
                     data: json.data,
-                    expires: null //数据不过期
                 });
                 return json.data;
             } else {
@@ -36,7 +35,6 @@ sync = {
                     key: 'before',
                     id: id,
                     data: json.data,
-                    expires: null //数据不过期
                 });
                 return json.data;
             } else {
