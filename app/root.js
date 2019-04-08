@@ -45,7 +45,7 @@ const MainScreen = createStackNavigator({
     transitionConfig: () => ({
         screenInterpolator: StackViewStyleInterpolator.forHorizontal,
         transitionSpec: {
-            duration: 300,
+            duration: 280,
         },
     })
 });

@@ -74,18 +74,6 @@ export default class index extends Component {
   }
   componentDidMount() {
     this._init();
-    AppState.addEventListener("change", this._handleAppStateChange);
-    global.storage.save({
-      key: "first",
-      data: false
-    });
-  }
-  componentWillUnmount() {
-    AppState.removeEventListener("change", this._handleAppStateChange);
-    global.storage.save({
-      key: "first",
-      data: false
-    });
   }
   _init() {
     // 根据网络状态初始化数据
@@ -312,10 +300,7 @@ export default class index extends Component {
   _handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
-      global.storage.save({
-        key: "first",
-        data: false
-      });
+        // .....
     }
   };
   /*

@@ -51,8 +51,6 @@ export default class index extends Component {
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
-      // 用于判断页面是否为初次加载
-      first: null,
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -65,28 +63,7 @@ export default class index extends Component {
     this.props.navigation.setParams({ opacity: opacity });
   }
   componentDidMount() {
-
-    // 检测页面是否为初次加载
-    storage.load({
-        key: "first"
-      })
-      .then((res) => {
-        if (!res) {
-          this.setState({
-            first: true
-          });
-          global.storage.save({
-            key: "first",
-            data: true
-          });
-        }else{
-          this.setState({
-            first: false
-          });
-        }
-      })
       this._init();
-    
   }
   _init() {
     storage
@@ -102,22 +79,10 @@ export default class index extends Component {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
-        if (this.state.first) {
-          this.setState({
-            daily: response
-          });
-          // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
-          InteractionManager.runAfterInteractions(() => {
-            this.setState({
-              body: html
-            });
-          });
-        } else {
           this.setState({
             daily: response,
             body: html
           });
-        }
       })
       .catch((error) => {});
   }
@@ -200,7 +165,7 @@ export default class index extends Component {
           renderBackground={this.renderSectioHeader}>
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
 
-          {this.state.first===false || this.state.body ? (
+          { this.state.body ? (
             <AutoHeightWebView
               style={{ width: this.state.webviewWidth }}
               source={{ html: this.state.body }}
