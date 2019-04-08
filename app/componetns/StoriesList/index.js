@@ -59,11 +59,12 @@ export default class index extends Component {
         </Ripple>
       </CardView>
     );
+   
+   
   };
   render() {
     return (
       <SectionList
-        {...this.props}
         keyExtractor={this.keyExtractor}
         sections={this.props.data}
         renderSectionHeader={

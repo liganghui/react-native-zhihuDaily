@@ -25,7 +25,7 @@ export default class HomeSwiper extends Component {
             dotStyle={styles.dotStyle}
             activeDotStyle={styles.dotStyle}
           >
-            {this.props.data.map(item => {
+            {this.props.data.map((item,index) => {
               return (
                 <View style={styles.sliderWrapper} key={item.id} >
                   <Image source={{ uri: item.image }} style={styles.image}  />
@@ -33,7 +33,7 @@ export default class HomeSwiper extends Component {
                     colors={["rgba(0,0,0,0)", "rgba(0,0,0,.9)"]}
                     style={styles.linearGradient}
                   >
-                  <TouchableOpacity   style={styles.mask} activeOpacity={1}  onPress={this.props.onPress.bind(this, item.id)}>
+                  <TouchableOpacity   style={styles.mask} activeOpacity={1}  onPress={this.props.onPress.bind(this, item,index,this.props.data)}>
                     <Text style={styles.title}>{item.title}</Text>
                   </TouchableOpacity >
                   </LinearGradient>

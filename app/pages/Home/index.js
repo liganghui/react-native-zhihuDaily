@@ -4,7 +4,6 @@ import {
   Dimensions,
   StyleSheet,
   Text,
-  InteractionManager,
   AppState
 } from "react-native";
 import NetInfo from "@react-native-community/netinfo";
@@ -112,7 +111,6 @@ export default class index extends Component {
     Axios.get(Api.latest)
       .then(responseJson => {
         this.setState({ refreshing: false });
-        console.warn(responseJson.data);
         this._handleDataRender(responseJson.data);
       })
       .catch(error => {
@@ -121,17 +119,31 @@ export default class index extends Component {
   }
 
   /*
-    处理首屏数据渲染
-    @oaram  {responseJson} data 数据对象
+  * 处理首屏数据渲染
+  * @oaram  {responseJson} data 数据对象
   */
-
   _handleDataRender(responseJson) {
     if (!responseJson || !responseJson.stories) {
       Tools.toast("服务器数据格式异常");
       return false;
     }
-    let data = this.state.stories;
-    data = [
+    // 读取数据访问状态
+    responseJson.stories.map(item => {
+      storage
+        .load({
+          key: "visited",
+          id: item.id
+        })
+        // 标记已访问
+        .then(res => {
+          item.visited = true;
+        })
+        // 未访问
+        .catch(error => {
+          item.visited = false;
+        });
+    });
+    let data = [
       {
         key: responseJson.date,
         data: responseJson.stories
@@ -140,7 +152,7 @@ export default class index extends Component {
     this.setState({
       topStories: responseJson.top_stories,
       stories: data,
-      listHeight: []
+      listHeight: [] //重置列表高度数组
     });
   }
 
@@ -167,6 +179,20 @@ export default class index extends Component {
           Tools.toast("数据格式异常");
           return false;
         }
+        // 获取数据访问状态
+        responseJson.stories.map(item => {
+          storage
+            .load({
+              key: "visited",
+              id: item.id
+            })
+            .then(res => {
+              item.visited = true;
+            })
+            .catch(error => {
+              item.visited = false;
+            });
+        });
         // 合并数据
         let newData = this.state.stories.concat({
           key: responseJson.date,
@@ -181,7 +207,7 @@ export default class index extends Component {
             this.setState({
               pullUpLoading: false
             });
-          }, 500);
+          }, 550);
         });
       })
       .catch(error => {
@@ -191,61 +217,37 @@ export default class index extends Component {
       });
   };
   /*
-   * 监听列表项点击
+   * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
-   * @param {Number} index 索引
-   * @param {Object} section 分组列表
    */
-  bindListTap = (item, index, section) => {
+  bindListTap = item => {
     // 页面跳转
     this.props.navigation.navigate("Details", {
       itemId: item.id
     });
-    if (!item.visited) {
-      let items = this.state.stories.map(obj => {
-        if (obj.key == section.key) {
-          // 列表项标记为已点击
-          obj.data[index].visited = true;
-        }
-        return obj;
-      });
-      this.setState(
-        {
-          stories: items
-        },
-        () => {
-          // 判断是否为当天数据
-          if (section.key == this.state.stories[0].key) {
-            let data = {
-              date: section.key,
-              stories: this.state.stories[0].data,
-              top_stories: this.state.topStories
-            };
-            storage.save({
-              key: "latest",
-              data,
-              expires: 1000 * 600
-            });
-          } else {
-            let currentIndex;
-            for (let i = 0; i < this.state.stories.length; i++) {
-              if (this.state.stories[i].key == section.key) {
-                currentIndex = i ;
-              }
-            }
-            let data = {
-              date: this.state.stories[currentIndex].key,
-              stories: this.state.stories[currentIndex].data
-            };
-            storage.save({
-              key: "before",
-              id:this.state.stories[currentIndex-1].key,
-              data
-            });
+    // 存储访问状态
+    storage.save({
+      key: "visited",
+      id: item.id,
+      data: true,
+      expires: null
+    }).then(()=>{
+      // 更新访问状态
+      // PS：这里需要将旧数据解构成一个新数组 , 可以避免setState不生效问题，因为setState是浅比较 。
+      let stories=[...this.state.stories];
+      stories.forEach((items)=>{
+        items.data.forEach((i)=>{
+          if(i.id==item.id){
+            i.visited=true
+            return false;
           }
-        }
-      );
-    }
+        })
+      })
+      this.setState({
+        stories
+      })
+    });
+    
   };
   /*
    * 格式化分组标题日期
@@ -289,7 +291,7 @@ export default class index extends Component {
   }
   /*
    * 监听列表高度变化
-   * @param {Number} height 列表高度数值
+   * @param {Object} event 列表高度数值
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;
@@ -314,8 +316,6 @@ export default class index extends Component {
         key: "first",
         data: false
       });
-    } else if (nextAppState === "active") {
-      this._init();
     }
   };
   /*
@@ -340,6 +340,7 @@ export default class index extends Component {
       >
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
         <StoriesList
+          ref={listView => (this.listView = listView)}
           data={this.state.stories}
           onLayout={this.listenListHeight.bind(this)}
           onPress={this.bindListTap}
