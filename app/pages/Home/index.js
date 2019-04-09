@@ -17,7 +17,6 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
-import AutoHeightWebView from "react-native-autoheight-webview";
 
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -117,32 +116,36 @@ export default class index extends Component {
       return false;
     }
     // 读取数据访问状态
-    responseJson.stories.map(item => {
+    responseJson.stories.map((item,index) => {
       storage
         .load({
           key: "visited",
           id: item.id
         })
-        // 标记已访问
         .then(res => {
+          // 标记已访问
           item.visited = true;
         })
         // 未访问
         .catch(error => {
           item.visited = false;
         });
+        // load是异步方法 , 等待循环结束后再更新页面
+        if(index==responseJson.stories.length-1){
+          let data = [
+            {
+              key: responseJson.date,
+              data: responseJson.stories
+            }
+          ];
+          this.setState({
+            topStories: responseJson.top_stories,
+            stories: data,
+            listHeight: [] //重置列表高度数组
+          });
+        }
     });
-    let data = [
-      {
-        key: responseJson.date,
-        data: responseJson.stories
-      }
-    ];
-    this.setState({
-      topStories: responseJson.top_stories,
-      stories: data,
-      listHeight: [] //重置列表高度数组
-    });
+
   }
 
   /*
@@ -169,7 +172,7 @@ export default class index extends Component {
           return false;
         }
         // 获取数据访问状态
-        responseJson.stories.map(item => {
+        responseJson.stories.map((item,index) => {
           storage
             .load({
               key: "visited",
@@ -177,6 +180,8 @@ export default class index extends Component {
             })
             .then(res => {
               item.visited = true;
+              if(index==responseJson.stories.length){
+              }
             })
             .catch(error => {
               item.visited = false;
@@ -236,8 +241,8 @@ export default class index extends Component {
         stories
       })
     });
-    
   };
+
   /*
    * 格式化分组标题日期
    *
@@ -245,7 +250,7 @@ export default class index extends Component {
    *  @return {String}  格式化后的日期
    */
   _formatDate(date) {
-    let currentDate = Tools.getDate();
+    let currentDate = Tools.getNowsday();
     if (currentDate == date) {
       return "今日热闻";
     } else {

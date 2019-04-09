@@ -65,6 +65,9 @@ export default class index extends Component {
   componentDidMount() {
       this._init();
   }
+  /*
+   *  初始化webview数据
+   */
   _init() {
     storage
       .load({
@@ -86,6 +89,10 @@ export default class index extends Component {
       })
       .catch((error) => {});
   }
+  /*
+   * 接受并处理Webview发送的信息
+   * @param {Object} event 消息事件对象
+  */
   bindMessage(event) {
     let data = event.nativeEvent.data;
     if (String(data).indexOf("img:") !== -1) {
@@ -102,6 +109,10 @@ export default class index extends Component {
       });
     }
   }
+  /*
+   *  监听页面滚动 记录滚动方向 , 控制Header显示.
+   *  @param {Object} event 滚动事件对象
+  */
   bindOnScroll = (event) => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
@@ -122,6 +133,15 @@ export default class index extends Component {
       }
     }
   };
+  /*
+   * 跳转到栏目列表
+   */
+  _bindSectionTap=()=>{
+    this.props.navigation.navigate("Section", {
+      id: this.state.daily.section.id,
+      title:this.state.daily.section.name
+    });
+  }
 
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
@@ -204,9 +224,7 @@ export default class index extends Component {
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
               style={styles.sectionWrapper}
-              onPress={() => {
-                console.warn(this.state.daily.section.id);
-              }}>
+              onPress={this._bindSectionTap}>
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}

@@ -80,7 +80,7 @@ export default class App extends React.Component {
       }  
       // 下载文件
       RNFetchBlob.config({
-        fileCache: true, //保存称临时文件
+        fileCache: true, //文件保存成临时文件
         appendExt: imgFormat //临时文件扩展名
       })
         .fetch("GET", imgSrc)

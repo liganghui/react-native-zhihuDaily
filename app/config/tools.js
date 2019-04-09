@@ -31,15 +31,14 @@ const Tools = {
             return weekAry[day]
         }
     },
-    // 获取年月日
+    // 获取当前年月日
     // @return xxxx xx xx
-    getDate() {
+    getNowsday() {
         let nowDate = new Date();
         let year = nowDate.getFullYear();
         let month = nowDate.getMonth() + 1 < 10 ? "0" + (nowDate.getMonth() + 1) :
             nowDate.getMonth() + 1;
         let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate
-            .getDate();
         return year + month + day;
     },
     // 显示提示框

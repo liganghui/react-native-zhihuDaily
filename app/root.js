@@ -5,6 +5,7 @@ import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
+import SectionScreen from "./pages/Section";
 import './config/storage';
 import TestScreen from "./pages/Test";
 
@@ -15,6 +16,8 @@ import TestScreen from "./pages/Test";
  *      >Drawer
  *      >Home 
  *          >>Details  
+ *          >>....
+ * 
  */
 // 二级导航
 const MainScreen = createStackNavigator({
@@ -29,6 +32,9 @@ const MainScreen = createStackNavigator({
     },
     Test: {
         screen: TestScreen
+    },
+    Section: {
+        screen: SectionScreen
     },
 }, {
     // 设置header默认样式

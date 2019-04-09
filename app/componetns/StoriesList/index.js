@@ -30,6 +30,7 @@ export default class index extends Component {
         <Ripple rippleDuration={500} rippleOpacity={0.15} onPress={this.props.onPress.bind(this, item,index,section)}>
           <ListItem
             title={item.title}
+            subtitle={item.display_date?item.display_date:null}
             titleStyle={[styles.itemTitle,{color:item.visited?'#999':'#000'}]}
             stickySectionHeadersEnabled={true}
             titleContainerStyle={styles.titleContainer}
@@ -87,7 +88,6 @@ const styles = StyleSheet.create({
   itemTitle: {
     flex: 1,
     fontSize: 18,
-    // color: "#000"
   },
   multipicWrapper: {
     bottom: 0,

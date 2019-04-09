@@ -25,7 +25,6 @@ sync = {
         });
     },
     before(params) {
-        // 获取额外的参数
         let {
             id
         } = params;
@@ -46,9 +45,9 @@ sync = {
     },
     latest(params) {
         return Axios.get(Api.latest).then(json => {
-            if (json && json.data.date) {
+            if (json && json.data.stories) {
                 global.storage.save({
-                    key: 'latest',
+                    key: 'section',
                     data: json.data,
                     // 设置数据过期时间(毫秒单位)
                     expires: 1000 * 60 * 10,
@@ -60,7 +59,27 @@ sync = {
         }).catch(err => {
             return Promise.reject(err);
         });
-
+    },
+    section(params){
+        let {
+            id
+        } = params;
+        return Axios.get(Api.section + id).then(json => {
+            if (json && json.data.stories) {
+                global.storage.save({
+                    key: 'section',
+                    data: json.data,
+                    id,
+                    // 设置数据过期时间(毫秒单位)
+                    expires: null,
+                });
+                return json.data
+            } else {
+                return null
+            }
+        }).catch(err => {
+            return Promise.reject(err);
+        });
     }
 }
 exports.sync = sync;
