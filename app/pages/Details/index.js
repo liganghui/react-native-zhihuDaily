@@ -164,8 +164,6 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}>
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
-
-          { this.state.body ? (
             <AutoHeightWebView
               style={{ width: this.state.webviewWidth }}
               source={{ html: this.state.body }}
@@ -202,7 +200,6 @@ export default class index extends Component {
            }
          `}
             />
-          ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity

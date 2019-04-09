@@ -17,6 +17,7 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
+import AutoHeightWebView from "react-native-autoheight-webview";
 
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
