@@ -15,13 +15,59 @@ const _Axios = axios.create({
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
     },
 });
+
+const Axios = {
+    get: async(url, params, config) => {
+        return _Axios({
+                method: 'get',
+                url: url,
+                params,
+                ...config
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                console.warn(error)
+                let errData = errorHandler(error)
+                if (errData.message) {
+                    Tools.toast(errData.message);
+                    return Promise.reject(errData); //抛出异常信息
+                } else {
+                    Tools.toast("更新失败，未知错误");
+                    return Promise.reject(error);
+                }
+            });
+    },
+    post: async(url, params, config) => {
+        return _Axios({
+                method: 'post',
+                url: url,
+                data: params,
+                ...config
+            })
+            .then(data => {
+                return data;
+            })
+            .catch(error => {
+                let errData = errorHandler(error)
+                if (errData.message) {
+                    Tools.toast(errData.message);
+                    return Promise.reject(errData);
+                } else {
+                    Tools.toast("更新失败，未知错误");
+                    return Promise.reject(error);
+                }
+            });
+    }
+};
 // 处理请求错误
 const errorHandler = (err) => {
     let errData = {
         status: null,
         message: null
     }
-    if (!err.status) {
+    if (!err || !err.status) {
         errData.status = 0;
         errData.message = '网络连接异常';
     } else if (err && err.response) {
@@ -66,50 +112,5 @@ const errorHandler = (err) => {
     return errData
 }
 
-
-const Axios = {
-    get: async(url, params, config) => {
-        return _Axios({
-                method: 'get',
-                url: url,
-                params,
-                ...config
-            })
-            .then(data => {
-                return data;
-            })
-            .catch(error => {
-                let errData = errorHandler(error)
-                if (errData.message) {
-                    Tools.toast(errData.message);
-                    return Promise.reject(errData); //抛出异常信息
-                } else {
-                    Tools.toast("更新失败，未知错误");
-                    return Promise.reject(error);
-                }
-            });
-    },
-    post: async(url, params, config) => {
-        return _Axios({
-                method: 'post',
-                url: url,
-                data: params,
-                ...config
-            })
-            .then(data => {
-                return data;
-            })
-            .catch(error => {
-                let errData = errorHandler(error)
-                if (errData.message) {
-                    Tools.toast(errData.message);
-                    return Promise.reject(errData);
-                } else {
-                    Tools.toast("更新失败，未知错误");
-                    return Promise.reject(error);
-                }
-            });
-    }
-};
 
 export { Axios };

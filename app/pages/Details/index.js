@@ -51,6 +51,8 @@ export default class index extends Component {
       webviewWidth: null,
       // 记录webviewI初始化状态
       webviewInit: false,
+      // 用于判断页面是否为初次加载
+      first: null,
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -63,7 +65,27 @@ export default class index extends Component {
     this.props.navigation.setParams({ opacity: opacity });
   }
   componentDidMount() {
-      this._init();
+    this._init();
+    // 检测页面是否为初次加载
+    storage
+      .load({
+        key: "first"
+      })
+      .then(res => {
+        if (!res) {
+          this.setState({
+            first: true
+          });
+          global.storage.save({
+            key: "first",
+            data: true
+          });
+        } else {
+          this.setState({
+            first: false
+          });
+        }
+      });
   }
   /*
    *  初始化webview数据
@@ -74,7 +96,7 @@ export default class index extends Component {
         key: "details",
         id: this.state.itemId
       })
-      .then((response) => {
+      .then(response => {
         if (!response || !response.body) {
           Tools.toast("服务器数据异常");
           return false;
@@ -82,17 +104,29 @@ export default class index extends Component {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
         <link rel="stylesheet" href="${response.css[0]}" />
         <body>${response.body}</body></html>`;
+        if (this.state.first) {
+          this.setState({
+            daily: response
+          });
+          // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
+          InteractionManager.runAfterInteractions(() => {
+            this.setState({
+              body: html
+            });
+          });
+        } else {
           this.setState({
             daily: response,
             body: html
           });
+        }
       })
-      .catch((error) => {});
+      .catch(error => {});
   }
   /*
    * 接受并处理Webview发送的信息
    * @param {Object} event 消息事件对象
-  */
+   */
   bindMessage(event) {
     let data = event.nativeEvent.data;
     if (String(data).indexOf("img:") !== -1) {
@@ -104,7 +138,7 @@ export default class index extends Component {
       this.setState({ webviewInit: true });
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
-      Linking.openURL(src).catch((err) => {
+      Linking.openURL(src).catch(err => {
         Tools.toast("无法打开浏览器了..");
       });
     }
@@ -112,8 +146,8 @@ export default class index extends Component {
   /*
    *  监听页面滚动 记录滚动方向 , 控制Header显示.
    *  @param {Object} event 滚动事件对象
-  */
-  bindOnScroll = (event) => {
+   */
+  bindOnScroll = event => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
     offsetY = y;
@@ -136,12 +170,12 @@ export default class index extends Component {
   /*
    * 跳转到栏目列表
    */
-  _bindSectionTap=()=>{
+  _bindSectionTap = () => {
     this.props.navigation.navigate("Section", {
       id: this.state.daily.section.id,
-      title:this.state.daily.section.name
+      title: this.state.daily.section.name
     });
-  }
+  };
 
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
@@ -150,14 +184,15 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     return (
-      <Animated.View key='background' style={{ translateY: imgTop }}>
+      <Animated.View key="background" style={{ translateY: imgTop }}>
         <Image
           style={[styles.backgroundImage]}
           source={{ uri: this.state.daily.image }}
         />
         <LinearGradient
           colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.8)"]}
-          style={styles.linearGradient}>
+          style={styles.linearGradient}
+        >
           <Text style={[styles.title]}>{this.state.daily.title}</Text>
           <Text style={[styles.source]}>{this.state.daily.image_source}</Text>
         </LinearGradient>
@@ -168,9 +203,10 @@ export default class index extends Component {
     return (
       <View
         style={styles.fill}
-        onLayout={(event) => {
+        onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
-        }}>
+        }}
+      >
         <ParallaxScrollView
           scrollEnabled={this.body ? false : true}
           backgroundColor={"#fff"}
@@ -182,49 +218,53 @@ export default class index extends Component {
             }
           )}
           parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}>
+          renderBackground={this.renderSectioHeader}
+        >
           {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
+          {this.state.first === false || this.state.body ? (
             <AutoHeightWebView
               style={{ width: this.state.webviewWidth }}
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
               // 为webview图片绑定点击事件 , 触发查看大图
               customScript={`
-             window.onload=function(){
-             window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-             var imgs = document.getElementsByTagName("img");
-             if(imgs){
-               for(var i=0;i<imgs.length;i++){
-                 imgs[i].addEventListener('click',function(e){
-                   window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
-                 })
-               }
-             }
-             var a = document.getElementsByTagName('a');
-             if(a){
-               for(var i = 0; i < a.length; i++){
-                 a[i].onclick = function (event) {
-                   window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
-                   event.preventDefault();
-                 }
-               }
-             }
-           }
-            `}
-            customStyle={` 
-           .img-place-holder{ 
-             display:none
-           }
-           body{
-             background:none !important;
-           }
-         `}
+                  window.onload=function(){
+                    window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+                    var imgs = document.getElementsByTagName("img");
+                    if(imgs){
+                      for(var i=0;i<imgs.length;i++){
+                        imgs[i].addEventListener('click',function(e){
+                          window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                        })
+                      }
+                    }
+                    var a = document.getElementsByTagName('a');
+                  if(a){
+                    for(var i = 0; i < a.length; i++){
+                    a[i].onclick = function (event) {
+                        window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                        event.preventDefault();
+                      }
+                    }
+                  }
+                }
+               `}
+              customStyle={` 
+                .img-place-holder{ 
+                  display:none
+                }
+                body{
+                  background:none !important;
+                }
+              `}
             />
+          ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
               style={styles.sectionWrapper}
-              onPress={this._bindSectionTap}>
+              onPress={this._bindSectionTap}
+            >
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}
@@ -234,9 +274,9 @@ export default class index extends Component {
               </Text>
               <Icon
                 iconStyle={styles.iconRightArrow}
-                name='angle-right'
-                type='font-awesome'
-                color='#333'
+                name="angle-right"
+                type="font-awesome"
+                color="#333"
                 size={22}
               />
             </TouchableOpacity>

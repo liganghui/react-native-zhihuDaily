@@ -60,7 +60,7 @@ sync = {
             return Promise.reject(err);
         });
     },
-    section(params){
+    section(params) {
         let {
             id
         } = params;
@@ -80,6 +80,6 @@ sync = {
         }).catch(err => {
             return Promise.reject(err);
         });
-    }
+    },
 }
 exports.sync = sync;
