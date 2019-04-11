@@ -20,7 +20,6 @@ export default class App extends React.Component {
       },
       headerRight: (
         <Button
-          title=""
           type="clear"
           onPress={params.handleMore}
           icon={<Icon type="material" name="get-app" size={24} color="white" />}
@@ -86,7 +85,7 @@ export default class App extends React.Component {
         .fetch("GET", imgSrc)
         .then(res => {
           // 图片文件名
-          const fileName = Tools.getDate() + "_" + res.taskId;
+          const fileName = Tools.getNowadays() + "_" + res.taskId;
           // 判断文件夹是否存在
           RNFetchBlob.fs
             .isDir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`)
@@ -132,7 +131,7 @@ export default class App extends React.Component {
     ];
     return (
       <View style={{ flex: 1 }}>
-        <ImageViewer imageUrls={images} renderIndicator={() => {}} />
+        <ImageViewer imageUrls={images} renderIndicator={() => {}}  onSave={this.saveImg.bind(this)} menuContext ={{ saveToLocal: '保存图像', cancel: '取消' }}/>
       </View>
     );
   }

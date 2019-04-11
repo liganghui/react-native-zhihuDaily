@@ -1,7 +1,23 @@
 import React, { Component } from "react";
-import { View, Dimensions, StyleSheet, Text, AppState } from "react-native";
+import {
+  View,
+  Dimensions,
+  StyleSheet,
+  Text,
+  AppState,
+  Platform,
+  TouchableNativeFeedback
+} from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 import { Icon, Button } from "react-native-elements";
+import {
+  Menu,
+  MenuProvider,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+  renderers
+} from "react-native-popup-menu";
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
@@ -12,14 +28,23 @@ import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
 
+let that;//保存This引用
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
+    // 解决按钮点击涟漪不是圆角的问题 (react-native-elements当前版本问题)
+    // 详细说明 :https://github.com/react-native-training/react-native-elements/issues/1102
+    let background;
+    if (Platform.Version >= 21) {
+      background = TouchableNativeFeedback.Ripple("ThemeAttrAndroid", true);
+    } else {
+      background = TouchableNativeFeedback.SelectableBackground();
+    }
     return {
       title: navigation.getParam("title"),
       headerLeft: (
         <Button
+          background={background}
           type="clear"
-          title=""
           onPress={() => {
             navigation.openDrawer();
           }}
@@ -29,7 +54,7 @@ export default class index extends Component {
       headerRight: (
         <View style={styles.headLeftWrapper}>
           <Button
-            title=""
+            background={background}
             type="clear"
             onPress={() => {
               navigation.navigate("Test");
@@ -44,8 +69,11 @@ export default class index extends Component {
             }
           />
           <Button
-            title=""
+            background={background}
             type="clear"
+            onPress={() => {
+              that.tooglePopupMenu();
+            }}
             icon={
               <Icon type="material" name="more-vert" size={24} color="white" />
             }
@@ -62,9 +90,11 @@ export default class index extends Component {
       pullUpLoading: false, //上滑加载loading显示标识符
       title: "", //header标题
       refreshing: false, //下拉刷新loading显示标识符
-      listHeight: [] //记录日报列表高度变化
+      listHeight: [], //记录日报列表高度变化
+      opened:false //控制Header弹出菜单显示
     };
     this.props.navigation.setParams({ title: "首页" });
+    that = this;
   }
   componentDidMount() {
     this._init();
@@ -75,6 +105,8 @@ export default class index extends Component {
       key: "first",
       data: false
     });
+    // 传递到navigation (navigation中无法使用this调用)
+    this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
   }
   _init() {
     // 根据网络状态初始化数据
@@ -104,7 +136,7 @@ export default class index extends Component {
       })
       .catch(error => {
         this.setState({ refreshing: false });
-    });
+      });
   }
 
   /*
@@ -185,24 +217,24 @@ export default class index extends Component {
           return false;
         }
         // 获取数据访问状态
-        this.updateVistedState(responseJson.stories,res=>{
-           // 合并数据
-        let newData = this.state.stories.concat({
-          key: responseJson.date,
-          data: res
+        this.updateVistedState(responseJson.stories, res => {
+          // 合并数据
+          let newData = this.state.stories.concat({
+            key: responseJson.date,
+            data: res
+          });
+          // 更新数据
+          this.setState({ stories: newData }, () => {
+            // 短暂地显示滚动指示器。 TODO: 函数无效
+            // this.scrollView.flashScrollIndicators();
+            // 等待数据渲染完成,避免loading状态早于渲染结束
+            setTimeout(() => {
+              this.setState({
+                pullUpLoading: false
+              });
+            }, 550);
+          });
         });
-        // 更新数据
-        this.setState({ stories: newData }, () => {
-          // 短暂地显示滚动指示器。 TODO: 函数无效
-          // this.scrollView.flashScrollIndicators();
-          // 等待数据渲染完成,避免loading状态早于渲染结束
-          setTimeout(() => {
-            this.setState({
-              pullUpLoading: false
-            });
-          }, 550);
-        });
-        })       
       })
       .catch(error => {
         this.setState({
@@ -320,6 +352,14 @@ export default class index extends Component {
     }
   };
   /*
+   * 控制弹出菜单切换显示
+   */
+  tooglePopupMenu() {
+    that.setState({
+      opened: !that.state.opened
+    });
+  }
+  /*
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据
    */
@@ -330,6 +370,20 @@ export default class index extends Component {
       </Text>
     );
   };
+  /*
+   * 弹出菜单渲染器
+   * 调整菜单定位到视口右上角
+   */
+  renderCustomMenu = props => {
+    const { style, children, layouts, ...other } = props;
+    const position = { top: 0, right: 0 };
+    return (
+      <View {...other} style={[style, position]}>
+        {children}
+      </View>
+    );
+  };
+
   render() {
     return (
       <MyScrollView
@@ -350,6 +404,24 @@ export default class index extends Component {
         {this.state.stories.length > 0 ? (
           <PullUpLoad loading={this.state.pullUpLoading} />
         ) : null}
+
+        {/* Header弹出选择菜单 */}
+        <Menu
+          opened={this.state.opened}
+          style={styles.popupWrapper}
+          onBackdropPress={this.tooglePopupMenu.bind(this)}
+        >
+          <MenuTrigger />
+          <MenuOptions
+            customStyles={{
+              optionsContainer: styles.popupOptionsContainer,
+              optionText: styles.popupOptionText
+            }}
+          >
+            <MenuOption onSelect={() => alert(`点击夜间模式`)} text="夜间模式" />
+            <MenuOption onSelect={() => alert(`点击设置选项`)} text="设置选项" />
+          </MenuOptions>
+        </Menu>
       </MyScrollView>
     );
   }
@@ -363,6 +435,22 @@ const styles = StyleSheet.create({
     color: "#999"
   },
   headLeftWrapper: {
+    justifyContent: "space-between",
+    width: 90,
     flexDirection: "row"
+  },
+  popupWrapper: {
+    position: "absolute",
+    right: 5,
+    top: -50
+  },
+  popupOptionsContainer: {
+    width: 180,
+    paddingLeft: 5
+  },
+  popupOptionText: {
+    fontSize: 16,
+    color: "#333",
+    lineHeight: 30
   }
 });

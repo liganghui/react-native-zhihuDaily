@@ -4595,8 +4595,8 @@ react-native-safe-area-view@^0.13.0:
   resolved "http://registry.npm.taobao.org/react-native-screens/download/react-native-screens-1.0.0-alpha.22.tgz#7a120377b52aa9bbb94d0b8541a014026be9289b"
 
 react-native-status-bar-height@^2.2.0:
-  version "2.2.0"
-  resolved "http://registry.npm.taobao.org/react-native-status-bar-height/download/react-native-status-bar-height-2.2.0.tgz#3bd51de134660efc5f5ad136ca573c7d5790f7ed"
+  version "2.3.1"
+  resolved "http://registry.npm.taobao.org/react-native-status-bar-height/download/react-native-status-bar-height-2.3.1.tgz#b92ce9112c2367290847ac11284d9d84a6330169"
 
 react-native-storage@^1.0.0:
   version "1.0.0"

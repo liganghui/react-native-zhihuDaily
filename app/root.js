@@ -8,6 +8,8 @@ import ImgScreen from "./pages/ImgView";
 import SectionScreen from "./pages/Section";
 import './config/storage';
 import TestScreen from "./pages/Test";
+import { MenuProvider } from 'react-native-popup-menu';
+
 
 /*
  *   构建导航
@@ -66,5 +68,14 @@ const AppNavigator = createDrawerNavigator({
 
     }
 });
-
-export default createAppContainer(AppNavigator);
+let Navigation= createAppContainer(AppNavigator);
+export default class App extends React.Component {
+    render() {
+      return (
+          <MenuProvider >
+            <Navigation />
+          </MenuProvider>
+      );
+    }
+  }
+  
