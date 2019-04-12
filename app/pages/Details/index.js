@@ -10,19 +10,19 @@ import {
   Linking,
   InteractionManager
 } from "react-native";
-import { Icon } from "react-native-elements";
+import { Icon ,Button} from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
-import { Tools } from "../../config";
+import Share from 'react-native-share';
+import { Tools,Api,Axios} from "../../config";
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
-// 记录当前Header高度
-var tempHeight = HEAD_HEIGHT;
-// 记录Y轴坐标
-var offsetY;
+let tempHeight = HEAD_HEIGHT;// 记录当前Header高度
+let offsetY;// 记录Y轴坐标
+let that;//保存this引用
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
@@ -33,26 +33,83 @@ export default class index extends Component {
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor: "#00a2ed",
         opacity: params.opacity
-      }
+      },
+      headerRight: (
+        <View style={styles.headerRightWrapper}>
+          {/* 分享 */}
+          <Button
+            type="clear"
+            onPress={()=>{that.openShare()}}
+            icon={
+              <Icon
+                type="material"
+                name="share"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          {/* 收藏 */}
+          <Button
+            type="clear"
+            onPress={() => {
+              alert('收藏')
+            }}
+            icon={
+              <Icon
+                type="material"
+                name="star"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          {/* 评论 */}
+          <Button
+            title={params.comments?params.comments:' .... '}
+            titleStyle={styles.headerRightButton}
+            type="clear"
+            onPress={() => {
+              alert('评论')
+            }}
+            icon={
+              <Icon
+                type="material"
+                name="comment"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          {/* 点赞 */}
+          <Button
+            title={params.popularity?params.popularity:' .... '}
+            titleStyle={styles.headerRightButton}
+            type="clear"
+            onPress={() => {
+            }}
+            icon={
+              <Icon type="material" name="thumb-up" size={24} color="white" />
+            }
+          />
+        </View>
+      )
     };
   };
   constructor(props) {
     super(props);
-    let id = this.props.navigation.getParam("itemId");
-    this.scrollY = new Animated.Value(0);
-    // 记录Y轴滚动坐标 用户计算滚动方向
+    let id = this.props.navigation.getParam("id");
+    this.scrollY = new Animated.Value(0);// 记录Y轴滚动坐标 用户计算滚动方向
     this.state = {
-      itemId: id,
+      dailyId: id,
       daily: {
         section: null //栏目分类信息
       },
       body: "", //供webview渲染的HTML格式内容
-      // 动态调整webview为设备的宽度
-      webviewWidth: null,
-      // 记录webviewI初始化状态
-      webviewInit: false,
-      // 用于判断页面是否为初次加载
-      first: null,
+      extra:{},//日报额外信息
+      webviewWidth: null,// 动态调整webview为设备的宽度
+      webviewInit: false,// 记录webviewI初始化状态
+      first: null,// 用于判断页面是否为初次加载
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -63,6 +120,7 @@ export default class index extends Component {
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
+    that = this;
   }
   componentDidMount() {
     this._init();
@@ -88,41 +146,65 @@ export default class index extends Component {
       });
   }
   /*
-   *  初始化webview数据
+   *  初始化
    */
   _init() {
+    this._getDailyData();
+  }
+  // 页面数据初始化
+  _getDailyData(){
     storage
-      .load({
-        key: "details",
-        id: this.state.itemId
-      })
-      .then(response => {
-        if (!response || !response.body) {
-          Tools.toast("服务器数据异常");
-          return false;
-        }
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
-        <link rel="stylesheet" href="${response.css[0]}" />
-        <body>${response.body}</body></html>`;
-        if (this.state.first) {
+    .load({
+      key: "details",
+      id: this.state.dailyId
+    })
+    .then(response => {
+      if (!response || !response.body) {
+        Tools.toast("服务器数据异常");
+        return false;
+      }
+      let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
+      <link rel="stylesheet" href="${response.css[0]}" />
+      <body>${response.body}</body></html>`;
+      if (this.state.first) {
+        this.setState({
+          daily: response
+        });
+        // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
+        InteractionManager.runAfterInteractions(() => {
           this.setState({
-            daily: response
-          });
-          // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
-          InteractionManager.runAfterInteractions(() => {
-            this.setState({
-              body: html
-            });
-          });
-        } else {
-          this.setState({
-            daily: response,
             body: html
           });
-        }
-      })
-      .catch(error => {});
+        });
+      } else {
+        this.setState({
+          daily: response,
+          body: html
+        });
+      }
+      this._getExtraData();
+    })
+    .catch(error => {});
   }
+  // 日报额外信息  (评论数,点赞数等)
+  _getExtraData(){
+    storage
+    .load({
+      key: "extra",
+      id: this.state.dailyId
+    }).then(res => {
+       if(res){
+        this.setState({
+          extra:res.data
+        })
+        this.props.navigation.setParams({ popularity: String(res.popularity) });
+        this.props.navigation.setParams({ comments: String(res.comments) });
+       }
+     }).catch(()=>{
+        
+     })
+  }
+
   /*
    * 接受并处理Webview发送的信息
    * @param {Object} event 消息事件对象
@@ -143,6 +225,19 @@ export default class index extends Component {
       });
     }
   }
+  /*
+   *  系统分享弹窗
+  */
+  openShare(){
+    let shareOptions = {
+      title: '知乎日报',
+      message: '知乎日报 · '+that.state.daily.title,
+      url: that.state.daily.share_url,
+      subject: "Share Link" 
+    }
+    Share.open(shareOptions);
+  }
+
   /*
    *  监听页面滚动 记录滚动方向 , 控制Header显示.
    *  @param {Object} event 滚动事件对象
@@ -220,7 +315,7 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
-          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在内容被裁切情况. 真机没有复现此问题  */}
+          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在部分内容被裁剪出现白屏情况. 真机暂没有复现此问题  */}
           {this.state.first === false || this.state.body ? (
             <AutoHeightWebView
               style={{ width: this.state.webviewWidth }}
@@ -290,6 +385,16 @@ export default class index extends Component {
 const styles = StyleSheet.create({
   fill: {
     flex: 1
+  },
+  headerRightWrapper: {
+    justifyContent:'space-around',
+    flexDirection: "row",
+    width:230,
+  },
+  headerRightButton:{
+    fontSize:14,
+    marginLeft:2,
+    color:'#fff'
   },
   title: {
     backgroundColor: "transparent",

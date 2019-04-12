@@ -17,7 +17,7 @@ const _Axios = axios.create({
 });
 
 const Axios = {
-    get: async(url, params, config) => {
+    get: async(url, params, config, errorCallback) => {
         return _Axios({
                 method: 'get',
                 url: url,
@@ -28,18 +28,22 @@ const Axios = {
                 return data;
             })
             .catch(error => {
-                console.warn(error)
-                let errData = errorHandler(error)
-                if (errData.message) {
-                    Tools.toast(errData.message);
-                    return Promise.reject(errData); //抛出异常信息
+                let errData = errorHandler(error);
+                if (errorCallback) {
+                    errorCallback(errData)
                 } else {
-                    Tools.toast("更新失败，未知错误");
-                    return Promise.reject(error);
+                    if (errData.message) {
+                        Tools.toast(errData.message);
+                        return Promise.reject(errData); //抛出异常信息
+                    } else {
+                        Tools.toast("未知错误，错误码：" + errData.status);
+                        return Promise.reject(error);
+                    }
+
                 }
             });
     },
-    post: async(url, params, config) => {
+    post: async(url, params, config, errorCallback) => {
         return _Axios({
                 method: 'post',
                 url: url,
@@ -50,13 +54,18 @@ const Axios = {
                 return data;
             })
             .catch(error => {
-                let errData = errorHandler(error)
-                if (errData.message) {
-                    Tools.toast(errData.message);
-                    return Promise.reject(errData);
+                let errData = errorHandler(error);
+                if (errorCallback) {
+                    errorCallback(errData)
                 } else {
-                    Tools.toast("更新失败，未知错误");
-                    return Promise.reject(error);
+                    if (errData.message) {
+                        Tools.toast(errData.message);
+                        return Promise.reject(errData); //抛出异常信息
+                    } else {
+                        Tools.toast("未知错误，错误码：" + errData.status);
+                        return Promise.reject(error);
+                    }
+
                 }
             });
     }
@@ -67,12 +76,12 @@ const errorHandler = (err) => {
         status: null,
         message: null
     }
-    if (!err || !err.status) {
+    if (!err || !err.request.status) {
         errData.status = 0;
         errData.message = '网络连接异常';
-    } else if (err && err.response) {
-        errData.status = err.response.status;
-        switch (err.response.status) {
+    } else if (err && err.request) {
+        errData.status = err.request.status;
+        switch (err.request.status) {
             case 400:
                 errData.message = '请求错误'
                 break
@@ -80,10 +89,10 @@ const errorHandler = (err) => {
                 errData.message = '未授权，请登录'
                 break
             case 403:
-                errData.message = '拒绝访问'
+                errData.message = '服务器拒绝访问'
                 break
             case 404:
-                errData.message = `请求地址出错: ${err.response.config.url}`
+                errData.message = `服务器地址无法访问: ${err.response.config.url}`
                 break
             case 408:
                 errData.message = '网络连接超时'
@@ -107,6 +116,7 @@ const errorHandler = (err) => {
                 errData.message = 'HTTP协议不受支持'
                 break
             default:
+                errData.message = ''
         }
     }
     return errData

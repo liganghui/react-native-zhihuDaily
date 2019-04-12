@@ -81,5 +81,23 @@ sync = {
             return Promise.reject(err);
         });
     },
+    extra(params) {
+        let { id } = params;
+        return Axios.get(Api.extra + id).then(json => {
+            if (json.data) {
+                global.storage.save({
+                    key: 'extra',
+                    data: json.data,
+                    id,
+                    expires: 1000 * 180,
+                });
+                return json.data
+            } else {
+                return null
+            }
+        }).catch(err => {
+            return Promise.reject(err);
+        });
+    }
 }
 exports.sync = sync;

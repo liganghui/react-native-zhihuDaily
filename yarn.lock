@@ -1637,10 +1637,6 @@ deep-is@~0.1.3:
   version "0.1.3"
   resolved "http://registry.npm.taobao.org/deep-is/download/deep-is-0.1.3.tgz#b369d6fb5dbc13eecf524f91b070feedc357cf34"
 
-deepmerge@^3.1.0:
-  version "3.2.0"
-  resolved "http://registry.npm.taobao.org/deepmerge/download/deepmerge-3.2.0.tgz#58ef463a57c08d376547f8869fdc5bcee957f44e"
-
 default-require-extensions@^2.0.0:
   version "2.0.0"
   resolved "http://registry.npm.taobao.org/default-require-extensions/download/default-require-extensions-2.0.0.tgz#f5f8fbb18a7d6d50b21f641f649ebb522cfe24f7"
@@ -3322,6 +3318,10 @@ lodash.get@^4.4.2:
   version "4.4.2"
   resolved "http://registry.npm.taobao.org/lodash.get/download/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
+lodash.merge@^4.6.1:
+  version "4.6.1"
+  resolved "http://registry.npm.taobao.org/lodash.merge/download/lodash.merge-4.6.1.tgz#adc25d9cb99b9391c59624f379fbba60d7111d54"
+
 lodash.pad@^4.1.0:
   version "4.5.1"
   resolved "http://registry.npm.taobao.org/lodash.pad/download/lodash.pad-4.5.1.tgz#4330949a833a7c8da22cc20f6a26c4d59debba70"
@@ -4505,13 +4505,13 @@ react-native-cardview@^2.0.2:
   dependencies:
     prop-types "^15.6.0"
 
-react-native-elements@^1.1.0:
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/react-native-elements/download/react-native-elements-1.1.0.tgz#f99bcda4459a886f3ab4591c684c099d37aedf2b"
+react-native-elements@1.0.0:
+  version "1.0.0"
+  resolved "http://registry.npm.taobao.org/react-native-elements/download/react-native-elements-1.0.0.tgz#95bc194f61ec4658d8dbd977524f8c4fd3ada136"
   dependencies:
     color "^3.1.0"
-    deepmerge "^3.1.0"
     hoist-non-react-statics "^3.1.0"
+    lodash.merge "^4.6.1"
     opencollective-postinstall "^2.0.0"
     prop-types "^15.5.8"
     react-native-ratings "^6.3.0"
@@ -4593,6 +4593,10 @@ react-native-safe-area-view@^0.13.0:
 "react-native-screens@^1.0.0 || ^1.0.0-alpha":
   version "1.0.0-alpha.22"
   resolved "http://registry.npm.taobao.org/react-native-screens/download/react-native-screens-1.0.0-alpha.22.tgz#7a120377b52aa9bbb94d0b8541a014026be9289b"
+
+react-native-share@^1.1.3:
+  version "1.1.3"
+  resolved "http://registry.npm.taobao.org/react-native-share/download/react-native-share-1.1.3.tgz#513ea61075e2bb945d33cfda120e12592916299e"
 
 react-native-status-bar-height@^2.2.0:
   version "2.3.1"

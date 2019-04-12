@@ -98,7 +98,7 @@ export default class index extends Component {
   bindListTap = item => {
     // 页面跳转
     this.props.navigation.push("Details", {
-      itemId: item.id
+      id: item.id
     });
     // 存储访问状态
     storage

@@ -31,19 +31,10 @@ import HomeSwiper from "./HomeSwiper";
 let that;//保存This引用
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
-    // 解决按钮点击涟漪不是圆角的问题 (react-native-elements当前版本问题)
-    // 详细说明 :https://github.com/react-native-training/react-native-elements/issues/1102
-    let background;
-    if (Platform.Version >= 21) {
-      background = TouchableNativeFeedback.Ripple("ThemeAttrAndroid", true);
-    } else {
-      background = TouchableNativeFeedback.SelectableBackground();
-    }
     return {
       title: navigation.getParam("title"),
       headerLeft: (
         <Button
-          background={background}
           type="clear"
           onPress={() => {
             navigation.openDrawer();
@@ -52,9 +43,8 @@ export default class index extends Component {
         />
       ),
       headerRight: (
-        <View style={styles.headLeftWrapper}>
+        <View style={styles.headerRightWrapper}>
           <Button
-            background={background}
             type="clear"
             onPress={() => {
               navigation.navigate("Test");
@@ -69,7 +59,6 @@ export default class index extends Component {
             }
           />
           <Button
-            background={background}
             type="clear"
             onPress={() => {
               that.tooglePopupMenu();
@@ -249,7 +238,7 @@ export default class index extends Component {
   bindListTap = item => {
     // 页面跳转
     this.props.navigation.navigate("Details", {
-      itemId: item.id
+      id: item.id
     });
     // 存储访问状态
     storage
@@ -434,7 +423,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     color: "#999"
   },
-  headLeftWrapper: {
+  headerRightWrapper: {
     justifyContent: "space-between",
     width: 90,
     flexDirection: "row"
