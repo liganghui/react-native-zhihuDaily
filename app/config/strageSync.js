@@ -47,7 +47,7 @@ sync = {
         return Axios.get(Api.latest).then(json => {
             if (json && json.data.stories) {
                 global.storage.save({
-                    key: 'section',
+                    key: 'latest',
                     data: json.data,
                     // 设置数据过期时间(毫秒单位)
                     expires: 1000 * 60 * 10,

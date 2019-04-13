@@ -92,7 +92,7 @@ export default class index extends Component {
     // 用于记录日报详情页 访问状态
     global.storage.save({
       key: "first",
-      data: false
+      data: true
     });
     // 传递到navigation (navigation中无法使用this调用)
     this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
@@ -103,7 +103,7 @@ export default class index extends Component {
     NetInfo.getConnectionInfo().then(connectionInfo => {
       let type = connectionInfo.type == ("wifi" || "cellular") ? false : true;
       storage
-        .load({ key: "latest", syncInBackground: type })
+        .load({ key: "latest",syncInBackground: type })
         .then(responseJson => {
           this._handleDataRender(responseJson);
         })
@@ -331,7 +331,7 @@ export default class index extends Component {
     if (nextAppState === "background") {
       global.storage.save({
         key: "first",
-        data: false
+        data: true
       });
     } else if (nextAppState === "active") {
       // 当应用从后台切换到 并且仅有一页数据时 会刷新页面.

@@ -66,7 +66,7 @@ export default class index extends Component {
           />
           {/* 评论 */}
           <Button
-            title={params.comments?params.comments:' .... '}
+            title={params.comments?params.comments:' ... '}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
@@ -83,7 +83,7 @@ export default class index extends Component {
           />
           {/* 点赞 */}
           <Button
-            title={params.popularity?params.popularity:' .... '}
+            title={params.popularity?params.popularity:' ... '}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
@@ -130,13 +130,9 @@ export default class index extends Component {
         key: "first"
       })
       .then(res => {
-        if (!res) {
+        if (res) {
           this.setState({
             first: true
-          });
-          global.storage.save({
-            key: "first",
-            data: true
           });
         } else {
           this.setState({
@@ -149,7 +145,7 @@ export default class index extends Component {
    *  初始化
    */
   _init() {
-    this._getDailyData();
+   this._getDailyData()
   }
   // 页面数据初始化
   _getDailyData(){
@@ -173,7 +169,13 @@ export default class index extends Component {
         // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
         InteractionManager.runAfterInteractions(() => {
           this.setState({
-            body: html
+            body: html,
+            first:false
+          },()=>{
+            global.storage.save({
+              key: "first",
+              data: false
+            });
           });
         });
       } else {
@@ -183,6 +185,7 @@ export default class index extends Component {
         });
       }
       this._getExtraData();
+     
     })
     .catch(error => {});
   }
@@ -303,7 +306,8 @@ export default class index extends Component {
         }}
       >
         <ParallaxScrollView
-          scrollEnabled={this.body ? false : true}
+        // 无数据时 禁止滚动
+          scrollEnabled={ this.state.body?true:false }
           backgroundColor={"#fff"}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
@@ -315,10 +319,8 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
-          {/* TODO : Webview在安卓模拟器7.0+以上版本时 存在部分内容被裁剪出现白屏情况. 真机暂没有复现此问题  */}
-          {this.state.first === false || this.state.body ? (
+        {this.state.first===false||this.state.body?
             <AutoHeightWebView
-              style={{ width: this.state.webviewWidth }}
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
               // 为webview图片绑定点击事件 , 触发查看大图
@@ -344,16 +346,13 @@ export default class index extends Component {
                   }
                 }
                `}
-              customStyle={` 
-                .img-place-holder{ 
-                  display:none
-                }
-                body{
-                  background:none !important;
-                }
-              `}
+               customStyle={` 
+               .img-place-holder{ 
+                 display:none
+               }
+             `}
             />
-          ) : null}
+            :null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
