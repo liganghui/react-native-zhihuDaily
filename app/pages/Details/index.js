@@ -53,14 +53,14 @@ export default class index extends Component {
           <Button
             type="clear"
             onPress={() => {
-              alert('收藏')
+              that.bindHeaderBtnTap('collect')
             }}
             icon={
               <Icon
                 type="material"
                 name="star"
                 size={24}
-                color="white"
+                color={params.collect?'#ffff00':'#fff'}
               />
             }
           />
@@ -87,9 +87,10 @@ export default class index extends Component {
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
+              that.bindHeaderBtnTap('like')
             }}
             icon={
-              <Icon type="material" name="thumb-up" size={24} color="white" />
+              <Icon type="material" name="thumb-up" size={24} color={params.like?'#fea500':'#fff'} />
             }
           />
         </View>
@@ -105,11 +106,13 @@ export default class index extends Component {
       daily: {
         section: null //栏目分类信息
       },
-      body: "", //供webview渲染的HTML格式内容
+      body:null, //供webview渲染的HTML格式内容
       extra:{},//日报额外信息
       webviewWidth: null,// 动态调整webview为设备的宽度
       webviewInit: false,// 记录webviewI初始化状态
       first: null,// 用于判断页面是否为初次加载
+      like:false,//点赞按钮
+      collect:false,//收藏按钮
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -120,6 +123,7 @@ export default class index extends Component {
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
+
     that = this;
   }
   componentDidMount() {
@@ -198,7 +202,7 @@ export default class index extends Component {
     }).then(res => {
        if(res){
         this.setState({
-          extra:res.data
+          extra:res
         })
         this.props.navigation.setParams({ popularity: String(res.popularity) });
         this.props.navigation.setParams({ comments: String(res.comments) });
@@ -274,6 +278,35 @@ export default class index extends Component {
       title: this.state.daily.section.name
     });
   };
+  /* 
+   * 处理收藏与点赞点击事件(静态模拟无实际功能)
+   * @param {String} type 区分收藏和点赞
+  */
+  bindHeaderBtnTap(type){
+    if(type==='like'){
+      let extra=that.state.extra;
+      if(!that.state.like){
+        Tools.toast('+1')
+        extra.popularity+=1;
+      }else{
+        Tools.toast('-1')
+        extra.popularity-=1;
+      }
+      that.setState({
+        like:!that.state.like,
+        extra
+      },()=>{
+          this.props.navigation.setParams({ like: that.state.like });
+          this.props.navigation.setParams({ popularity: String(extra.popularity) });
+      })
+    }else if(type==='collect'){
+      that.setState({
+        collect:!that.state.collect
+      },()=>{
+        this.props.navigation.setParams({ collect: that.state.collect });
+      })
+    }
+ }
 
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({

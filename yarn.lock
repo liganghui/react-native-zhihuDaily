@@ -4563,6 +4563,12 @@ react-native-popup-menu@^0.15.4:
   version "0.15.4"
   resolved "http://registry.npm.taobao.org/react-native-popup-menu/download/react-native-popup-menu-0.15.4.tgz#65630ad1dad797c8f910ae9724504f0f26be82f5"
 
+react-native-progress@^3.6.0:
+  version "3.6.0"
+  resolved "http://registry.npm.taobao.org/react-native-progress/download/react-native-progress-3.6.0.tgz#feaf37491f91bb421207fd761e20cb7258a2a3a6"
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-ratings@^6.3.0:
   version "6.3.1"
   resolved "http://registry.npm.taobao.org/react-native-ratings/download/react-native-ratings-6.3.1.tgz#4e4bd87f376423dc62c933f570fc1932c78adaa4"
@@ -4629,7 +4635,7 @@ react-native-vector-icons@^6.4.1:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
-react-native-webview@^5.3.1:
+react-native-webview@^5.6.2:
   version "5.6.2"
   resolved "http://registry.npm.taobao.org/react-native-webview/download/react-native-webview-5.6.2.tgz#aa257f01d0038c514874d1c41d99528f83274d8c"
   dependencies:
