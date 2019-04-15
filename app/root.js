@@ -10,9 +10,11 @@ import DetailsScreen from "./pages/Details";
 import DrawerScreen from "./pages/Drawer";
 import ImgScreen from "./pages/ImgView";
 import SectionScreen from "./pages/Section";
-import "./config/storage";
+import CommentScreen from "./pages/Comment";
 import TestScreen from "./pages/Test";
 import { MenuProvider } from "react-native-popup-menu";
+import "./config/storage";
+
 
 /*
  *   构建导航
@@ -41,6 +43,9 @@ const MainScreen = createStackNavigator(
     },
     Section: {
       screen: SectionScreen
+    },
+    Comment: {
+      screen: CommentScreen
     }
   },
   {

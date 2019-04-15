@@ -70,7 +70,13 @@ export default class index extends Component {
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
-              alert('评论')
+              if(params.comments){
+                navigation.navigate("Comment", {
+                  comments:that.state.comments,
+                  longComments: that.state.long_comments,
+                  shortComments: that.state.short_comments
+                });
+              }
             }}
             icon={
               <Icon

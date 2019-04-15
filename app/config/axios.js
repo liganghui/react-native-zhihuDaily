@@ -92,7 +92,8 @@ const errorHandler = (err) => {
                 errData.message = '服务器拒绝访问'
                 break
             case 404:
-                errData.message = `服务器地址无法访问: ${err.response.config.url}`
+                // errData.message = `服务器地址无法访问: ${err.response.config.url}`
+                errData.message = `服务器异常，请稍后重试`
                 break
             case 408:
                 errData.message = '网络连接超时'

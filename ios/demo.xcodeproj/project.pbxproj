@@ -65,6 +65,7 @@
 		DFE4C1EF78D14F9E86146DA5 /* libRNCNetInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 982880C01BFC4501B0055928 /* libRNCNetInfo.a */; };
 		AE861814563941029EB6A2D3 /* libRNCNetInfo-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65073D4E98F444B8B5D78CA1 /* libRNCNetInfo-tvOS.a */; };
 		0E944EF6D8F84A7B9E9F4BA8 /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7041DAE847A94E209E2F30EB /* libRNShare.a */; };
+		80494A2C38184065A22D43CE /* libRNSpinkit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BA9E8BAFAC474102A207408C /* libRNSpinkit.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -406,6 +407,8 @@
 		65073D4E98F444B8B5D78CA1 /* libRNCNetInfo-tvOS.a */ = {isa = PBXFileReference; name = "libRNCNetInfo-tvOS.a"; path = "libRNCNetInfo-tvOS.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		12FF82F05C664E5D8C6C89D2 /* RNShare.xcodeproj */ = {isa = PBXFileReference; name = "RNShare.xcodeproj"; path = "../node_modules/react-native-share/ios/RNShare.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		7041DAE847A94E209E2F30EB /* libRNShare.a */ = {isa = PBXFileReference; name = "libRNShare.a"; path = "libRNShare.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		4A3C6A1A5F464D8E9803463D /* RNSpinkit.xcodeproj */ = {isa = PBXFileReference; name = "RNSpinkit.xcodeproj"; path = "../node_modules/react-native-spinkit/ios/RNSpinkit.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		BA9E8BAFAC474102A207408C /* libRNSpinkit.a */ = {isa = PBXFileReference; name = "libRNSpinkit.a"; path = "libRNSpinkit.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -442,6 +445,7 @@
 				62A9D75F58464541B7C8269B /* libRNCAsyncStorage.a in Frameworks */,
 				DFE4C1EF78D14F9E86146DA5 /* libRNCNetInfo.a in Frameworks */,
 				0E944EF6D8F84A7B9E9F4BA8 /* libRNShare.a in Frameworks */,
+				80494A2C38184065A22D43CE /* libRNSpinkit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -642,6 +646,7 @@
 				452FFD523E3A4BBA81CD9FEE /* RNCAsyncStorage.xcodeproj */,
 				218B8E86559C407CA7AD9A7F /* RNCNetInfo.xcodeproj */,
 				12FF82F05C664E5D8C6C89D2 /* RNShare.xcodeproj */,
+				4A3C6A1A5F464D8E9803463D /* RNSpinkit.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1319,6 +1324,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1330,6 +1336,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Debug;
@@ -1362,6 +1369,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1373,6 +1381,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Release;
@@ -1403,6 +1412,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Debug;
@@ -1432,6 +1442,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Release;
@@ -1472,6 +1483,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1483,6 +1495,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Debug;
@@ -1523,6 +1536,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1534,6 +1548,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Release;
@@ -1573,6 +1588,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1584,6 +1600,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Debug;
@@ -1623,6 +1640,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1634,6 +1652,7 @@
 					"$(SRCROOT)\..\node_modules\@react-native-community\async-storage\ios",
 					"$(SRCROOT)\..\node_modules\@react-native-community\netinfo\ios",
 					"$(SRCROOT)\..\node_modules\react-native-share\ios",
+					"$(SRCROOT)\..\node_modules\react-native-spinkit\ios/**",
 				);
 			};
 			name = Release;
