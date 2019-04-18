@@ -66,15 +66,16 @@ export default class index extends Component {
           />
           {/* 评论 */}
           <Button
-            title={params.comments?params.comments:' ... '}
+            title={params.extra?String(params.extra.comments):' ... '}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
-              if(params.comments){
+              if(params.extra){
                 navigation.navigate("Comment", {
-                  comments:that.state.comments,
-                  longComments: that.state.long_comments,
-                  shortComments: that.state.short_comments
+                  id:navigation.getParam("id"),
+                  comments:params.extra.comments,
+                  longComments: params.extra.long_comments,
+                  shortComments: params.extra.short_comments
                 });
               }
             }}
@@ -211,7 +212,7 @@ export default class index extends Component {
           extra:res
         })
         this.props.navigation.setParams({ popularity: String(res.popularity) });
-        this.props.navigation.setParams({ comments: String(res.comments) });
+        this.props.navigation.setParams({ extra: res });
        }
      }).catch(()=>{
         

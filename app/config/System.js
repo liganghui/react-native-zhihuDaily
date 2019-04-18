@@ -10,5 +10,5 @@ const System = {
     SCREEN_HEIGHT: height,
     iOS: Platform.OS === 'ios',
     Android: Platform.OS === 'android'
-};
-export default System
+}
+export { System };
