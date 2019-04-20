@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image,ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image,ScrollView,FlatList} from "react-native";
 import Modal from "react-native-modal";
 import Spinner from "react-native-spinkit";
 import CardView from "react-native-cardview";
-import { Icon ,Button} from "react-native-elements";
+import { Icon ,Button,Avatar,ListItem} from "react-native-elements";
 import { Tools, Api, Axios, System } from "../../config";
 
 export default class index extends Component {
@@ -69,19 +69,47 @@ export default class index extends Component {
       this.props.navigation.pop();
     }
   };
+  keyExtractor = (item, index) => item.id.toString();
+
+  renderCommentItem=({item,index})=>{
+    return (
+      <ListItem  containerStyle={{ alignItems:'flex-start'}}  leftAvatar={{
+            source: { uri: item.avatar},
+      }}  key={item.id} bottomDivider={true} pad={5} rightElement={
+          <View style={styles.rightContainer}>
+            <View style={styles.authorContainer}>
+              <Text style={styles.author}>{item.author}</Text>
+              <Button
+                title={String(item.likes)}
+                buttonStyle={styles.likesButton}
+                titleStyle={styles.likesText}
+                type="clear"
+                icon={
+                  <Icon type="material" name="thumb-up" size={14} color={'#999'} />
+                }
+             />
+            </View>
+            <View style={styles.contentContainer}>
+              <Text style={styles.mainContent}>{item.content}</Text>
+            </View>
+            {/* <Text style={styles.date}>121312</Text> */}
+
+            <Text style={styles.date}>{Tools.formatMonthDay(item.time)+1123123}</Text>
+          </View>
+        }/>
+    )
+  }
   render() {
     return (
       <ScrollView >
-        <View style={{height:System.SCREEN_HEIGHT-125}}>
+        <View  style={this.state.longComments.length==0?{height:System.SCREEN_HEIGHT-125}:null}>
           <Text style={styles.title}>
             {this.state.longComments.length} 条长评
           </Text>
           {this.state.longComments.length > 0 ? (
-            this.state.longComments.map((item, index) => {
-                <Text>{item.content}</Text>
-            })
+            <FlatList   keyExtractor={this.keyExtractor} data={this.state.longComments} renderItem={this.renderCommentItem} />
           ) : (
-            <View style={styles.placeholderWrapper}>
+            <View style={styles.placeholderWrapper} >
               <Image
                 source={require("../../assets/images/commentsPlaceholder.png")}
                 style={styles.placeholderImg}
@@ -155,8 +183,6 @@ const styles = StyleSheet.create({
   
   },
   shortCommentsWrapper:{
-    borderTopColor:"#eee",
-    borderTopWidth: 1,
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
@@ -178,5 +204,36 @@ const styles = StyleSheet.create({
   loadText: {
     fontSize: 16,
     marginLeft: 30
+  },
+  rightContainer:{
+    alignContent:'flex-start',
+    flex:100,
+  },
+  authorContainer:{
+    flexDirection:'row',
+    justifyContent:'space-between'
+  },
+  author:{
+    color:'#000',
+    fontWeight:'bold'
+  },
+  likesText:{
+    fontSize:10,
+    color:'#999',
+    marginLeft: 2,
+  },
+  likesButton:{
+    height:20,
+  },
+  contentContainer:{
+    marginVertical:10
+  },
+  mainContent:{
+    color:'#3b3b3b',
+    fontSize:16,
+    lineHeight:22
+  },
+  date:{
+    color:'#999'
   }
 });
