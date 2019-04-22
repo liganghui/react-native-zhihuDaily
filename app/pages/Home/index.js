@@ -100,10 +100,10 @@ export default class index extends Component {
   _init() {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
-    NetInfo.getConnectionInfo().then(connectionInfo => {
-      let type = connectionInfo.type == ("wifi" || "cellular") ? false : true;
+    Tools.getNetworkState().then(newWorkInfo => {
+      let syncInBackgroundState=!newWorkInfo.online;
       storage
-        .load({ key: "latest",syncInBackground: type })
+        .load({ key: "latest",syncInBackground: syncInBackgroundState })
         .then(responseJson => {
           this._handleDataRender(responseJson);
         })
@@ -273,7 +273,7 @@ export default class index extends Component {
    *  @return {String}  格式化后的日期
    */
   _formatDate(date) {
-    let currentDate = Tools.getNowadays();
+    let currentDate = Tools.formatDay().split('-').join('');
     if (currentDate == date) {
       return "今日热闻";
     } else {

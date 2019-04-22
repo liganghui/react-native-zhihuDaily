@@ -97,13 +97,10 @@ export default class index extends Component {
    */
   bindListTap = item => {
     // 页面跳转
-    this.props.navigation.push({
-      key:item.id,
-      routeName:"Details",
-      params:{
+    this.props.navigation.push('Details',{
         id:item.id
       }
-    });
+    );
     // 存储访问状态
     storage
       .save({

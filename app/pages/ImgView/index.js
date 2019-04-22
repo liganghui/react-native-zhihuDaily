@@ -85,7 +85,7 @@ export default class App extends React.Component {
         .fetch("GET", imgSrc)
         .then(res => {
           // 图片文件名
-          const fileName = Tools.getNowadays() + "_" + res.taskId;
+          const fileName = Tools.formatDay() + "_" + res.taskId;
           // 判断文件夹是否存在
           RNFetchBlob.fs
             .isDir(`${RNFetchBlob.fs.dirs.PictureDir}/${folderName}`)
@@ -102,16 +102,16 @@ export default class App extends React.Component {
             .then(() => {
               // 刷新相册
               RNFetchBlob.fs.scanFile([{path: `${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.${imgFormat}`}]);
-              Tools.toast("保存成功");
+              Tools.toast(`保存成功，图片路径：${RNFetchBlob.fs.dirs.PictureDir}/${folderName}/${fileName}.${imgFormat}`);
             })
             .catch(() => {
               // 当RNFetchBlob异常时, 尝试系统方法
               CameraRoll.saveToCameraRoll(res.path())
                 .then(res => {
-                  Tools.toast("保存成功");
+                  Tools.toast("保存成功，图片路径："+res);
                 })
                 .catch(error => {
-                  Tools.toast("保存失败");
+                  Tools.toast("保存失败，错误："+error);
                 });
             });
         });

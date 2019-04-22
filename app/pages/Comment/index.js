@@ -92,9 +92,7 @@ export default class index extends Component {
             <View style={styles.contentContainer}>
               <Text style={styles.mainContent}>{item.content}</Text>
             </View>
-            {/* <Text style={styles.date}>121312</Text> */}
-
-            <Text style={styles.date}>{Tools.formatMonthDay(item.time)+1123123}</Text>
+            <Text style={styles.date}>{Tools.formatMonthDay(item.time)+" "+Tools.formatTime(item.time)}</Text>
           </View>
         }/>
     )
