@@ -69,8 +69,14 @@ export default class index extends Component {
       this.props.navigation.pop();
     }
   };
-  keyExtractor = (item, index) => item.id.toString();
-
+  bindMoreToggle(index){
+    let list=[...this.state.longComments];
+    list[index].reply_to.status=!list[index].reply_to.status;
+    this.setState({
+      longComments:list
+    })
+  }
+  keyExtractor = (item) => item.id.toString();
   renderCommentItem=({item,index})=>{
     return (
       <ListItem  containerStyle={{ alignItems:'flex-start'}}  leftAvatar={{
@@ -91,11 +97,32 @@ export default class index extends Component {
             </View>
             <View style={styles.contentContainer}>
               <Text style={styles.mainContent}>{item.content}</Text>
+              {item.reply_to&&
+              <View style={styles.replyContainer}>
+              <Text  ellipsizeMode={'tail'} numberOfLines={item.reply_to.status?0:2}>
+              <Text style={styles.author}>//{item.reply_to.author}：</Text>
+              <Text style={[styles.mainContent,styles.replyContent]}>{item.reply_to.content}</Text>
+              </Text>
+              </View>}
             </View>
-            <Text style={styles.date}>{Tools.formatMonthDay(item.time)+" "+Tools.formatTime(item.time)}</Text>
+            <View style={styles.extraContainer}>
+              <Text style={styles.date}>{Tools.formatMonthDay(item.time)+" "+Tools.formatTime(item.time)}</Text>
+              {this.renderMoreBtn(item,index)}
+            </View>
           </View>
         }/>
     )
+  }
+  renderMoreBtn(item,index){
+    if(item.reply_to&&item.reply_to.content.length>35){
+      if(!item.reply_to.status){
+        return <Button title={'展开'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index)}></Button>
+      }else{
+        return <Button title={'收起'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index)}></Button>
+      }
+    }else{
+      return
+    }
   }
   render() {
     return (
@@ -213,7 +240,8 @@ const styles = StyleSheet.create({
   },
   author:{
     color:'#000',
-    fontWeight:'bold'
+    fontWeight:'bold',
+    fontSize: 16,
   },
   likesText:{
     fontSize:10,
@@ -231,7 +259,23 @@ const styles = StyleSheet.create({
     fontSize:16,
     lineHeight:22
   },
+  replyContent:{
+    color:'#767676'
+  },
   date:{
-    color:'#999'
+    color:'#999',
+  },
+  moreBtn:{
+    height:20,
+    borderRadius:0,
+    backgroundColor:'#D7E4F5'
+  },
+  moreTitle:{
+    fontSize:14,
+    color:'#767676'
+  },
+  extraContainer:{
+    flexDirection:'row',
+    justifyContent:'space-between'
   }
 });

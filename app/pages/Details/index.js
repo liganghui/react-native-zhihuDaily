@@ -90,7 +90,7 @@ export default class index extends Component {
           />
           {/* 点赞 */}
           <Button
-            title={params.popularity?params.popularity:' ... '}
+            title={params.extra?String(params.extra.popularity):' ... '}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
@@ -212,11 +212,10 @@ export default class index extends Component {
       id: this.state.dailyId
     }).then(res => {
        if(res){
+        this.props.navigation.setParams({ extra: res });
         this.setState({
           extra:res
         })
-        this.props.navigation.setParams({ popularity: String(res.popularity) });
-        this.props.navigation.setParams({ extra: res });
        }
      }).catch(()=>{
         
@@ -295,7 +294,7 @@ export default class index extends Component {
   */
   bindHeaderBtnTap(type){
     let extra=that.state.extra;
-    if(!extra){
+    if(!extra.popularity){
       return;
     }else if(type==='like'){
       if(!that.state.like){
