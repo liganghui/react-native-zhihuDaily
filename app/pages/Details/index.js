@@ -234,7 +234,9 @@ export default class index extends Component {
         url: imgUrl
       });
     } else if (String(data).indexOf("init:") !== -1) {
-      this.setState({ webviewInit: true });
+      setTimeout(()=>{
+        this.setState({ webviewInit: true });
+      },500)
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {
