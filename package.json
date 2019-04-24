@@ -21,6 +21,7 @@
         "react-native-linear-gradient": "^2.5.3",
         "react-native-material-ripple": "^0.8.0",
         "react-native-modal": "^9.0.0",
+        "react-native-modal-datetime-picker": "^7.4.0",
         "react-native-parallax-scroll-view": "^0.21.3",
         "react-native-popup-menu": "^0.15.4",
         "react-native-progress": "^3.6.0",

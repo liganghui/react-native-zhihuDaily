@@ -18,6 +18,7 @@ import {
   MenuTrigger,
   renderers
 } from "react-native-popup-menu";
+import DateTimePicker from "react-native-modal-datetime-picker"; 
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
@@ -51,8 +52,22 @@ export default class index extends Component {
             }}
             icon={
               <Icon
-                type="ionicon"
-                name="ios-calendar"
+                type="material"
+                name="help-outline"
+                size={24}
+                color="white"
+              />
+            }
+          />
+          <Button
+            type="clear"
+            onPress={() => {
+              that.toggleDateTimePicker()
+            }}
+            icon={
+              <Icon
+                type="antdesign"
+                name="calendar"
                 size={24}
                 color="white"
               />
@@ -80,15 +95,16 @@ export default class index extends Component {
       title: "", //header标题
       refreshing: false, //下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
-      opened:false //控制Header弹出菜单显示
+      opened:false, //控制Header弹出菜单显示
+      isDateTimePickerVisible: false //控制日期选择控件
     };
     this.props.navigation.setParams({ title: "首页" });
     that = this;
   }
   componentDidMount() {
-    this._init();
+    this.init();
     // 监听应用状态(后台运行/前台运行)
-    AppState.addEventListener("change", this._handleAppStateChange);
+    AppState.addEventListener("change", this.handleAppStateChange);
     // 用于记录日报详情页 访问状态
     global.storage.save({
       key: "first",
@@ -97,7 +113,7 @@ export default class index extends Component {
     // 传递到navigation (navigation中无法使用this调用)
     this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
   }
-  _init() {
+  init() {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
     Tools.getNetworkState().then(newWorkInfo => {
@@ -105,7 +121,7 @@ export default class index extends Component {
       storage
         .load({ key: "latest",syncInBackground: syncInBackgroundState })
         .then(responseJson => {
-          this._handleDataRender(responseJson);
+          this.handleDataRender(responseJson);
         })
         .catch(error => {
           console.warn(error);
@@ -121,7 +137,7 @@ export default class index extends Component {
     Axios.get(Api.latest)
       .then(responseJson => {
         this.setState({ refreshing: false });
-        this._handleDataRender(responseJson.data);
+        this.handleDataRender(responseJson.data);
       })
       .catch(error => {
         this.setState({ refreshing: false });
@@ -132,7 +148,7 @@ export default class index extends Component {
    * 处理首屏数据渲染
    * @oaram  {responseJson} data 数据对象
    */
-  _handleDataRender(responseJson) {
+  handleDataRender(responseJson) {
     if (!responseJson || !responseJson.stories) {
       Tools.toast("服务器数据格式异常");
       return false;
@@ -272,7 +288,7 @@ export default class index extends Component {
    *  @param {String} val 日期字符串
    *  @return {String}  格式化后的日期
    */
-  _formatDate(date) {
+  formatDate(date) {
     let currentDate = Tools.formatDay().split('-').join('');
     if (currentDate == date) {
       return "今日热闻";
@@ -297,7 +313,7 @@ export default class index extends Component {
     } else {
       for (let i = 0; i < heightArr.length; i++) {
         if (heightArr[i] >= y) {
-          let title = this._formatDate(this.state.stories[i].key);
+          let title = this.formatDate(this.state.stories[i].key);
           if (this.props.navigation.getParam({ title }) !== title) {
             this.props.navigation.setParams({ title });
           }
@@ -326,7 +342,7 @@ export default class index extends Component {
   /*
    * 监听监听应用状态的变化
    */
-  _handleAppStateChange = nextAppState => {
+  handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
       global.storage.save({
@@ -336,7 +352,7 @@ export default class index extends Component {
     } else if (nextAppState === "active") {
       // 当应用从后台切换到 并且仅有一页数据时 会刷新页面.
       if (this.state.stories.length <= 1) {
-        this._init();
+        this.init();
       }
     }
   };
@@ -348,6 +364,16 @@ export default class index extends Component {
       opened: !that.state.opened
     });
   }
+  toggleDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible });
+  };
+  handleDatePicked = date => {
+    let dateStr=Tools.formatDay(date).split('-').join('');
+    this.props.navigation.navigate("Section", {
+      date: dateStr,
+    });
+    that.toggleDateTimePicker();
+  };
   /*
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据
@@ -355,13 +381,12 @@ export default class index extends Component {
   renderSectioHeader = items => {
     return (
       <Text style={styles.sectionTitle}>
-        {this._formatDate(items.section.key)}
+        {this.formatDate(items.section.key)}
       </Text>
     );
   };
   /*
-   * 弹出菜单渲染器
-   * 调整菜单定位到视口右上角
+   * 渲染右上角自定义菜单
    */
   renderCustomMenu = props => {
     const { style, children, layouts, ...other } = props;
@@ -411,6 +436,16 @@ export default class index extends Component {
             <MenuOption onSelect={() => alert(`点击设置选项`)} text="设置选项" />
           </MenuOptions>
         </Menu>
+        {/* 日期选择器 */}
+        <DateTimePicker
+          // 最大日期
+          maximumDate={Number(Tools.formatTime().split(':')[0])>=7?new Date():new Date(new Date().getTime() - 24*60*60*1000)}
+          // 最小日期
+          minimumDate={new Date(2013,10,20)}
+          isVisible={this.state.isDateTimePickerVisible}
+          onConfirm={this.handleDatePicked}
+          onCancel={this.toggleDateTimePicker}
+        />
       </MyScrollView>
     );
   }
@@ -425,7 +460,8 @@ const styles = StyleSheet.create({
   },
   headerRightWrapper: {
     justifyContent: "space-between",
-    width: 90,
+    // width: 90,
+    width: 130,
     flexDirection: "row"
   },
   popupWrapper: {

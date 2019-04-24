@@ -4542,6 +4542,13 @@ react-native-material-ripple@^0.8.0:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-modal-datetime-picker@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.npm.taobao.org/react-native-modal-datetime-picker/download/react-native-modal-datetime-picker-7.4.0.tgz#29c8a51cf4ca79c71c723551e3bbc788d11df3db"
+  dependencies:
+    prop-types "^15.7.2"
+    react-native-modal "^9.0.0"
+
 react-native-modal@^9.0.0:
   version "9.0.0"
   resolved "http://registry.npm.taobao.org/react-native-modal/download/react-native-modal-9.0.0.tgz#0bfd0770361a2e5c6e0072bfdb0f1277f9662dba"

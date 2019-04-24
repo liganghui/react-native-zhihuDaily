@@ -15,28 +15,60 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     let id = this.props.navigation.getParam("id") || null;
+    let date = this.props.navigation.getParam("date") || null;
     let title = this.props.navigation.getParam("title") || null;
     this.state = {
       sectionId: id,
+      date,
       pullUpLoading: false,
       stories: [] //栏目列表数据
     };
     this.props.navigation.setParams({ title });
   }
   componentDidMount() {
-    this._init();
+    // 根据参数区分加载 日报列表或栏目列表
+    if (this.state.date) {
+      this.initdaliyList();
+    } else if (this.state.sectionId) {
+      this.initSectionList();
+    } else {
+      Tools.toast("加载失败，错误信息：参数异常");
+    }
   }
-  _init() {
-    NetInfo.getConnectionInfo().then(connectionInfo => {
-      let type = connectionInfo.type == ("wifi" || "cellular") ? false : true;
+  initdaliyList() {
+    storage
+      .load({
+        key: "before",
+        id: this.state.date
+      })
+      .then(responseJson => {
+        this.handleDataRender(responseJson, res => {
+          let sectionData = [
+            {
+              key: responseJson.date,
+              data: res
+            }
+          ];
+          this.setState({
+            stories: sectionData
+          });
+        });
+      })
+      .catch(error => {
+        console.warn(error);
+      });
+  }
+  initSectionList() {
+    Tools.getNetworkState().then(newWorkInfo => {
+      let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({
           key: "section",
           id: this.state.sectionId,
-          syncInBackground: type
+          syncInBackground: syncInBackgroundState
         })
         .then(responseJson => {
-          this._handleDataRender(responseJson, res => {
+          this.handleDataRender(responseJson, res => {
             let sectionData = [
               {
                 key: responseJson.timestamp,
@@ -54,13 +86,13 @@ export default class index extends Component {
     });
   }
 
-  _handleDataRender(responseJson, callback) {
-    if (responseJson.stories && responseJson.timestamp) {
-      this._updateVistedState(responseJson.stories, res => {
+  handleDataRender(responseJson, callback) {
+    if (responseJson.stories) {
+      this.updateVistedState(responseJson.stories, res => {
         callback(res);
       });
     } else {
-      Tools.toast("数据异常");
+      Tools.toast("加载失败，错误信息：数据格式异常");
     }
   }
   /*
@@ -68,7 +100,7 @@ export default class index extends Component {
    * @param {Object} lsitData 列表数据对象
    * @param {Function} callback 回调函数
    */
-  _updateVistedState(listData, callback) {
+  updateVistedState(listData, callback) {
     listData.map((item, index) => {
       storage
         .load({
@@ -97,10 +129,9 @@ export default class index extends Component {
    */
   bindListTap = item => {
     // 页面跳转
-    this.props.navigation.push('Details',{
-        id:item.id
-      }
-    );
+    this.props.navigation.push("Details", {
+      id: item.id
+    });
     // 存储访问状态
     storage
       .save({
@@ -135,12 +166,18 @@ export default class index extends Component {
       pullUpLoading: true
     });
     let date = this.state.stories[this.state.stories.length - 1].key;
-    Axios.get(`${Api.section}${this.state.sectionId}/before/${date}`)
+    let apiUrl;
+    if(this.state.date){
+      apiUrl=`${Api.before}${date}`;
+    }else{
+      apiUrl=`${Api.section}${this.state.sectionId}/before/${date}`;
+    }
+    Axios.get(apiUrl)
       .then(responseJson => {
-        this._handleDataRender(responseJson.data, res => {
+        this.handleDataRender(responseJson.data, res => {
           let data = [...this.state.stories];
           data.push({
-            key: responseJson.data.timestamp,
+            key: this.state.date?responseJson.data.date:responseJson.data.timestamp,
             data: res
           });
           this.setState({

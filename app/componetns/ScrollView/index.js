@@ -21,7 +21,7 @@ export default class index extends Component {
     super(props);
   }
   // 监听滚动结束事件
-  _handleViewScroll = e => {
+  handleViewScroll = e => {
     let offsetY = e.nativeEvent.contentOffset.y; //滑动距离
     let contentSizeHeight = e.nativeEvent.contentSize.height; //scrollView contentSize高度
     let oriageScrollHeight = e.nativeEvent.layoutMeasurement.height; //scrollView高度
@@ -34,7 +34,7 @@ export default class index extends Component {
     return (
       <ScrollView
       {...this.props}
-        onMomentumScrollEnd={this._handleViewScroll}
+        onMomentumScrollEnd={this.handleViewScroll}
         refreshControl={
           this.props.onRefresh && this.props.refreshing !== null ? (
             <RefreshControl

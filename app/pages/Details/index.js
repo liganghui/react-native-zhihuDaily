@@ -134,7 +134,7 @@ export default class index extends Component {
     that = this;
   }
   componentDidMount() {
-    this._init();
+    this.init();
     // 检测页面是否为初次加载
     storage
       .load({
@@ -155,11 +155,16 @@ export default class index extends Component {
   /*
    *  初始化
    */
-  _init() {
-   this._getDailyData()
+  init() {
+    Tools.getNetworkState().then((newWorkInfo)=>{
+      if(newWorkInfo.online){
+        this.getExtraData();
+      }
+    })
+   this.getDailyData()
   }
   // 页面数据初始化
-  _getDailyData(){
+  getDailyData(){
     storage
     .load({
       key: "details",
@@ -195,13 +200,12 @@ export default class index extends Component {
           body: html
         });
       }
-      this._getExtraData();
      
     })
     .catch(error => {});
   }
   // 日报额外信息  (评论数,点赞数等)
-  _getExtraData(){
+  getExtraData(){
     storage
     .load({
       key: "extra",
@@ -279,7 +283,7 @@ export default class index extends Component {
   /*
    * 跳转到栏目列表
    */
-  _bindSectionTap = () => {
+  bindSectionTap = () => {
     this.props.navigation.navigate("Section", {
       id: this.state.daily.section.id,
       title: this.state.daily.section.name
@@ -290,13 +294,14 @@ export default class index extends Component {
    * @param {String} type 区分收藏和点赞
   */
   bindHeaderBtnTap(type){
-    if(type==='like'){
-      let extra=that.state.extra;
+    let extra=that.state.extra;
+    if(!extra){
+      return;
+    }else if(type==='like'){
       if(!that.state.like){
         Tools.toast('+1')
         extra.popularity+=1;
       }else{
-        Tools.toast('-1')
         extra.popularity-=1;
       }
       that.setState({
@@ -397,7 +402,7 @@ export default class index extends Component {
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
               style={styles.sectionWrapper}
-              onPress={this._bindSectionTap}
+              onPress={this.bindSectionTap}
             >
               <Image
                 style={styles.thumbnailImg}
