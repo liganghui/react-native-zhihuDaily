@@ -4,6 +4,7 @@ import Modal from "react-native-modal";
 import Spinner from "react-native-spinkit";
 import CardView from "react-native-cardview";
 import { Icon ,Button,Avatar,ListItem} from "react-native-elements";
+import Ripple from "react-native-material-ripple";
 import { Tools, Api, Axios, System } from "../../config";
 
 export default class index extends Component {
@@ -19,42 +20,89 @@ export default class index extends Component {
     this.state = {
       isModalVisible: false,
       id: this.props.navigation.getParam("id"),
+      shortCommentsState:false,
+      longCommentsListHeight:0,
       longComments: [],
       shortComments: []
     };
   }
   componentDidMount() {
-    this._initLongComments();
+    this.initLongComments();
   }
-  _initLongComments() {
+  initLongComments(){
+    this.getCommentsData('long',(res)=>{
+      if (res.data && res.data.comments.length > 0) {
+        res.data.comments.type='long'
+        this.setState(
+          {
+            longComments: res.data.comments
+          }
+        );
+      }
+    })
+  }
+  initShortComments(){
+    this.getCommentsData('short',(res)=>{
+      if (res.data && res.data.comments.length > 0) {
+        res.data.comments.type='short'
+        this.setState(
+          {
+           shortComments: res.data.comments
+          },
+          () => {
+            setTimeout(()=>{
+              this.scrollView.scrollTo({x: 0, y: this.state.longCommentsListHeight});
+            },0)
+          }
+        );
+      }
+    })
+  }
+  getCommentsData(type,callBack){
+    let apiUrl;
+    if(type=='long'){
+      apiUrl=Api.longComments + this.state.id + "/long-comments";
+    }else if(type=='short'){
+      apiUrl=Api.shortComments + this.state.id + "/short-comments";
+    }else{
+      return;
+    }
     this.bindModalSwitch();
-    Axios.get(Api.longComments + this.state.id + "/long-comments")
-      .then(res => {
-        if (res.data && res.data.comments.length > 0) {
-          this.setState(
-            {
-              longComments: res.data.comments
-            },
-            () => {
-              this.bindModalSwitch();
-            }
-          );
-        } else {
-          this.bindModalSwitch();
-        }
+    Axios.get(apiUrl).then((res)=>{
+      this.bindModalSwitch();
+      callBack&&callBack(res);
+    }).catch(()=>{
+      this.bindModalSwitch();
+    })
+  }
+  toggleShortComments=()=>{
+    if(!this.state.shortCommentsState){
+      this.initShortComments()
+      this.setState({
+       shortCommentsState:true
       })
-      .catch(error => {
-        this.bindModalSwitch();
+    }else{
+      this.setState({
+        shortComments:[],
+       shortCommentsState:false
+      })    
+    }
+  }
+  /*
+   * 监听列表高度
+   */
+  listenListHeight(event) {
+    var { x, y, width, height } = event.nativeEvent.layout;
+    if(this.state.longComments.length==0){
+      this.setState({
+        longCommentsListHeight: System.SCREEN_HEIGHT
       });
+    }else{
+      this.setState({
+        longCommentsListHeight: height
+      });
+    }
   }
-  _initShortComments() {
-    Axios.get(Api.shortComments + this.state.id + "/short-comments")
-      .then(res => {
-        console.warn(res);
-      })
-      .catch(error => {});
-  }
-
   bindModalSwitch = () => {
     this.setState({
       isModalVisible: !this.state.isModalVisible
@@ -69,15 +117,21 @@ export default class index extends Component {
       this.props.navigation.pop();
     }
   };
-  bindMoreToggle(index){
-    let list=[...this.state.longComments];
+  bindMoreToggle(index,item){
+    let type;
+    if(this.state.longComments[index]&&this.state.longComments[index].id==item.id){
+      type='longComments';
+    }else if(this.state.shortComments[index]&&this.state.shortComments[index].id==item.id){
+      type='shortComments';
+    }
+    let list=[...this.state[type]];
     list[index].reply_to.status=!list[index].reply_to.status;
     this.setState({
-      longComments:list
+      [type]:list
     })
   }
   keyExtractor = (item) => item.id.toString();
-  renderCommentItem=({item,index})=>{
+  renderCommentItem=({item,index,items})=>{
     return (
       <ListItem  containerStyle={{ alignItems:'flex-start'}}  leftAvatar={{
             source: { uri: item.avatar},
@@ -107,18 +161,18 @@ export default class index extends Component {
             </View>
             <View style={styles.extraContainer}>
               <Text style={styles.date}>{Tools.formatMonthDay(item.time)+" "+Tools.formatTime(item.time)}</Text>
-              {this.renderMoreBtn(item,index)}
+              {this.renderMoreBtn(item,index,)}
             </View>
           </View>
         }/>
     )
   }
   renderMoreBtn(item,index){
-    if(item.reply_to&&item.reply_to.content.length>35){
+    if(item.reply_to&&String(item.reply_to.content).length>35){
       if(!item.reply_to.status){
-        return <Button title={'展开'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index)}></Button>
+        return <Button title={'展开'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index,item)}></Button>
       }else{
-        return <Button title={'收起'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index)}></Button>
+        return <Button title={'收起'} buttonStyle={styles.moreBtn} titleStyle={styles.moreTitle}   onPress={this.bindMoreToggle.bind(this,index,item)}></Button>
       }
     }else{
       return
@@ -126,9 +180,9 @@ export default class index extends Component {
   }
   render() {
     return (
-      <ScrollView >
-        <View  style={this.state.longComments.length==0?{height:System.SCREEN_HEIGHT-125}:null}>
-          <Text style={styles.title}>
+      <ScrollView  ref={ref => (this.scrollView = ref)}>
+        <View  style={[this.state.longComments.length==0?{height:System.SCREEN_HEIGHT-125}:null]}  onLayout={this.listenListHeight.bind(this)}>
+          <Text style={[styles.title,styles.longCommentsText]}>
             {this.state.longComments.length} 条长评
           </Text>
           {this.state.longComments.length > 0 ? (
@@ -143,17 +197,24 @@ export default class index extends Component {
             </View>
           )}
         </View>
-        <View style={styles.shortCommentsWrapper}>
-          <Text style={styles.title}>{ this.props.navigation.getParam("shortComments")} 条短评</Text>
-          <Icon type='material-community' name='chevron-double-down' color='rgba(0,0,0,.2)' />
-          {/* <Icon type='material-community' name='chevron-double-up' color='#00aced' /> */}
+        <View rippleDuration={600} rippleOpacity={0.1}   style={this.state.longComments.length==0?{borderTopColor: "#eee",borderTopWidth: 1}:null}>
+          <Ripple style={styles.shortCommentsWrapper}   onPress={this.toggleShortComments} >
+            <Text style={styles.title}>{ this.props.navigation.getParam("shortComments")} 条短评</Text>
+            {!this.state.shortCommentsState?
+            <Icon type='material-community' name='chevron-double-down' color='rgba(0,0,0,.2)' />
+              :
+            <Icon type='material-community' name='chevron-double-up' color='rgba(0,0,0,.2)' />
+            }
+          </Ripple>
+          <FlatList   keyExtractor={this.keyExtractor} data={this.state.shortComments} renderItem={this.renderCommentItem} />
         </View>
         {/*  遮罩层 */}
         <Modal
+        animationIn={"fadeIn"}
           style={styles.modal}
-          animationIn={"fadeIn"}
-          hideModalContentWhileAnimating={true}
           isVisible={this.state.isModalVisible}
+          backdropTransitionInTiming={400}
+          backdropTransitionOutTiming={400}
           backdropOpacity={0.5}
           onBackdropPress={this.bindModalSwitch}
           onBackButtonPress={this.bindAndroidBack}
@@ -161,7 +222,7 @@ export default class index extends Component {
         >
           {this.state.isModalVisible ? (
             <CardView
-              cardElevation={5}
+              cardElevation={3}
               cornerRadius={2}
               style={styles.loadWrapper}
             >
@@ -192,8 +253,6 @@ const styles = StyleSheet.create({
     lineHeight: 45,
     fontSize: 14,
     color: "#000",
-    borderBottomColor: "#eee",
-    borderBottomWidth: 1
   },
   loadWrapper: {
     backgroundColor: "#fff",
@@ -204,14 +263,17 @@ const styles = StyleSheet.create({
     width: 300,
     height: 80
   },
-  longCommentsWrapper:{
-  
+  longCommentsText:{
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1
   },
   shortCommentsWrapper:{
     flexDirection:'row',
     justifyContent:'space-between',
     alignItems:'center',
     paddingRight: 15,
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1
   },
   placeholderWrapper: {
     justifyContent:'center',
@@ -266,7 +328,7 @@ const styles = StyleSheet.create({
     color:'#999',
   },
   moreBtn:{
-    height:20,
+    height:24,
     borderRadius:0,
     backgroundColor:'#D7E4F5'
   },

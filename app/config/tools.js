@@ -126,10 +126,14 @@ const Tools = {
         })
         return info;
     },
-    // 显示提示框
-    // @param {String} text 提示文本
-    toast(text) {
+    /*
+     * 显示提示框
+     * @param {String} text 提示文本
+     * @param {Number} duration 持续时间
+     */
+    toast(text, duration = Toast.durations.SHORT) {
         Toast.show(text, {
+            duration,
             position: Toast.positions.BOTTOM,
             shadow: false,
             backgroundColor: "#d5d5d3",

@@ -108,7 +108,7 @@ export default class App extends React.Component {
               // 当RNFetchBlob异常时, 尝试系统方法
               CameraRoll.saveToCameraRoll(res.path())
                 .then(res => {
-                  Tools.toast("保存成功，图片路径："+res);
+                  Tools.toast("保存成功，图片路径："+res,3500);
                 })
                 .catch(error => {
                   Tools.toast("保存失败，错误："+error);
@@ -118,8 +118,8 @@ export default class App extends React.Component {
     } else {
       // IOS 调用系统方法
       CameraRoll.saveToCameraRoll(imgSrc)
-        .then(Tools.toast("保存成功"))
-        .catch(Tools.toast("保存失败"));
+        .then(()=>{Tools.toast("保存成功")})
+        .catch(()=>{Tools.toast("保存失败")});
     }
   };
 
