@@ -4490,10 +4490,15 @@ react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-animatable@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.npm.taobao.org/react-native-animatable/download/react-native-animatable-1.3.2.tgz#4783ee1a73dc98815aef234ce6b819f80bfe7d80"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-autoheight-webview@^1.1.2:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/react-native-autoheight-webview/download/react-native-autoheight-webview-1.1.2.tgz#533a266c72f92e0df458e1b6535b7535f8583e0e"
-  integrity sha1-UzombHL5Lg30WOG2U1t1NfhYPg4=
   dependencies:
     prop-types "^15.7.2"
 
@@ -4648,7 +4653,6 @@ react-native-vector-icons@^6.4.1:
 react-native-webview@^5.7.0:
   version "5.7.0"
   resolved "https://registry.npm.taobao.org/react-native-webview/download/react-native-webview-5.7.0.tgz#a0417e23ff65053be0ba248de3f98938db4688cf"
-  integrity sha1-oEF+I/9lBTvguiSN4/mJONtGiM8=
   dependencies:
     escape-string-regexp "1.0.5"
     invariant "2.2.4"

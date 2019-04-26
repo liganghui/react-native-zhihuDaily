@@ -230,8 +230,6 @@ export default class index extends Component {
           });
           // 更新数据
           this.setState({ stories: newData }, () => {
-            // 短暂地显示滚动指示器。 TODO: 函数无效
-            // this.scrollView.flashScrollIndicators();
             // 等待数据渲染完成,避免loading状态早于渲染结束
             setTimeout(() => {
               this.setState({
@@ -401,7 +399,6 @@ export default class index extends Component {
   render() {
     return (
       <MyScrollView
-        ref={ref => (this.scrollView = ref)}
         pullupfresh={this.pullupfresh}
         onScroll={this.bindOnScroll.bind(this)}
         refreshing={this.state.refreshing}

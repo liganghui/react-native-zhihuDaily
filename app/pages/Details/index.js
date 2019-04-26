@@ -15,7 +15,9 @@ import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import Share from "react-native-share";
+import * as Animatable from 'react-native-animatable';
 import { Tools, Api, Axios } from "../../config";
+
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
@@ -51,17 +53,19 @@ export default class index extends Component {
               that.bindHeaderBtnTap("collect");
             }}
             icon={
+              <Animatable.View  ref={ref => (that.collectView = ref)}>
               <Icon
                 type="material"
                 name="star"
                 size={24}
                 color={params.collect ? "#ffff00" : "#fff"}
               />
+              </Animatable.View>
             }
           />
           {/* 评论 */}
           <Button
-            title={params.extra ? String(params.extra.comments) : " ... "}
+            title={params.extra ? String(params.extra.comments>999?'999+':params.extra.comments) : " ... "}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
@@ -80,19 +84,21 @@ export default class index extends Component {
           />
           {/* 点赞 */}
           <Button
-            title={params.extra ? String(params.extra.popularity) : " ... "}
+            title={params.extra ? String(params.extra.popularity>1000?Number(params.extra.popularity/1000).toFixed(1)+"K":params.extra.popularity) : " ... "}
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
               that.bindHeaderBtnTap("like");
             }}
             icon={
+              <Animatable.View   ref={ref => (that.popularityView = ref)}>
               <Icon
                 type="material"
                 name="thumb-up"
                 size={24}
                 color={params.like ? "#fea500" : "#fff"}
               />
+              </Animatable.View>
             }
           />
         </View>
@@ -298,6 +304,7 @@ export default class index extends Component {
       return;
     } else if (type === "like") {
       if (!that.state.like) {
+        that.popularityView.tada(800)
         Tools.toast("+1");
         extra.popularity += 1;
       } else {
@@ -316,6 +323,7 @@ export default class index extends Component {
         }
       );
     } else if (type === "collect") {
+      that.collectView.bounceIn(800)
       that.setState(
         {
           collect: !that.state.collect
