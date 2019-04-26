@@ -108,7 +108,7 @@ export default class App extends React.Component {
               // 当RNFetchBlob异常时, 尝试系统方法
               CameraRoll.saveToCameraRoll(res.path())
                 .then(res => {
-                  Tools.toast("保存成功，图片路径："+res,3500);
+                  Tools.toast("保存成功");
                 })
                 .catch(error => {
                   Tools.toast("保存失败，错误："+error);
@@ -131,7 +131,7 @@ export default class App extends React.Component {
     ];
     return (
       <View style={{ flex: 1 }}>
-        <ImageViewer imageUrls={images} renderIndicator={() => {}}  onSave={this.saveImg.bind(this)} menuContext ={{ saveToLocal: '保存图像', cancel: '取消' }}/>
+        <ImageViewer imageUrls={images} renderIndicator={() => {}}  onSave={this.bindMoreBtn} menuContext ={{ saveToLocal: '保存图像', cancel: '取消' }}/>
       </View>
     );
   }
