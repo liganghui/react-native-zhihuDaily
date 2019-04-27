@@ -17,7 +17,7 @@ import {
   MenuTrigger,
   renderers
 } from "react-native-popup-menu";
-import DateTimePicker from "react-native-modal-datetime-picker"; 
+import DateTimePicker from "react-native-modal-datetime-picker";
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
@@ -28,9 +28,8 @@ import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
 
-let that;//保存This引用
+let that; //保存This引用
 export default class index extends Component {
-
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam("title"),
@@ -62,15 +61,10 @@ export default class index extends Component {
           <Button
             type="clear"
             onPress={() => {
-              that.toggleDateTimePicker()
+              that.toggleDateTimePicker();
             }}
             icon={
-              <Icon
-                type="antdesign"
-                name="calendar"
-                size={24}
-                color="white"
-              />
+              <Icon type="antdesign" name="calendar" size={24} color="white" />
             }
           />
           <Button
@@ -95,7 +89,7 @@ export default class index extends Component {
       title: "", //header标题
       refreshing: false, //下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
-      opened:false, //控制Header弹出菜单显示
+      opened: false, //控制Header弹出菜单显示
       isDateTimePickerVisible: false //控制日期选择控件
     };
     this.props.navigation.setParams({ title: "首页" });
@@ -117,9 +111,9 @@ export default class index extends Component {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
     Tools.getNetworkState().then(newWorkInfo => {
-      let syncInBackgroundState=!newWorkInfo.online;
+      let syncInBackgroundState = !newWorkInfo.online;
       storage
-        .load({ key: "latest",syncInBackground: syncInBackgroundState })
+        .load({ key: "latest", syncInBackground: syncInBackgroundState })
         .then(responseJson => {
           this.handleDataRender(responseJson);
         })
@@ -287,7 +281,9 @@ export default class index extends Component {
    *  @return {String}  格式化后的日期
    */
   formatDate(date) {
-    let currentDate = Tools.formatDay().split('-').join('');
+    let currentDate = Tools.formatDay()
+      .split("-")
+      .join("");
     if (currentDate == date) {
       return "今日热闻";
     } else {
@@ -326,7 +322,6 @@ export default class index extends Component {
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;
-    console.warn(height)
     let heightArr = this.state.listHeight;
     heightArr.push(Number.parseInt(height));
     // 每次组件高度变化 实际上会触发两次函数 , 只取组件渲染完毕后的高度。
@@ -364,12 +359,16 @@ export default class index extends Component {
     });
   }
   toggleDateTimePicker = () => {
-    this.setState({ isDateTimePickerVisible: !this.state.isDateTimePickerVisible });
+    this.setState({
+      isDateTimePickerVisible: !this.state.isDateTimePickerVisible
+    });
   };
   handleDatePicked = date => {
-    let dateStr=Tools.formatDay(date).split('-').join('');
+    let dateStr = Tools.formatDay(date)
+      .split("-")
+      .join("");
     this.props.navigation.navigate("Section", {
-      date: dateStr,
+      date: dateStr
     });
     that.toggleDateTimePicker();
   };
@@ -406,17 +405,17 @@ export default class index extends Component {
         onRefresh={this.bindOnRefresh.bind(this)}
       >
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
-        <StoriesList
-          ref={listView => (this.listView = listView)}
-          onLayout={this.listenListHeight.bind(this)}
-          data={this.state.stories}
-          onPress={this.bindListTap}
-          sectionHeader={this.renderSectioHeader}
-        />
+        <View onLayout={this.listenListHeight.bind(this)}>
+          <StoriesList
+            ref={listView => (this.listView = listView)}
+            data={this.state.stories}
+            onPress={this.bindListTap}
+            sectionHeader={this.renderSectioHeader}
+          />
+        </View>
         {this.state.stories.length > 0 ? (
           <PullUpLoad loading={this.state.pullUpLoading} />
         ) : null}
-
         {/* Header弹出选择菜单 */}
         <Menu
           opened={this.state.opened}
@@ -430,16 +429,26 @@ export default class index extends Component {
               optionText: styles.popupOptionText
             }}
           >
-            <MenuOption onSelect={() => alert(`点击夜间模式`)} text="夜间模式" />
-            <MenuOption onSelect={() => alert(`点击设置选项`)} text="设置选项" />
+            <MenuOption
+              onSelect={() => alert(`点击夜间模式`)}
+              text="夜间模式"
+            />
+            <MenuOption
+              onSelect={() => alert(`点击设置选项`)}
+              text="设置选项"
+            />
           </MenuOptions>
         </Menu>
         {/* 日期选择器 */}
         <DateTimePicker
           // 最大日期
-          maximumDate={Number(Tools.formatTime().split(':')[0])>=7?new Date():new Date(new Date().getTime() - 24*60*60*1000)}
+          maximumDate={
+            Number(Tools.formatTime().split(":")[0]) >= 7
+              ? new Date()
+              : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+          }
           // 最小日期
-          minimumDate={new Date(2013,10,20)}
+          minimumDate={new Date(2013, 10, 20)}
           isVisible={this.state.isDateTimePickerVisible}
           onConfirm={this.handleDatePicked}
           onCancel={this.toggleDateTimePicker}
