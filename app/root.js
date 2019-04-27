@@ -69,6 +69,17 @@ const MainScreen = createStackNavigator(
   }
 );
 
+MainScreen.navigationOptions = ({ navigation }) => {
+  let drawerLockMode = 'unlocked';
+  if (navigation.state.index > 0) {
+    drawerLockMode = 'locked-closed';
+  }
+  return {
+    drawerLockMode,
+  };
+};
+
+
 //  根节点抽屉导航
 const AppNavigator = createDrawerNavigator({
   Main: {
@@ -77,9 +88,10 @@ const AppNavigator = createDrawerNavigator({
   Drawer: {
     screen: DrawerScreen
   }
+},{
+  contentComponent:DrawerScreen
 });
 let Navigation = createAppContainer(AppNavigator);
-
 export default class App extends React.Component {
   render() {
     return (

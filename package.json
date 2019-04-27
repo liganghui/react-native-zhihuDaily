@@ -12,7 +12,7 @@
         "axios": "^0.18.0",
         "flyio": "^0.6.14",
         "react": "16.8.3",
-        "react-native": "0.59.3",
+        "react-native": "0.59.5",
         "react-native-animatable": "^1.3.2",
         "react-native-autoheight-webview": "^1.1.2",
         "react-native-cardview": "^2.0.2",
@@ -33,7 +33,8 @@
         "react-native-swiper": "^1.5.14",
         "react-native-vector-icons": "^6.4.1",
         "react-native-webview": "^5.7.0",
-        "react-navigation": "^3.8.1",
+        "react-navigation": "^3.9.1",
+        "remove": "^0.1.5",
         "rn-fetch-blob": "^0.10.15",
         "rn-placeholder": "^1.3.3"
     },

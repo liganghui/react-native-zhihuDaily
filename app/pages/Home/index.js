@@ -8,7 +8,6 @@ import {
   Platform,
   TouchableNativeFeedback
 } from "react-native";
-import NetInfo from "@react-native-community/netinfo";
 import { Icon, Button } from "react-native-elements";
 import {
   Menu,
@@ -31,6 +30,7 @@ import HomeSwiper from "./HomeSwiper";
 
 let that;//保存This引用
 export default class index extends Component {
+
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam("title"),
@@ -326,6 +326,7 @@ export default class index extends Component {
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;
+    console.warn(height)
     let heightArr = this.state.listHeight;
     heightArr.push(Number.parseInt(height));
     // 每次组件高度变化 实际上会触发两次函数 , 只取组件渲染完毕后的高度。
@@ -407,8 +408,8 @@ export default class index extends Component {
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
         <StoriesList
           ref={listView => (this.listView = listView)}
-          data={this.state.stories}
           onLayout={this.listenListHeight.bind(this)}
+          data={this.state.stories}
           onPress={this.bindListTap}
           sectionHeader={this.renderSectioHeader}
         />

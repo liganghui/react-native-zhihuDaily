@@ -2,15 +2,13 @@
 
 import React, { Component } from 'react'
 import { View,Text } from "react-native";
+import { DrawerItems, SafeAreaView } from 'react-navigation';
 export default class index extends Component {
-  static navigationOptions = {
-    drawerLabel: '汪汪汪汪me',
-  };
   render() {
     return (
-      <View>
-        <Text>ssss</Text>
-      </View>
+      <SafeAreaView>
+        <Text>侧边栏</Text>
+      </SafeAreaView>
     )
   }
 }
