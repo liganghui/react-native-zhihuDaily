@@ -249,7 +249,7 @@ export default class index extends Component {
           ) : (
             <View style={styles.placeholderWrapper}>
               <Image
-                source={require("../../assets/images/commentsPlaceholder.png")}
+                source={require("../../assets/images/comments-placeholder.png")}
                 style={styles.placeholderImg}
               />
               <Text style={styles.placeholderText}>深度长评虚位以待</Text>

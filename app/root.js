@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import {
   createStackNavigator,
   createAppContainer,
-  createDrawerNavigator
+  createDrawerNavigator,
+  createSwitchNavigator
 } from "react-navigation";
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "./pages/Home";
@@ -12,9 +13,9 @@ import ImgScreen from "./pages/ImgView";
 import SectionScreen from "./pages/Section";
 import CommentScreen from "./pages/Comment";
 import TestScreen from "./pages/Test";
+import LoginScreen from "./pages/Login";
 import { MenuProvider } from "react-native-popup-menu";
 import "./config/storage";
-
 
 /*
  *   构建导航
@@ -70,28 +71,41 @@ const MainScreen = createStackNavigator(
 );
 
 MainScreen.navigationOptions = ({ navigation }) => {
-  let drawerLockMode = 'unlocked';
+  let drawerLockMode = "unlocked";
   if (navigation.state.index > 0) {
-    drawerLockMode = 'locked-closed';
+    drawerLockMode = "locked-closed";
   }
   return {
-    drawerLockMode,
+    drawerLockMode
   };
 };
 
-
 //  根节点抽屉导航
-const AppNavigator = createDrawerNavigator({
-  Main: {
-    screen: MainScreen
+const AppNavigator = createDrawerNavigator(
+  {
+    Main: {
+      screen: MainScreen
+    },
+    Drawer: {
+      screen: DrawerScreen
+    }
   },
-  Drawer: {
-    screen: DrawerScreen
+  {
+    contentComponent: DrawerScreen
   }
-},{
-  contentComponent:DrawerScreen
-});
-let Navigation = createAppContainer(AppNavigator);
+);
+
+let Navigation = createAppContainer(
+  createSwitchNavigator(
+    {
+      App: AppNavigator,
+      Login: LoginScreen
+    },
+    {
+      initialRouteName: "App"
+    }
+  )
+);
 export default class App extends React.Component {
   render() {
     return (

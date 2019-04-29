@@ -3219,6 +3219,10 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/keymirror/download/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/kind-of/download/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -4656,6 +4660,14 @@ react-native-vector-icons@^6.4.1:
     prop-types "^15.6.2"
     yargs "^13.2.2"
 
+react-native-video@^4.4.1:
+  version "4.4.1"
+  resolved "https://registry.npm.taobao.org/react-native-video/download/react-native-video-4.4.1.tgz#12c6a8bfbabfa7641338a52db3d857ac3073a4fd"
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.5.10"
+    shaka-player "^2.4.4"
+
 react-native-webview@^5.7.0:
   version "5.7.0"
   resolved "https://registry.npm.taobao.org/react-native-webview/download/react-native-webview-5.7.0.tgz#a0417e23ff65053be0ba248de3f98938db4688cf"
@@ -5174,6 +5186,10 @@ setimmediate@^1.0.5:
 setprototypeof@1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/setprototypeof/download/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
+
+shaka-player@^2.4.4:
+  version "2.4.7"
+  resolved "https://registry.npm.taobao.org/shaka-player/download/shaka-player-2.4.7.tgz#8532e53ba7d8781b0785b552c7c68681c13c3206"
 
 shebang-command@^1.2.0:
   version "1.2.0"
