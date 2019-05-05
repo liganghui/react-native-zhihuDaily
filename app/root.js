@@ -14,6 +14,7 @@ import SectionScreen from "./pages/Section";
 import CommentScreen from "./pages/Comment";
 import TestScreen from "./pages/Test";
 import LoginScreen from "./pages/Login";
+import  SignInScreen from "./pages/SignIn";
 import { MenuProvider } from "react-native-popup-menu";
 import "./config/storage";
 
@@ -47,7 +48,14 @@ const MainScreen = createStackNavigator(
     },
     Comment: {
       screen: CommentScreen
-    }
+    },
+    Login:{
+      screen:LoginScreen
+    },
+    SignIn: {
+      screen: SignInScreen
+    },
+
   },
   {
     // 设置header默认样式
@@ -88,24 +96,26 @@ const AppNavigator = createDrawerNavigator(
     },
     Drawer: {
       screen: DrawerScreen
-    }
+    },
+
   },
   {
     contentComponent: DrawerScreen
   }
 );
+let Navigation = createAppContainer(AppNavigator);
 
-let Navigation = createAppContainer(
-  createSwitchNavigator(
-    {
-      App: AppNavigator,
-      Login: LoginScreen
-    },
-    {
-      initialRouteName: "App"
-    }
-  )
-);
+// let Navigation = createAppContainer(
+//   createSwitchNavigator(
+//     {
+//       App: AppNavigator,
+//       Login: LoginScreen
+//     },
+//     {
+//       initialRouteName: "App"
+//     }
+//   )
+// );
 export default class App extends React.Component {
   render() {
     return (

@@ -14,7 +14,7 @@ class Drawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo:''
+      userInfo: ""
     };
   }
   componentDidMount() {
@@ -27,43 +27,25 @@ class Drawer extends Component {
         this.setState({
           userInfo: res
         });
-      }).catch((res)=>{
-
-      });
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.isFocused !== this.props.isFocused) {
-      console.warn("页面获得焦点");
-    }
-  }
-  async getUserInfo() {
-    let token = await storage
-      .load({
-        key: "hahaha"
       })
-      .then(res => {
-        console.warn("11111");
-        return res;
-      })
-      .catch(error => {
-        console.warn("2222");
-        return "";
-      });
-    return token;
+      .catch(res => {});
   }
-  loginOut=()=> {
+  componentWillUnmount() {
+      
+  }
+  signUp = () => {
     try {
       storage.remove({
         key: "userToken"
       });
       this.setState({
-        userInfo:''
-      })
+        userInfo: ""
+      });
       Tools.toast("已退出");
     } catch (error) {
       Tools.toast("程序异常，请重启应用。");
     }
-  }
+  };
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -71,40 +53,46 @@ class Drawer extends Component {
           <Avatar
             rounded
             size={70}
-            onPress={() => { 
+            onPress={() => {
               this.props.navigation.navigate("Login");
             }}
             activeOpacity={0.7}
-            source={this.state.userInfo.avatar?
-              {
-                uri:this.state.userInfo.avatar
-              }:
-              require("../../assets/images/default-user-avatar.jpg")
+            source={
+              this.state.userInfo.avatar
+                ? {
+                    uri: this.state.userInfo.avatar
+                  }
+                : require("../../assets/images/default-user-avatar.jpg")
             }
-            showEditButton={this.state.userInfo.avatar?true:false}
+            showEditButton={this.state.userInfo.avatar ? true : false}
           />
-          <Text style={styles.userName}  numberOfLines={4}>
+          <Text style={styles.userName} numberOfLines={4}>
             {this.state.userInfo.name ? this.state.userInfo.name : "请登录"}
           </Text>
         </View>
         <View style={styles.listContainer}>
           <View>
-             <ListItem
-            chevron
-            title={"扫一扫"}
-            titleStyle={styles.itemTitle}
-            leftIcon={
-              <Icon
-                type="material"
-                name="crop-free"
-                size={24}
-                color="#757575"
-              />
-            }
-          /> 
+            <ListItem
+              chevron
+              title={"扫一扫"}
+              titleStyle={styles.itemTitle}
+              leftIcon={
+                <Icon
+                  type="material"
+                  name="crop-free"
+                  size={24}
+                  color="#757575"
+                />
+              }
+            />
           </View>
           {this.state.userInfo ? (
-            <Button type={'clear'} title="退出登录" onPress={this.loginOut} containerStyle={styles.loginOutBtn} />
+            <Button
+              type={"clear"}
+              title="退出登录"
+              onPress={this.signUp}
+              containerStyle={styles.signUpBtn}
+            />
           ) : null}
         </View>
       </SafeAreaView>
@@ -126,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   userName: {
-    flex:1,
+    flex: 1,
     marginLeft: 25,
     color: "#fff",
     fontSize: 16
@@ -134,9 +122,8 @@ const styles = StyleSheet.create({
   itemTitle: {
     color: "#212121"
   },
-  listContainer:{
-    flex:1,
+  listContainer: {
+    flex: 1
   },
-  loginOutBtn:{
-  }
+  signUpBtn: {}
 });

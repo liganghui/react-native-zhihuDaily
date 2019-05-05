@@ -4,56 +4,50 @@ import { DrawerItems, SafeAreaView } from "react-navigation";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import Video from "react-native-video";
 import { Api, Tools, Axios, System } from "../../config";
-/**
- *
- *  功能未完成 2019年4月29日
- *
- */
 export default class index extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTransparent: true,
+    };
+  };
   constructor(props) {
     super(props);
     this.state = {
+      paused:true,//视频是否暂停
       muted: true, //视频是否静音
-      loginLoading: false
     };
   }
-  userLogin = () => {
-    this.setState({
-      loginLoading: !this.state.loginLoading
-    });
-    storage
-      .save({
-        key: "userToken",
-        data: {
-          name: "李二狗",
-          avatar:
-            "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"
-        },
-        expires: null
-      })
-      .then(() => {
-        setTimeout(() => {
-          this.setState(
-            {
-              loginLoading: false
-            },
-            () => {
-              setTimeout(() => {
-                this.props.navigation.navigate("App");
-                Tools.toast("登录成功");
-              }, 0);
-            }
-          );
-        }, 600);
-      })
-      .catch(err => {
+  componentDidMount() {
+    // react-navigation生命周期 : 页面已经显示
+    this.navigationWillFocus = this.props.navigation.addListener(
+      'willFocus',
+      (obj)=>{
         this.setState({
-          loginLoading: false
-        });
-        Tools.toast("登录失败");
-      });
+          paused:false,
+          muted:true
+        })
+      }
+   )
+    // react-navigation生命周期 : 页面将要移除
+    this.navigationWillBlur=this.props.navigation.addListener(
+      'willBlur',
+      (obj)=>{
+          this.setState({
+            paused:true,
+            muted:true
+          })
+      }
+    )
+  }
+  componentWillUnmount() {
+    // 移除监听
+    this.navigationWillFocus.remove();
+    this.navigationWillBlur.remove();
+}
+  loginTo= () => {
+      this.props.navigation.navigate("SignIn");
   };
-  userRegister = () => {
+  signUp = () => {
     Tools.toast("点击了注册按钮");
   };
   render() {
@@ -72,6 +66,7 @@ export default class index extends Component {
           style={styles.backgroundVideo}
           source={require("../../assets/video/login-background.mp4")}
           muted={this.state.muted}
+          paused={this.state.paused}
           resizeMode="cover"
           ref={ref => {
             this.player = ref;
@@ -90,16 +85,15 @@ export default class index extends Component {
         <View style={styles.buttonContainer}>
           <Button
             title="登录"
-            loading={this.state.loginLoading}
-            onPress={this.userLogin}
-            buttonStyle={styles.loginBtn}
+            onPress={this.loginTo}
+            buttonStyle={styles.signInBtn}
             titleStyle={styles.buttonTitle}
           />
           <Button
             title="注册"
-            onPress={this.userRegister}
-            buttonStyle={styles.registerBtn}
-            titleStyle={[styles.buttonTitle, styles.registerTitle]}
+            onPress={this.signUp}
+            buttonStyle={styles.signUpBtn}
+            titleStyle={[styles.buttonTitle, styles.signUpTitle]}
           />
         </View>
       </View>
@@ -118,22 +112,22 @@ var styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around"
   },
-  registerBtn: {
+  signUpBtn: {
     backgroundColor: "rgba(27, 163, 225, 0.7)",
     height: 50,
     width: 150
   },
-  loginBtn: {
+  signInBtn: {
     height: 50,
-    backgroundColor: "rgba(255,255,255,0.6)",
+    backgroundColor: "rgba(255,255,255,0.5)",
     width: 150
   },
   buttonTitle: {
-    color: "#555",
+    color: "#333",
     letterSpacing: 4,
     fontSize: 20
   },
-  registerTitle: {
+  signUpTitle: {
     color: "#fff"
   },
   backgroundVideo: {

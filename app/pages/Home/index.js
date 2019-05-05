@@ -6,7 +6,6 @@ import {
   Text,
   AppState,
   Platform,
-  TouchableNativeFeedback
 } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import {
