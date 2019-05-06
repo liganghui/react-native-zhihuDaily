@@ -18,20 +18,20 @@ class Drawer extends Component {
     };
   }
   componentDidMount() {
-    storage
-      .load({
-        key: "userToken",
-        autoSync: false
-      })
-      .then(res => {
-        this.setState({
-          userInfo: res
-        });
-      })
-      .catch(res => {});
+   this.initUserInfo()
   }
-  componentWillUnmount() {
-      
+  initUserInfo=()=>{
+    storage
+    .load({
+      key: "userToken",
+      autoSync: false
+    })
+    .then(res => {
+      this.setState({
+        userInfo: res
+      });
+    })
+    .catch(res => {});
   }
   signUp = () => {
     try {
@@ -125,5 +125,4 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1
   },
-  signUpBtn: {}
 });

@@ -73,10 +73,8 @@ export default class index extends Component {
                 signInLoading: false
               },
               () => {
-                setTimeout(() => {
                   Tools.toast("登录成功");
                   this.props.navigation.navigate("Home");
-                }, 0);
               }
             );
           }, 1000);
@@ -141,13 +139,17 @@ export default class index extends Component {
             </Item>
             <Button
               full
-              style={styles.submitBtn}
+              style={[styles.submitBtn, this.state.userName&&this.state.passWord
+                ? { backgroundColor: "#00a2ed" }
+                : { backgroundColor: "#eaeaea" }]}
               onPress={!this.state.signInLoading ? this.signIn : null}
             >
               {this.state.signInLoading ? (
                 <Spinner size={24} type={"FadingCircleAlt"} color={"#fff"} />
               ) : (
-                <Text style={styles.submitText}>登录 </Text>
+                <Text style={[styles.submitText, this.state.userName&&this.state.passWord
+                  ? { color: "#fff" }
+                  : { color: "#494949"}]}>登录 </Text>
               )}
             </Button>
           </Form>
@@ -168,13 +170,13 @@ var styles = StyleSheet.create({
     fontSize: 14
   },
   submitBtn: {
+    borderRadius: 2,
     marginHorizontal: 30,
     justifyContent: "center",
-    backgroundColor: "#00a2ed",
     marginTop: 30
   },
   submitText: {
-    color: "#fff"
+    color: "#494949"
   },
   icon: {
     marginRight: 20

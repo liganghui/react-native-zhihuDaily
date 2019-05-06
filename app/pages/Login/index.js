@@ -13,7 +13,7 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      paused:true,//视频是否暂停
+      paused:false,//视频是否暂停
       muted: true, //视频是否静音
     };
   }
@@ -48,8 +48,8 @@ export default class index extends Component {
       this.props.navigation.navigate("SignIn");
   };
   signUp = () => {
-    Tools.toast("点击了注册按钮");
-  };
+    this.props.navigation.navigate("Registered");
+  };   
   render() {
     return (
       <View style={styles.container}>

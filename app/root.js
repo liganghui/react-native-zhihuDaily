@@ -14,7 +14,9 @@ import SectionScreen from "./pages/Section";
 import CommentScreen from "./pages/Comment";
 import TestScreen from "./pages/Test";
 import LoginScreen from "./pages/Login";
-import  SignInScreen from "./pages/SignIn";
+import  SignInScreen from "./pages/Login/SignIn";
+import  RegisteredScreen from "./pages/Registered";
+import  JoinScreen from "./pages/Registered/Join";
 import { MenuProvider } from "react-native-popup-menu";
 import "./config/storage";
 
@@ -55,7 +57,12 @@ const MainScreen = createStackNavigator(
     SignIn: {
       screen: SignInScreen
     },
-
+    Registered:{
+      screen: RegisteredScreen
+    },
+    Join:{
+      screen: JoinScreen
+    },
   },
   {
     // 设置header默认样式
@@ -103,6 +110,24 @@ const AppNavigator = createDrawerNavigator(
     contentComponent: DrawerScreen
   }
 );
+
+
+const defaultGetStateForAction = AppNavigator.router.getStateForAction;
+
+AppNavigator.router.getStateForAction = (action, state) => {
+
+    if(action){
+        if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){   
+          // console.warn('Drawer is open')
+        } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
+          // console.warn('Drawer is close')
+        }
+    }
+
+    return defaultGetStateForAction(action, state);
+};
+
+
 let Navigation = createAppContainer(AppNavigator);
 
 // let Navigation = createAppContainer(

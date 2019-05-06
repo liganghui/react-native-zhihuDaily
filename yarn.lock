@@ -4599,6 +4599,10 @@ react-native-cardview@^2.0.2:
   dependencies:
     prop-types "^15.6.0"
 
+react-native-countdownbutton@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npm.taobao.org/react-native-countdownbutton/download/react-native-countdownbutton-1.2.1.tgz#ad16995fe4a51a5d738246be1a08f9c9731e6518"
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.npm.taobao.org/react-native-drawer/download/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
