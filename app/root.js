@@ -17,6 +17,7 @@ import LoginScreen from "./pages/Login";
 import  SignInScreen from "./pages/Login/SignIn";
 import  RegisteredScreen from "./pages/Registered";
 import  JoinScreen from "./pages/Registered/Join";
+import  SettingScreen from "./pages/Setting";
 import { MenuProvider } from "react-native-popup-menu";
 import "./config/storage";
 
@@ -62,6 +63,9 @@ const MainScreen = createStackNavigator(
     },
     Join:{
       screen: JoinScreen
+    },
+    Setting:{
+      screen: SettingScreen
     },
   },
   {

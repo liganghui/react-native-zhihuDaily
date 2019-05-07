@@ -15,15 +15,14 @@ import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
 import Share from "react-native-share";
-import * as Animatable from 'react-native-animatable';
+import * as Animatable from "react-native-animatable";
 import { Tools, Api, Axios } from "../../config";
-
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;
 const HEADER_MIN_HEIGHT = 0;
 let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
-let offsetY; // 记录Y轴坐标
+let offsetY=0; // 记录Y轴坐标
 let that; //保存this引用
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -53,19 +52,25 @@ export default class index extends Component {
               that.bindHeaderBtnTap("collect");
             }}
             icon={
-              <Animatable.View  ref={ref => (that.collectView = ref)}>
-              <Icon
-                type="material"
-                name="star"
-                size={24}
-                color={params.collect ? "#ffff00" : "#fff"}
-              />
+              <Animatable.View ref={ref => (that.collectView = ref)}>
+                <Icon
+                  type="material"
+                  name="star"
+                  size={24}
+                  color={params.collect ? "#ffff00" : "#fff"}
+                />
               </Animatable.View>
             }
           />
           {/* 评论 */}
           <Button
-            title={params.extra ? String(params.extra.comments>999?'999+':params.extra.comments) : " ... "}
+            title={
+              params.extra
+                ? String(
+                    params.extra.comments > 999 ? "999+" : params.extra.comments
+                  )
+                : " ... "
+            }
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
@@ -84,20 +89,28 @@ export default class index extends Component {
           />
           {/* 点赞 */}
           <Button
-            title={params.extra ? String(params.extra.popularity>1000?Number(params.extra.popularity/1000).toFixed(1)+"K":params.extra.popularity) : " ... "}
+            title={
+              params.extra
+                ? String(
+                    params.extra.popularity > 1000
+                      ? Number(params.extra.popularity / 1000).toFixed(1) + "K"
+                      : params.extra.popularity
+                  )
+                : " ... "
+            }
             titleStyle={styles.headerRightButton}
             type="clear"
             onPress={() => {
               that.bindHeaderBtnTap("like");
             }}
             icon={
-              <Animatable.View   ref={ref => (that.popularityView = ref)}>
-              <Icon
-                type="material"
-                name="thumb-up"
-                size={24}
-                color={params.like ? "#fea500" : "#fff"}
-              />
+              <Animatable.View ref={ref => (that.popularityView = ref)}>
+                <Icon
+                  type="material"
+                  name="thumb-up"
+                  size={24}
+                  color={params.like ? "#fea500" : "#fff"}
+                />
               </Animatable.View>
             }
           />
@@ -118,9 +131,10 @@ export default class index extends Component {
       extra: {}, //日报额外信息
       webviewWidth: null, // 动态调整webview为设备的宽度
       webviewInit: false, // 记录webviewI初始化状态
-      first: null, // 用于判断页面是否为初次加载
+      webviewFirst: null, // 用于判断页面是否为初次加载
       like: false, //点赞按钮
       collect: false, //收藏按钮
+      bigSize: null, //webview大字号
       opacity: new Animated.Value(0),
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
@@ -136,21 +150,6 @@ export default class index extends Component {
   componentDidMount() {
     this.init();
     // 检测页面是否为初次加载
-    storage
-      .load({
-        key: "first"
-      })
-      .then(res => {
-        if (res) {
-          this.setState({
-            first: true
-          });
-        } else {
-          this.setState({
-            first: false
-          });
-        }
-      });
   }
   /*
    *  初始化
@@ -162,6 +161,32 @@ export default class index extends Component {
       }
     });
     this.getDailyData();
+    storage
+      .load({
+        key: "webviewFirst"
+      })
+      .then(res => {
+        if (res) {
+          this.setState({
+            webviewFirst: true
+          });
+        } else {
+          this.setState({
+            webviewFirst: false
+          });
+        }
+      });
+    storage
+      .load({
+        key: "bigSize"
+      })
+      .then(res => {
+        if (res) {
+          this.setState({
+            bigSize: true
+          });
+        }
+      });
   }
   // 页面数据初始化
   getDailyData() {
@@ -175,30 +200,35 @@ export default class index extends Component {
           Tools.toast("服务器数据异常");
           return false;
         }
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
-      <link rel="stylesheet" href="${response.css[0]}" />
-      <body>${response.body}</body></html>`;
-        if (this.state.first) {
-          this.setState({
-            daily: response
-          });
-          // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
-          InteractionManager.runAfterInteractions(() => {
-            this.setState(
-              {
-                body: html,
-                first: false
-              },
-              () => {
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=0.5, maximum-scale=1, user-scalable=no"></head>
+                    <link rel="stylesheet" href="${response.css[0]}" />
+                    ${this.state.bigSize? " <style>*{font-size:120%;}</style>": ""}
+                    <body>${response.body}</body></html>`;
+        if (this.state.webviewFirst) {
+          this.setState(
+            {
+              daily: response
+            },
+            () => {
+              // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
+              InteractionManager.runAfterInteractions(() => {
                 setTimeout(() => {
-                  global.storage.save({
-                    key: "first",
-                    data: false
-                  });
-                }, 1500);
-              }
-            );
-          });
+                this.setState(
+                  {
+                    body: html,
+                    webviewFirst: false
+                  },
+                  () => {
+                      global.storage.save({
+                        key: "webviewFirst",
+                        data: false
+                      });
+                  }
+                );
+              }, 0);
+              });
+            }
+          );
         } else {
           this.setState({
             daily: response,
@@ -268,8 +298,7 @@ export default class index extends Component {
   bindOnScroll = event => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
-    offsetY = y;
-    if (y <IMG_MAX_HEIGHT ) {
+    if (y <= IMG_MAX_HEIGHT) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {
       if (direction == "down") {
@@ -304,7 +333,7 @@ export default class index extends Component {
       return;
     } else if (type === "like") {
       if (!that.state.like) {
-        that.popularityView.tada(800)
+        that.popularityView.tada(800);
         Tools.toast("+1");
         extra.popularity += 1;
       } else {
@@ -323,7 +352,7 @@ export default class index extends Component {
         }
       );
     } else if (type === "collect") {
-      that.collectView.bounceIn(800)
+      that.collectView.bounceIn(800);
       that.setState(
         {
           collect: !that.state.collect
@@ -379,7 +408,7 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
-          {this.state.first === false || this.state.body ? (
+          {this.state.body ? (
             <AutoHeightWebView
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
@@ -396,9 +425,9 @@ export default class index extends Component {
                       }
                     }
                     var a = document.getElementsByTagName('a');
-                  if(a){
-                    for(var i = 0; i < a.length; i++){
-                    a[i].onclick = function (event) {
+                    if(a){
+                      for(var i = 0; i < a.length; i++){
+                      a[i].onclick = function (event) {
                         window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
                         event.preventDefault();
                       }

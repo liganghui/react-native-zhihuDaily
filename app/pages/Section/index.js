@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import NetInfo from "@react-native-community/netinfo";
-
+import {
+  StyleSheet,
+  Text,
+} from "react-native";
 // 集成触底和上拉加载的滚动容器
 import MyScrollView from "../../componetns/ScrollView";
 // 日报列表组件
@@ -193,11 +196,26 @@ export default class index extends Component {
         console.warn(err);
       });
   };
+  renderSectioHeader = items => {
+    return (
+      <Text style={styles.sectionTitle}>
+        {items.section.key}
+      </Text>
+    );
+  };
   render() {
     return (
       <MyScrollView pullupfresh={this.pullupfresh}>
-        <StoriesList data={this.state.stories} onPress={this.bindListTap} />
+        <StoriesList data={this.state.stories} onPress={this.bindListTap}  sectionHeader={this.state.date?this.renderSectioHeader:null}/>
       </MyScrollView>
     );
   }
 }
+const styles = StyleSheet.create({
+  sectionTitle: {
+    marginTop: 15,
+    marginBottom: 10,
+    marginLeft: 15,
+    color: "#999"
+  }
+})

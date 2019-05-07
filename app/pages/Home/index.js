@@ -100,7 +100,7 @@ export default class index extends Component {
     AppState.addEventListener("change", this.handleAppStateChange);
     // 用于记录日报详情页 访问状态
     global.storage.save({
-      key: "first",
+      key: "webviewFirst",
       data: true
     });
     // 传递到navigation (navigation中无法使用this调用)
@@ -339,7 +339,7 @@ export default class index extends Component {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
       global.storage.save({
-        key: "first",
+        key: "webviewFirst",
         data: true
       });
     } else if (nextAppState === "active") {
@@ -352,9 +352,9 @@ export default class index extends Component {
   /*
    * 控制弹出菜单切换显示
    */
-  tooglePopupMenu() {
-    that.setState({
-      opened: !that.state.opened
+  tooglePopupMenu=()=>{
+    this.setState({
+      opened: !this.state.opened
     });
   }
   toggleDateTimePicker = () => {
@@ -369,7 +369,7 @@ export default class index extends Component {
     this.props.navigation.navigate("Section", {
       date: dateStr
     });
-    that.toggleDateTimePicker();
+    this.toggleDateTimePicker();
   };
   /*
    *  日报列表分组头部组件
@@ -419,7 +419,7 @@ export default class index extends Component {
         <Menu
           opened={this.state.opened}
           style={styles.popupWrapper}
-          onBackdropPress={this.tooglePopupMenu.bind(this)}
+          onBackdropPress={this.tooglePopupMenu}
         >
           <MenuTrigger />
           <MenuOptions
@@ -433,7 +433,10 @@ export default class index extends Component {
               text="夜间模式"
             />
             <MenuOption
-              onSelect={() => alert(`点击设置选项`)}
+              onSelect={() =>  {
+                this.tooglePopupMenu()
+                this.props.navigation.navigate("Setting")
+              }}
               text="设置选项"
             />
           </MenuOptions>
@@ -477,9 +480,9 @@ const styles = StyleSheet.create({
   },
   popupOptionsContainer: {
     width: 180,
-    paddingLeft: 5
   },
   popupOptionText: {
+    paddingLeft: 5,
     fontSize: 16,
     color: "#333",
     lineHeight: 30
