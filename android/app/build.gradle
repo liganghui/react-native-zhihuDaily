@@ -149,6 +149,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-image-crop-picker')
     implementation project(':react-native-video')
     implementation project(':react-native-spinkit')
     implementation project(':react-native-share')
