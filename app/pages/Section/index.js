@@ -197,10 +197,9 @@ export default class index extends Component {
       });
   };
   renderSectioHeader = items => {
+    let date=String(items.section.key).substring(0,4)+"年"+String(items.section.key).substring(4,6)+'月'+String(items.section.key).substring(6,8)+"日"
     return (
-      <Text style={styles.sectionTitle}>
-        {items.section.key}
-      </Text>
+      <Text style={styles.sectionTitle}>{date}</Text>
     );
   };
   render() {

@@ -319,7 +319,7 @@ export default class index extends Component {
    * 跳转到栏目列表
    */
   bindSectionTap = () => {
-    this.props.navigation.navigate("Section", {
+    this.props.navigation.push("Section", {
       id: this.state.daily.section.id,
       title: this.state.daily.section.name
     });
