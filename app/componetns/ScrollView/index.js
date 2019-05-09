@@ -1,3 +1,10 @@
+/*
+ *  集成上拉刷新和下拉触底的ScrollView组件
+ *
+ *  @param  {function}   pullupfresh  上拉触底回调函数            [必填]
+ *  @param  {function}   onRefresh    下拉刷新回调函数            [可选]
+ *  @param  {bool}       refresh      下拉刷新loading标识符开关   [可选]
+ */
 import React, { Component } from "react";
 import {
   ScrollView,
@@ -15,7 +22,7 @@ export default class index extends Component {
   static propTypes = {
     pullupfresh: PropTypes.func.isRequired,
     onRefresh: PropTypes.func,
-    refreshing: PropTypes.bool
+    refresh: PropTypes.bool
   };
   constructor(props) {
     super(props);
@@ -36,10 +43,10 @@ export default class index extends Component {
       {...this.props}
         onMomentumScrollEnd={this.handleViewScroll}
         refreshControl={
-          this.props.onRefresh && this.props.refreshing !== null ? (
+          this.props.onRefresh && this.props.refresh !== null ? (
             <RefreshControl
               colors={COLOR}
-              refreshing={this.props.refreshing}
+              refreshing={this.props.refresh}
               onRefresh={this.props.onRefresh}
             />
           ) : null

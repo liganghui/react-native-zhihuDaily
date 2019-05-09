@@ -298,6 +298,7 @@ export default class index extends Component {
   bindOnScroll = event => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
+    offsetY=y;
     if (y <= IMG_MAX_HEIGHT) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {

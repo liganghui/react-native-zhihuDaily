@@ -60,11 +60,10 @@ export default class index extends Component {
         .save({
           key: "userToken",
           data: {
-            name: "李二狗",
+            name: "测试001",
             avatar:
               "https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg"
           },
-          expires: null
         })
         .then(() => {
           setTimeout(() => {

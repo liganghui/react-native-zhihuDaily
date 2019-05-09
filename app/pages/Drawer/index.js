@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   withNavigationFocus
 } from "react-navigation";
+import AvatarPicker from "../../componetns/AvatarPicker";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import { Tools } from "../../config";
 
@@ -14,8 +15,24 @@ class Drawer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      userInfo: ""
+      userInfo: "",
     };
+  }
+  componentWillReceiveProps = (nextProps) => {
+    if(nextProps.navigation.state.isDrawerOpen){
+      storage
+      .load({
+        key: "userToken",
+      })
+      .then(res => {
+        if(this.state.userInfo!=res){
+          this.setState({
+            userInfo: res
+          });
+        }
+      })
+      .catch(res => {});
+    }
   }
   componentDidMount() {
    this.initUserInfo()
@@ -24,7 +41,6 @@ class Drawer extends Component {
     storage
     .load({
       key: "userToken",
-      autoSync: false
     })
     .then(res => {
       this.setState({
@@ -46,6 +62,34 @@ class Drawer extends Component {
       Tools.toast("程序异常，请重启应用。");
     }
   };
+  updateAvatar=(res)=>{
+    if(res.path){
+      let imgPath=res.path;
+      storage
+      .save({
+        key: "userToken",
+        data: {
+          name: "测试007",
+          avatar:imgPath
+        },
+      })
+      .then(() => {
+        this.setState({
+          userInfo:{
+            name: "测试007",
+            avatar:imgPath
+          }
+        })
+        Tools.toast("更换成功");
+      })
+      .catch(err => {
+        Tools.toast("更换失败");
+      });
+    }
+  }
+  selectImg(){
+    this.avatarPicker.show()
+  }
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -54,6 +98,8 @@ class Drawer extends Component {
             rounded
             size={70}
             onPress={() => {
+              this.state.userInfo.avatar?
+              this.selectImg():
               this.props.navigation.navigate("Login");
             }}
             activeOpacity={0.7}
@@ -64,7 +110,6 @@ class Drawer extends Component {
                   }
                 : require("../../assets/images/default-user-avatar.jpg")
             }
-            showEditButton={this.state.userInfo.avatar ? true : false}
           />
           <Text style={styles.userName} numberOfLines={4}>
             {this.state.userInfo.name ? this.state.userInfo.name : "请登录"}
@@ -95,12 +140,13 @@ class Drawer extends Component {
             />
           ) : null}
         </View>
+        <AvatarPicker  ref={el => (this.avatarPicker = el)}   callback={this.updateAvatar}></AvatarPicker>
       </SafeAreaView>
     );
   }
 }
-// export default withNavigationFocus(Drawer);
-export default Drawer;
+export default withNavigationFocus(Drawer);
+// export default Drawer;
 
 const styles = StyleSheet.create({
   container: {

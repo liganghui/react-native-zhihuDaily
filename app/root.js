@@ -116,20 +116,20 @@ const AppNavigator = createDrawerNavigator(
 );
 
 
-const defaultGetStateForAction = AppNavigator.router.getStateForAction;
+// const defaultGetStateForAction = AppNavigator.router.getStateForAction;
 
-AppNavigator.router.getStateForAction = (action, state) => {
+// AppNavigator.router.getStateForAction = (action, state) => {
 
-    if(action){
-        if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){   
-          // console.warn('Drawer is open')
-        } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
-          // console.warn('Drawer is close')
-        }
-    }
+//     if(action){
+//         if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){ 
+//           // console.warn('Drawer is open')
+//         } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
+//           // console.warn('Drawer is close')
+//         }
+//     }
 
-    return defaultGetStateForAction(action, state);
-};
+//     return defaultGetStateForAction(action, state);
+// };
 
 
 let Navigation = createAppContainer(AppNavigator);

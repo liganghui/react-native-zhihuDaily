@@ -86,7 +86,7 @@ export default class index extends Component {
       topStories: [], //轮播图数据
       pullUpLoading: false, //上滑加载loading显示标识符
       title: "", //header标题
-      refreshing: false, //下拉刷新loading显示标识符
+      refresh: false, //下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
       opened: false, //控制Header弹出菜单显示
       isDateTimePickerVisible: false //控制日期选择控件
@@ -126,14 +126,14 @@ export default class index extends Component {
    */
   bindOnRefresh() {
     // 下拉刷新请求最新数据
-    this.setState({ refreshing: true });
+    this.setState({ refresh: true });
     Axios.get(Api.latest)
       .then(responseJson => {
-        this.setState({ refreshing: false });
+        this.setState({ refresh: false });
         this.handleDataRender(responseJson.data);
       })
       .catch(error => {
-        this.setState({ refreshing: false });
+        this.setState({ refresh: false });
       });
   }
 
@@ -400,7 +400,7 @@ export default class index extends Component {
       <MyScrollView
         pullupfresh={this.pullupfresh}
         onScroll={this.bindOnScroll.bind(this)}
-        refreshing={this.state.refreshing}
+        refresh={this.state.refresh}
         onRefresh={this.bindOnRefresh.bind(this)}
       >
         <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />

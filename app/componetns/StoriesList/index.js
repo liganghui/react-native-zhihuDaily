@@ -1,9 +1,9 @@
 /*
  *  日报列表组件
  *
- *  @param  {Object}  data  需要渲染的列表数据对象            [必填]
- *  @param  {Function} onPress   列表项点击事件               [必填]
- *  @param  {Object}  sectionHeader  分组列表头部组件         [可选]
+ *  @param  {object}  data  需要渲染的列表数据对象            [必填]
+ *  @param  {function} onPress   列表项点击事件               [必填]
+ *  @param  {object}  sectionHeader  分组列表头部组件         [可选]
  */
 
 import React, { Component } from "react";

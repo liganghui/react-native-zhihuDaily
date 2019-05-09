@@ -20,7 +20,6 @@ const imagePickerOptions = {
     path: "images"
   }
 };
-
 export default class index extends Component {
   constructor(props) {
     super(props);
@@ -67,7 +66,18 @@ export default class index extends Component {
     this.setState({
       imgData: res
     });
-    console.warn(this.state.imgData);
+    storage
+    .save({
+      key: "userToken",
+      data: {
+        name: "狗蛋",
+        avatar:res.path
+      },
+      expires: null
+    })
+    .then(() => {
+     
+    })
   };
 
   render() {
