@@ -1,7 +1,7 @@
 //  侧栏抽屉
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet,DeviceEventEmitter } from "react-native";
 import {
   DrawerItems,
   SafeAreaView,
@@ -10,7 +10,6 @@ import {
 import AvatarPicker from "../../componetns/AvatarPicker";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import { Tools } from "../../config";
-
 class Drawer extends Component {
   constructor(props) {
     super(props);
@@ -18,8 +17,12 @@ class Drawer extends Component {
       userInfo: "",
     };
   }
-  componentWillReceiveProps = (nextProps) => {
-    if(nextProps.navigation.state.isDrawerOpen){
+  componentWillUnmount(){
+    this.listener.remove();
+  }
+  componentDidMount() {
+    // 监听Drawer显示
+    this.listener =DeviceEventEmitter.addListener('drawerState',(param)=>{
       storage
       .load({
         key: "userToken",
@@ -32,9 +35,7 @@ class Drawer extends Component {
         }
       })
       .catch(res => {});
-    }
-  }
-  componentDidMount() {
+    });
    this.initUserInfo()
   }
   initUserInfo=()=>{

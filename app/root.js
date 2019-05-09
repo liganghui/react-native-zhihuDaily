@@ -5,6 +5,7 @@ import {
   createDrawerNavigator,
   createSwitchNavigator
 } from "react-navigation";
+import  {DeviceEventEmitter} from 'react-native';
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
@@ -116,20 +117,26 @@ const AppNavigator = createDrawerNavigator(
 );
 
 
-// const defaultGetStateForAction = AppNavigator.router.getStateForAction;
+const defaultGetStateForAction = AppNavigator.router.getStateForAction;
 
-// AppNavigator.router.getStateForAction = (action, state) => {
+AppNavigator.router.getStateForAction = (action, state) => {
 
-//     if(action){
-//         if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){ 
-//           // console.warn('Drawer is open')
-//         } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
-//           // console.warn('Drawer is close')
-//         }
-//     }
+    if(action){
+        if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){ 
+          //Drawer is open
+          DeviceEventEmitter.emit('drawerState',{
+            focus:true
+          })
+        } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
+          // Drawer is close
+          // DeviceEventEmitter.emit('drawerState',{
+          //   focus:false
+          // })
+        }
+    }
 
-//     return defaultGetStateForAction(action, state);
-// };
+    return defaultGetStateForAction(action, state);
+};
 
 
 let Navigation = createAppContainer(AppNavigator);

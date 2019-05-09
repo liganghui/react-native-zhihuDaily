@@ -1,24 +1,14 @@
 import React, { Component } from "react";
 import {
-  View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  TextInput
 } from "react-native";
 import {
   Container,
-  Header,
   Content,
   ListItem,
   CheckBox,
   Body,
-  Form,
-  Item,
-  Input,
-  Label,
-  Icon,
-  Button
 } from "native-base";
 import { Api, Tools, Axios, System } from "../../config";
 export default class index extends Component {
@@ -76,9 +66,9 @@ export default class index extends Component {
           <ListItem itemDivider>
             <Text>常规</Text>
           </ListItem>
-          <ListItem onPress={this.switchBigSizeSelct}>
+          <ListItem onPress={this.switchBigSizeSelct} last>
             <Body>
-              <Text>大字号</Text>
+              <Text style={styles.itemText}>大字号</Text>
             </Body>
             <CheckBox
               checked={this.state.bigSizeState}
@@ -90,12 +80,12 @@ export default class index extends Component {
           </ListItem>
           <ListItem onPress={this.clearCache}>
             <Body>
-              <Text>清楚缓存</Text>
+              <Text style={styles.itemText}>清楚缓存</Text>
             </Body>
           </ListItem>
           <ListItem onPress={this.checkUpdates}>
             <Body>
-              <Text>检查更新</Text>
+              <Text style={styles.itemText}>检查更新</Text>
             </Body>
           </ListItem>
         </Content>
@@ -103,4 +93,8 @@ export default class index extends Component {
     );
   }
 }
-var styles = StyleSheet.create({});
+var styles = StyleSheet.create({
+  itemText:{
+    fontSize:16
+  }
+});
