@@ -5,7 +5,7 @@ import {
   createDrawerNavigator,
   createSwitchNavigator
 } from "react-navigation";
-import  {DeviceEventEmitter} from 'react-native';
+import { DeviceEventEmitter } from "react-native";
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
@@ -15,11 +15,13 @@ import SectionScreen from "./pages/Section";
 import CommentScreen from "./pages/Comment";
 import TestScreen from "./pages/Test";
 import LoginScreen from "./pages/Login";
-import  SignInScreen from "./pages/Login/SignIn";
-import  RegisteredScreen from "./pages/Registered";
-import  JoinScreen from "./pages/Registered/Join";
-import  SettingScreen from "./pages/Setting";
+import SignInScreen from "./pages/Login/SignIn";
+import RegisteredScreen from "./pages/Registered";
+import JoinScreen from "./pages/Registered/Join";
+import SettingScreen from "./pages/Setting";
 import { MenuProvider } from "react-native-popup-menu";
+import { Provider,observer,inject } from "mobx-react";
+import stores from "./store";
 import "./config/storage";
 
 /*
@@ -35,39 +37,17 @@ import "./config/storage";
 // 二级导航
 const MainScreen = createStackNavigator(
   {
-    Home: {
-      screen: HomeScreen
-    },
-    Details: {
-      screen: DetailsScreen
-    },
-    ImgView: {
-      screen: ImgScreen
-    },
-    Test: {
-      screen: TestScreen
-    },
-    Section: {
-      screen: SectionScreen
-    },
-    Comment: {
-      screen: CommentScreen
-    },
-    Login:{
-      screen:LoginScreen
-    },
-    SignIn: {
-      screen: SignInScreen
-    },
-    Registered:{
-      screen: RegisteredScreen
-    },
-    Join:{
-      screen: JoinScreen
-    },
-    Setting:{
-      screen: SettingScreen
-    },
+    Home: HomeScreen,
+    Details: DetailsScreen,
+    ImgView: ImgScreen,
+    Test: TestScreen,
+    Section: SectionScreen,
+    Comment: CommentScreen,
+    Login: LoginScreen,
+    SignIn: SignInScreen,
+    Registered: RegisteredScreen,
+    Join: JoinScreen,
+    Setting: SettingScreen
   },
   {
     // 设置header默认样式
@@ -108,56 +88,47 @@ const AppNavigator = createDrawerNavigator(
     },
     Drawer: {
       screen: DrawerScreen
-    },
-
+    }
   },
   {
     contentComponent: DrawerScreen
   }
 );
 
-
 const defaultGetStateForAction = AppNavigator.router.getStateForAction;
 
 AppNavigator.router.getStateForAction = (action, state) => {
-
-    if(action){
-        if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && action.willShow){ 
-          //Drawer is open
-          DeviceEventEmitter.emit('drawerState',{
-            focus:true
-          })
-        } else if(action.type == 'Navigation/MARK_DRAWER_SETTLING' && !action.willShow) {
-          // Drawer is close
-          // DeviceEventEmitter.emit('drawerState',{
-          //   focus:false
-          // })
-        }
+  if (action) {
+    if (action.type == "Navigation/MARK_DRAWER_SETTLING" && action.willShow) {
+      //Drawer 显示
+      DeviceEventEmitter.emit("drawerState", {
+        focus: true
+      });
+    } else if (
+      action.type == "Navigation/MARK_DRAWER_SETTLING" &&
+      !action.willShow
+    ) {
+      // Drawer 关闭
+      // DeviceEventEmitter.emit('drawerState',{
+      //   focus:false
+      // })
     }
+  }
 
-    return defaultGetStateForAction(action, state);
+  return defaultGetStateForAction(action, state);
 };
-
 
 let Navigation = createAppContainer(AppNavigator);
 
-// let Navigation = createAppContainer(
-//   createSwitchNavigator(
-//     {
-//       App: AppNavigator,
-//       Login: LoginScreen
-//     },
-//     {
-//       initialRouteName: "App"
-//     }
-//   )
-// );
+@observer
 export default class App extends React.Component {
   render() {
     return (
-      <MenuProvider>
-        <Navigation />
-      </MenuProvider>
+      <Provider {...stores}>
+        <MenuProvider>
+          <Navigation screenProps={{theme:stores.theme.colors.navColor}}  />
+        </MenuProvider>
+      </Provider>
     );
   }
 }

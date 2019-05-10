@@ -1,11 +1,5 @@
-//  主题色
-
+/*
+ * 公共样式
+ */
 import {StyleSheet} from "react-native";
-
-export const globalStyles={
-    WHITE:'#fff'
-}
-
-export const colors={
-    WHITE:'white'
-}
+// .....

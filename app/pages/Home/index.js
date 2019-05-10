@@ -29,9 +29,12 @@ import HomeSwiper from "./HomeSwiper";
 
 let that; //保存This引用
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     return {
       title: navigation.getParam("title"),
+      headerStyle:{
+        backgroundColor:screenProps.theme
+      },
       headerLeft: (
         <Button
           type="clear"
