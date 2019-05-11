@@ -7,12 +7,12 @@ class ThemeStore {
   }
   @observable colors;
   @action
-  setTheme(type) {
-    if(type=='default'){
-      this.colors = DefaultTheme;
-    }else if(type=='black'){
-      this.colors = BlackTheme;
-    }
+  switchTheme(type) {
+      if(this.colors.themeType==='default'){
+        this.colors = BlackTheme;
+      }else if(this.colors.themeType==='black'){
+        this.colors = DefaultTheme;
+      }
   }
 }
 const theme = new ThemeStore() 

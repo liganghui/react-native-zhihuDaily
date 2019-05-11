@@ -9,17 +9,21 @@
 import React, { Component } from "react";
 import { Text, StyleSheet, SectionList, View } from "react-native";
 import CardView from "react-native-cardview";
+import { observer, inject } from "mobx-react";
 import { ListItem, Image, Icon } from "react-native-elements";
 import Ripple from "react-native-material-ripple";
 
+@inject("theme")
+@observer
 export default class index extends Component {
   //指定id作为列表每一项的key。
   keyExtractor = (item, index) => item.id.toString();
   renderHeader = info => {
+    console.warn(this.props.theme);
     return <Text style={styles.headerTitle}>{info.section.key}</Text>;
   };
   //列表项渲染方法
-  renderItem = ({ item,index, section }) => {
+  renderItem = ({ item, index, section }) => {
     return (
       <CardView
         cardElevation={1}
@@ -27,11 +31,19 @@ export default class index extends Component {
         key={item.id}
         style={styles.cardWrapper}
       >
-        <Ripple rippleDuration={400} rippleOpacity={0.15} onPress={this.props.onPress.bind(this, item,index,section)}>
+        <Ripple
+          rippleDuration={400}
+          rippleOpacity={0.15}
+          onPress={this.props.onPress.bind(this, item, index, section)}
+        >
           <ListItem
+            containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
             title={item.title}
-            subtitle={item.display_date?item.display_date:null}
-            titleStyle={[styles.itemTitle,{color:item.visited?'#999':'#000'}]}
+            subtitle={item.display_date ? item.display_date : null}
+            titleStyle={[
+              styles.itemTitle,
+              { color: item.visited ? this.props.theme.colors.visitedItem : this.props.theme.colors.item}
+            ]}
             stickySectionHeadersEnabled={true}
             titleContainerStyle={styles.titleContainer}
             rightElement={
@@ -60,34 +72,31 @@ export default class index extends Component {
         </Ripple>
       </CardView>
     );
-   
-   
   };
   render() {
     return (
-      <SectionList
-        keyExtractor={this.keyExtractor}
-        sections={this.props.data}
-        renderSectionHeader={
-          this.props.sectionHeader ? this.props.sectionHeader : null
-        }
-        renderItem={this.renderItem}
-        style={styles.wrapper}
-      />
+      <View>
+        <SectionList
+          keyExtractor={this.keyExtractor}
+          sections={this.props.data}
+          renderSectionHeader={
+            this.props.sectionHeader ? this.props.sectionHeader : null
+          }
+          renderItem={this.renderItem}
+          style={{backgroundColor:this.props.theme.colors.listBackground}}
+        />
+      </View>
     );
   }
 }
 const styles = StyleSheet.create({
-  wrapper: {
-    backgroundColor: "#f6f6f6"
-  },
   cardWrapper: {
     marginVertical: 5, //垂直边距
-    marginHorizontal: 10 //水平边距
+    marginHorizontal: 10, //水平边距
   },
   itemTitle: {
     flex: 1,
-    fontSize: 18,
+    fontSize: 18
   },
   multipicWrapper: {
     bottom: 0,

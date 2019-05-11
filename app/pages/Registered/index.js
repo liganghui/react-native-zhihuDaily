@@ -19,9 +19,12 @@ import {
 } from "native-base";
 import { Api, Tools, Axios, System } from "../../config";
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     return {
-      title: "注册"
+      title: "注册",
+      headerStyle:{
+        backgroundColor:screenProps.theme
+      },
     };
   };
   constructor(props) {

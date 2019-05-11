@@ -21,9 +21,12 @@ import Spinner from "react-native-spinkit";
 
 import { Api, Tools, Axios, System } from "../../config";
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     return {
-      title: "登录"
+      title: "登录",
+      headerStyle:{
+        backgroundColor:screenProps.theme
+      },
     };
   };
   constructor(props) {

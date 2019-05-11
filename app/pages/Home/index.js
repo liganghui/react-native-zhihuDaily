@@ -16,6 +16,7 @@ import {
   MenuTrigger,
   renderers
 } from "react-native-popup-menu";
+import {observer,inject} from 'mobx-react';
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Api, Tools, Axios } from "../../config";
 // 日报列表组件
@@ -28,6 +29,8 @@ import MyScrollView from "../../componetns/ScrollView";
 import HomeSwiper from "./HomeSwiper";
 
 let that; //保存This引用
+@inject('theme') 
+@observer
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {
     return {
@@ -380,7 +383,7 @@ export default class index extends Component {
    */
   renderSectioHeader = items => {
     return (
-      <Text style={styles.sectionTitle}>
+      <Text style={[styles.sectionTitle,{color:this.props.theme.colors.text}]}>
         {this.formatDate(items.section.key)}
       </Text>
     );
@@ -432,8 +435,13 @@ export default class index extends Component {
             }}
           >
             <MenuOption
-              onSelect={() => alert(`点击夜间模式`)}
-              text="夜间模式"
+              onSelect={()=>{
+                this.props.theme.switchTheme()
+                this.setState({
+                  opened:false
+                })
+              }}
+              text={this.props.theme.colors.themeType=='default'?'夜间主题':'日间主题'}
             />
             <MenuOption
               onSelect={() =>  {
@@ -468,7 +476,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 10,
     marginLeft: 15,
-    color: "#999"
   },
   headerRightWrapper: {
     justifyContent: "space-between",

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
+  View
 } from "react-native";
 import {
   Container,
@@ -11,10 +12,18 @@ import {
   Body,
 } from "native-base";
 import { Api, Tools, Axios, System } from "../../config";
+import { observer, inject } from "mobx-react";
+@inject("theme")
+@observer
+
+
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     return {
-      title: "设置"
+      title: '设置',
+      headerStyle:{
+        backgroundColor:screenProps.theme
+      },
     };
   };
   constructor(props) {
@@ -61,31 +70,31 @@ export default class index extends Component {
   };
   render() {
     return (
-      <Container>
-        <Content>
-          <ListItem itemDivider>
-            <Text>常规</Text>
+      <Container style={{backgroundColor:this.props.theme.colors.containerBackground}}>
+        <Content >
+          <ListItem itemDivider  style={{backgroundColor:this.props.theme.colors.listBackground}}>
+            <Text style={{color:this.props.theme.colors.text}}>常规</Text>
           </ListItem>
-          <ListItem onPress={this.switchBigSizeSelct} last>
+          <ListItem onPress={this.switchBigSizeSelct} last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
             <Body>
-              <Text style={styles.itemText}>大字号</Text>
+              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>大字号</Text>
             </Body>
             <CheckBox
               checked={this.state.bigSizeState}
               onPress={this.switchBigSizeSelct}
             />
           </ListItem>
-          <ListItem itemDivider>
-            <Text>其他</Text>
+          <ListItem itemDivider style={{backgroundColor:this.props.theme.colors.listBackground}}>
+            <Text style={{color:this.props.theme.colors.text}}>其他</Text>
           </ListItem>
-          <ListItem onPress={this.clearCache}>
+          <ListItem onPress={this.clearCache} last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
             <Body>
-              <Text style={styles.itemText}>清楚缓存</Text>
+              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>清楚缓存</Text>
             </Body>
           </ListItem>
-          <ListItem onPress={this.checkUpdates}>
+          <ListItem onPress={this.checkUpdates} last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
             <Body>
-              <Text style={styles.itemText}>检查更新</Text>
+              <Text style={[styles.itemText,{color:this.props.theme.colors.item}]}>检查更新</Text>
             </Body>
           </ListItem>
         </Content>

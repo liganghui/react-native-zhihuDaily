@@ -27,11 +27,14 @@ export default class index extends Component {
     super(props);
   }
   updateName=()=>{
-    this.props.test.setName('6666')
+    this.props.test.setName('王二麻子')
   }
   updateTheme=()=>{
-    this.props.theme.setTheme('black')
-    console.warn('切换到夜间主题')
+    if(this.props.theme.colors.themeType=='default'){
+      this.props.theme.setTheme('black')
+    }else if(this.props.theme.colors.themeType=='black'){
+      this.props.theme.setTheme('default')
+    }
   }
   render() {
     return (
@@ -42,7 +45,7 @@ export default class index extends Component {
           </Button>
           <Text>{this.props.test.name}</Text>
           <Button onPress={this.updateTheme}>
-            <Text>设置主题</Text>
+            <Text>切换主题</Text>
           </Button>
         </Content>
       </Container>

@@ -14,8 +14,12 @@ import { Icon, Button } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
+import {
+  Container,
+} from "native-base";
 import Share from "react-native-share";
 import * as Animatable from "react-native-animatable";
+import {observer,inject} from 'mobx-react';
 import { Tools, Api, Axios } from "../../config";
 
 const IMG_MAX_HEIGHT = 200;
@@ -24,15 +28,18 @@ const HEADER_MIN_HEIGHT = 0;
 let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
 let offsetY=0; // 记录Y轴坐标
 let that; //保存this引用
+
+@inject('theme') 
+@observer
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
       headerStyle: {
         overflow: "hidden",
         height: params.height ? params.height : HEAD_HEIGHT,
-        backgroundColor: "#00a2ed",
+        backgroundColor:screenProps.theme,
         opacity: params.opacity
       },
       headerRight: (
@@ -203,7 +210,7 @@ export default class index extends Component {
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=0.5, maximum-scale=1, user-scalable=no"></head>
                     <link rel="stylesheet" href="${response.css[0]}" />
                     ${this.state.bigSize? " <style>*{font-size:120%;}</style>": ""}
-                    <body>${response.body}</body></html>`;
+                    <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${response.body}</body></html>`;
         if (this.state.webviewFirst) {
           this.setState(
             {
@@ -389,8 +396,8 @@ export default class index extends Component {
   };
   render() {
     return (
-      <View
-        style={styles.fill}
+      <Container
+        style={{backgroundColor:this.props.theme.colors.containerBackground}}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
@@ -398,7 +405,7 @@ export default class index extends Component {
         <ParallaxScrollView
           // 无数据时 禁止滚动
           scrollEnabled={this.state.body ? true : false}
-          backgroundColor={"#fff"}
+          contentBackgroundColor={this.props.theme.colors.containerBackground}
           onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
@@ -466,7 +473,7 @@ export default class index extends Component {
             </TouchableOpacity>
           ) : null}
         </ParallaxScrollView>
-      </View>
+      </Container>
     );
   }
 }

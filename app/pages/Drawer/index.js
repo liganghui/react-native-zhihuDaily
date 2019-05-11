@@ -10,6 +10,10 @@ import {
 import AvatarPicker from "../../componetns/AvatarPicker";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import { Tools } from "../../config";
+import { observer, inject } from "mobx-react";
+
+@inject("theme")
+@observer
 class Drawer extends Component {
   constructor(props) {
     super(props);
@@ -94,7 +98,7 @@ class Drawer extends Component {
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.userContainer}>
+        <View style={[styles.userContainer,{backgroundColor:this.props.theme.colors.navBackground}]}>
           <Avatar
             rounded
             size={70}
@@ -116,18 +120,19 @@ class Drawer extends Component {
             {this.state.userInfo.name ? this.state.userInfo.name : "请登录"}
           </Text>
         </View>
-        <View style={styles.listContainer}>
+        <View style={[styles.listContainer,{backgroundColor:this.props.theme.colors.listBackground}]}>
           <View>
             <ListItem
               chevron
               title={"扫一扫"}
-              titleStyle={styles.itemTitle}
+              containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
+              titleStyle={[styles.itemTitle,{color:this.props.theme.colors.item}]}
               leftIcon={
                 <Icon
                   type="material"
                   name="crop-free"
                   size={24}
-                  color="#757575"
+                  color={this.props.theme.colors.item}
                 />
               }
             />
@@ -137,7 +142,8 @@ class Drawer extends Component {
               type={"clear"}
               title="退出登录"
               onPress={this.signUp}
-              containerStyle={styles.signUpBtn}
+              titleStyle={{color:this.props.theme.colors.text}}
+              containerStyle={[styles.signUpBtn]}
             />
           ) : null}
         </View>
@@ -172,4 +178,10 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1
   },
+  signUpBtn:{
+    position:'absolute',
+    right:0,
+    left:0,
+    bottom:25
+  }
 });

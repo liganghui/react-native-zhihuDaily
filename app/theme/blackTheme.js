@@ -2,13 +2,16 @@
 /** 
  *  默认主题配色
 */
-const MainColor='#222'
 export default {
   themeType: 'black',
-  text:'#f3f3f3',
-  secondaryText:'#888',
-  backgroundColor:'#343434',
-  secondaryBackgroundColor:'#404040',
-  mainColor: MainColor,
-  navColor: MainColor,
+  text:'#bebebe',
+  item:'#f3f3f3',
+  visitedItem:'#888',
+  content:'#7f7f7f',
+  border:"#4d4d4d",
+  containerBackground:'#343434',
+  listBackground:'#343434',
+  itemBackground:'#404040',
+  buttonBackground:'#2b2b2b',
+  navBackground: '#222222',
 };

@@ -126,7 +126,7 @@ export default class App extends React.Component {
     return (
       <Provider {...stores}>
         <MenuProvider>
-          <Navigation screenProps={{theme:stores.theme.colors.navColor}}  />
+          <Navigation screenProps={{theme:stores.theme.colors.navBackground}}  />
         </MenuProvider>
       </Provider>
     );

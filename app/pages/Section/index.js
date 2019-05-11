@@ -10,9 +10,12 @@ import MyScrollView from "../../componetns/ScrollView";
 import StoriesList from "../../componetns/StoriesList";
 import { Tools, Axios, Api } from "../../config";
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation,screenProps }) => {
     return {
-      title: navigation.getParam("title")
+      title: navigation.getParam("title"),
+      headerStyle:{
+        backgroundColor:screenProps.theme
+      },
     };
   };
   constructor(props) {

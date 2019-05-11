@@ -14,13 +14,19 @@ import CardView from "react-native-cardview";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import Ripple from "react-native-material-ripple";
 import { Tools, Api, Axios, System } from "../../config";
+import { observer, inject } from "mobx-react";
 
+@inject("theme")
+@observer
 export default class index extends Component {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation, screenProps }) => {
     return {
       title: navigation.getParam("comments")
         ? navigation.getParam("comments") + " 条点评"
-        : null
+        : null,
+      headerStyle: {
+        backgroundColor: screenProps.theme
+      }
     };
   };
   constructor(props) {
@@ -60,7 +66,7 @@ export default class index extends Component {
             setTimeout(() => {
               this.scrollView.scrollTo({
                 y: this.state.longCommentsListHeight,
-                animated: true,
+                animated: true
               });
             }, 100);
           }
@@ -102,10 +108,9 @@ export default class index extends Component {
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;
-      this.setState({
-        longCommentsListHeight: height
-      });
-
+    this.setState({
+      longCommentsListHeight: height
+    });
   }
   bindModalSwitch = () => {
     this.setState({
@@ -144,17 +149,25 @@ export default class index extends Component {
   renderCommentItem = ({ item, index, items }) => {
     return (
       <ListItem
-        containerStyle={{ alignItems: "flex-start" }}
+        containerStyle={{
+          alignItems: "flex-start",
+          borderBottomWidth: 1,
+          backgroundColor: this.props.theme.colors.containerBackground,
+          borderBottomColor: this.props.theme.colors.border
+        }}
         leftAvatar={{
           source: { uri: item.avatar }
         }}
         key={item.id}
-        bottomDivider={true}
         pad={5}
         rightElement={
           <View style={styles.rightContainer}>
             <View style={styles.authorContainer}>
-              <Text style={styles.author}>{item.author}</Text>
+              <Text
+                style={[styles.author, { color: this.props.theme.colors.text }]}
+              >
+                {item.author}
+              </Text>
               <Button
                 title={String(item.likes)}
                 buttonStyle={styles.likesButton}
@@ -171,14 +184,26 @@ export default class index extends Component {
               />
             </View>
             <View style={styles.contentContainer}>
-              <Text style={styles.mainContent}>{item.content}</Text>
+              <Text
+                style={[
+                  styles.mainContent,
+                  { color: this.props.theme.colors.content }
+                ]}
+              >
+                {item.content}
+              </Text>
               {item.reply_to && (
                 <View style={styles.replyContainer}>
                   <Text
                     ellipsizeMode={"tail"}
                     numberOfLines={item.reply_to.status ? 0 : 2}
                   >
-                    <Text style={styles.author}>
+                    <Text
+                      style={[
+                        styles.author,
+                        { color: this.props.theme.colors.text }
+                      ]}
+                    >
                       //{item.reply_to.author}：
                     </Text>
                     <Text style={[styles.mainContent, styles.replyContent]}>
@@ -207,7 +232,10 @@ export default class index extends Component {
         return (
           <Button
             title={"展开"}
-            buttonStyle={styles.moreBtn}
+            buttonStyle={[
+              styles.moreBtn,
+              { backgroundColor: this.props.theme.colors.bttonColor }
+            ]}
             titleStyle={styles.moreTitle}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
@@ -228,7 +256,10 @@ export default class index extends Component {
   }
   render() {
     return (
-      <ScrollView ref={ref => (this.scrollView = ref)} >
+      <ScrollView
+        ref={ref => (this.scrollView = ref)}
+        style={{ backgroundColor: this.props.theme.colors.containerBackground }}
+      >
         <View
           style={[
             this.state.longComments.length == 0
@@ -237,7 +268,16 @@ export default class index extends Component {
           ]}
           onLayout={this.listenListHeight.bind(this)}
         >
-          <Text style={[styles.title, styles.longCommentsText]}>
+          <Text
+            style={[
+              styles.title,
+              styles.longCommentsText,
+              {
+                borderBottomColor: this.props.theme.colors.border,
+                color: this.props.theme.colors.text
+              }
+            ]}
+          >
             {this.state.longComments.length} 条长评
           </Text>
           {this.state.longComments.length > 0 ? (
@@ -248,11 +288,26 @@ export default class index extends Component {
             />
           ) : (
             <View style={styles.placeholderWrapper}>
-              <Image
-                source={require("../../assets/images/comments-placeholder.png")}
-                style={styles.placeholderImg}
-              />
-              <Text style={styles.placeholderText}>深度长评虚位以待</Text>
+              {this.props.theme.colors.themeType == "black" ? (
+                <Image
+                  source={require("../../assets/images/comments-placeholder-black.png")}
+                  style={styles.placeholderImg}
+                />
+              ) : (
+                <Image
+                  source={require("../../assets/images/comments-placeholder-default.png")}
+                  style={styles.placeholderImg}
+                />
+              )}
+
+              <Text
+                style={[
+                  styles.placeholderText,
+                  { color: this.props.theme.colors.text }
+                ]}
+              >
+                深度长评虚位以待
+              </Text>
             </View>
           )}
         </View>
@@ -261,29 +316,37 @@ export default class index extends Component {
           rippleOpacity={0.1}
           style={
             this.state.longComments.length == 0
-              ? { borderTopColor: "#eee", borderTopWidth: 1 }
+              ? {
+                  borderTopColor: this.props.theme.colors.border,
+                  borderTopWidth: 1
+                }
               : null
           }
         >
           <TouchableOpacity
-            style={styles.shortCommentsWrapper}
+            style={[
+              styles.shortCommentsWrapper,
+              { borderColor:this.props.theme.colors.border, }
+            ]}
             onPress={this.toggleShortComments}
             activeOpacity={0.4}
           >
-            <Text style={styles.title}>
+            <Text
+              style={[styles.title, { color: this.props.theme.colors.text }]}
+            >
               {this.props.navigation.getParam("shortComments")} 条短评
             </Text>
             {!this.state.shortCommentsState ? (
               <Icon
                 type="material-community"
                 name="chevron-double-down"
-                color="rgba(0,0,0,.2)"
+                color={this.props.theme.colors.content}
               />
             ) : (
               <Icon
                 type="material-community"
                 name="chevron-double-up"
-                color="rgba(0,0,0,.2)"
+                color={this.props.theme.colors.content}
               />
             )}
           </TouchableOpacity>
@@ -296,7 +359,7 @@ export default class index extends Component {
         {/*  遮罩层 */}
         <Modal
           animationIn={"fadeIn"}
-          style={styles.modal}
+          style={styles.moda}
           isVisible={this.state.isModalVisible}
           backdropTransitionInTiming={400}
           backdropTransitionOutTiming={400}
@@ -309,7 +372,7 @@ export default class index extends Component {
             <CardView
               cardElevation={3}
               cornerRadius={2}
-              style={styles.loadWrapper}
+              style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
               <Spinner
                 isVisible={this.state.isModalVisible}
@@ -317,7 +380,7 @@ export default class index extends Component {
                 type={"Circle"}
                 color={"#00a2ed"}
               />
-              <Text style={styles.loadText}>努力加载中</Text>
+              <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
             </CardView>
           ) : (
             <View />
@@ -349,7 +412,6 @@ const styles = StyleSheet.create({
     height: 80
   },
   longCommentsText: {
-    borderBottomColor: "#eee",
     borderBottomWidth: 1
   },
   shortCommentsWrapper: {
@@ -357,7 +419,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingRight: 15,
-    borderBottomColor: "#eee",
     borderBottomWidth: 1
   },
   placeholderWrapper: {
@@ -386,14 +447,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   author: {
-    color: "#000",
     fontWeight: "bold",
     fontSize: 16
   },
   likesText: {
-    fontSize: 10,
+    fontSize: 12,
     color: "#999",
-    marginLeft: 2
+    marginLeft: 3
   },
   likesButton: {
     height: 20
@@ -402,24 +462,22 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   mainContent: {
-    color: "#3b3b3b",
     fontSize: 16,
     lineHeight: 22
   },
   replyContent: {
     color: "#767676"
   },
-  date: {
-    color: "#999"
-  },
   moreBtn: {
     height: 24,
-    borderRadius: 0,
-    backgroundColor: "#D7E4F5"
+    borderRadius: 0
   },
   moreTitle: {
-    fontSize: 14,
-    color: "#767676"
+    fontSize: 14
+  },
+  date: {
+    color: "#b6b6b6",
+    fontSize: 12
   },
   extraContainer: {
     flexDirection: "row",
