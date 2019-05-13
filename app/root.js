@@ -22,6 +22,7 @@ import SettingScreen from "./pages/Setting";
 import { MenuProvider } from "react-native-popup-menu";
 import { Provider,observer,inject } from "mobx-react";
 import stores from "./store";
+import codePush from "react-native-code-push";
 import "./config/storage";
 
 /*
@@ -120,7 +121,13 @@ AppNavigator.router.getStateForAction = (action, state) => {
 
 let Navigation = createAppContainer(AppNavigator);
 
+
+const CodePushOptions={
+  updateDialog: true, 
+  installMode: codePush.InstallMode.IMMEDIATE
+}
 @observer
+@codePush({options:CodePushOptions})
 export default class App extends React.Component {
   render() {
     return (

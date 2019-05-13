@@ -379,7 +379,7 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     return (
-      <Animated.View key="background" style={{ translateY: imgTop }}>
+      <Animated.View key="background" style={{ translateY: imgTop ,backgroundColor:'#fff'}}>
         <Image
           style={[styles.backgroundImage]}
           source={{ uri: this.state.daily.image }}
