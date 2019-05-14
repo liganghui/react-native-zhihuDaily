@@ -107,7 +107,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
     }
      signingConfigs {
         release {
@@ -150,6 +150,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-device-info')
+    implementation project(':react-native-splash-screen')
     implementation project(':react-native-code-push')
     implementation project(':react-native-image-picker')
     implementation project(':react-native-image-crop-picker')

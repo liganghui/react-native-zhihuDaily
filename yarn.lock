@@ -5024,6 +5024,10 @@ react-native-countdownbutton@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npm.taobao.org/react-native-countdownbutton/download/react-native-countdownbutton-1.2.1.tgz#ad16995fe4a51a5d738246be1a08f9c9731e6518"
 
+react-native-device-info@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.npm.taobao.org/react-native-device-info/download/react-native-device-info-1.6.2.tgz#3c867e7be55f59636ebc91cb28e5151dfe5ed352"
+
 react-native-drawer@2.5.1:
   version "2.5.1"
   resolved "https://registry.npm.taobao.org/react-native-drawer/download/react-native-drawer-2.5.1.tgz#08b9314184f48c724f1b467f8859797369798654"
@@ -5166,6 +5170,10 @@ react-native-spinkit@^1.2.0:
   resolved "http://registry.npm.taobao.org/react-native-spinkit/download/react-native-spinkit-1.2.0.tgz#bc3eb2cf44f0233928721b53f3eb1d6bfb1322e4"
   dependencies:
     prop-types "^15.5.8"
+
+react-native-splash-screen@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.npm.taobao.org/react-native-splash-screen/download/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
 
 react-native-status-bar-height@^2.2.0:
   version "2.3.1"

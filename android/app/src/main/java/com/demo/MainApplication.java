@@ -3,6 +3,8 @@ package com.demo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
@@ -43,6 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNDeviceInfo(),
+            new SplashScreenReactPackage(),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new ImagePickerPackage(),
             new PickerPackage(),
