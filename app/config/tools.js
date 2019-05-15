@@ -1,8 +1,15 @@
 import Toast from "react-native-root-toast";
 import NetInfo from "@react-native-community/netinfo";
-import {PixelRatio} from "react-native";
+import {Dimensions, Platform, PixelRatio} from "react-native";
 import {System} from "./system";
 
+const { width } = Dimensions.get('window');
+const basePx = Platform.OS === 'ios' ? 750 : 720;
+
+const Px2Dp = function px2dp(px){
+  const layoutSize = (px / basePx) * width;
+  return PixelRatio.roundToNearestPixel(layoutSize);
+};
 //  工具函数库
 const Tools = {
   /**
@@ -161,14 +168,6 @@ const Tools = {
     });
     return info;
   },
-    /**
-   * 按比例将设计的px转换成适应不同屏幕的dp
-   * @param designPx 设计稿标注的px值
-   * @returns {*|number}
-   */
-  getRealDP(designPx) {
-    return PixelRatio.roundToNearestPixel((designPx / 750) * System.SCREEN_WIDTH);
-  },
   /** 
    * 显示提示框
    * @param {String} text 提示文本
@@ -189,4 +188,7 @@ const Tools = {
   },
 
 };
-export { Tools };
+
+
+
+export { Tools,Px2Dp };

@@ -55,15 +55,19 @@ export default class index extends Component {
     return (
       <Container>
         <Content padder>
-          <Text>新增更新测试1.0</Text>
-          <Button onPress={this.switchrogressModal}><Text>显示下载进度</Text></Button>
-           {/* 热更新下载进度modal */}
-          <ProgressBarModal
-            progress={this.state.progress}
-            totalPackageSize={'10mb'}
-            receivedPackageSize={20}
-            progressModalVisible={this.state.progressModalVisible}// 是否显示弹窗控制
-           />
+          <Text>热更新测试v2</Text>
+          <Image
+            source={require("../../assets/images/test1.png")}
+            style={styles.img}
+          />
+          <Image
+            source={require("../../assets/images/test2.jpg")}
+            style={styles.img}
+          />
+          <Image
+            source={require("../../assets/images/test3.jpg")}
+            style={styles.img}
+          />
         </Content>
       </Container>
     );

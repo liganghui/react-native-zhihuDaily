@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Tools } from '../../config';
+import { Px2Dp } from '../../config';
  
 const propTypes = {
   progress: PropTypes.number.isRequired,
@@ -41,9 +41,9 @@ class Bar extends PureComponent {
     return (
       <View style={[this.props.backgroundStyle, this.props.style]}>
         <Animated.View style={{
-          backgroundColor: '#eb3136',
-          height: Tools.getRealDP(28),
-          borderRadius: Tools.getRealDP(30),
+          backgroundColor: '#64bdcd',
+          height: Px2Dp(28),
+          borderRadius: Px2Dp(30),
           width: this.progress.interpolate({
             inputRange: [0, 100],
             outputRange: [0, 1 * this.props.style.width],

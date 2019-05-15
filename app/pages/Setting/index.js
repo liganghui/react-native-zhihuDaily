@@ -18,10 +18,10 @@ import codePush from "react-native-code-push";
 import DeviceInfo from 'react-native-device-info';
 import { Api, Tools, Axios, System } from "../../config";
 import { observer, inject } from "mobx-react";
+
+
 @inject("theme")
 @observer
-
-
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {
     return {
@@ -33,10 +33,10 @@ export default class index extends Component {
   };
   constructor(props) {
     super(props);
-     
     this.state = {
       bigSizeState: null,
-      version:DeviceInfo.getVersion()
+      version:DeviceInfo.getVersion(),
+      isUpdate:false
     };
   } 
 
@@ -54,14 +54,6 @@ export default class index extends Component {
       }).catch(()=>{
 
       });
-  }
-  componentWillMount(){
-    codePush.disallowRestart();
-   }
-
-  componentWillUnmount(){
-    // Reallow重新启动，
-    codePush.allowRestart();
   }
   switchBigSizeSelct = () => {
     global.storage
@@ -83,23 +75,51 @@ export default class index extends Component {
     Tools.toast("开发中...敬请期待");
   };
   checkUpdates = () => {
-    codePush.checkForUpdate().then((update) => {
+    if(this.state.isUpdate){
+      Tools.toast('检查更新中...')
+      this.setState({
+        isUpdate:true
+      })
+    }else{
+      Tools.toast('正在检查更新...',500)
+      this.setState({
+        isUpdate:true
+      })
+      codePush.checkForUpdate().then((update) => {
         if (!update) {
           Tools.toast('应用是最新的')
+          this.setState({
+            isUpdate:false
+          })
         } else {
           Alert.alert(
             '发现可用更新',
             '是否更新到最新版本？',
             [
-              // {text: '更新', onPress: () => codePush.sync({ updateDialog: true, installMode: codePush.InstallMode.IMMEDIATE })},
               {text: '更新', onPress: () => {
-                // codePush.sync()
+                codePush.sync();
+                Tools.toast('正在下载更新，更新将在后台自动安装')
+                this.setState({
+                  isUpdate:false
+                })
               }},
-              {text: '取消',  style: 'cancel'},
+              {text: '取消',  style: 'cancel', onPress: () => {
+                this.setState({
+                  isUpdate:false
+                })
+              }},
             ],
           )
         }
+    
+    }).catch(()=>{
+        Tools.toast('版本服务器连接超时，请稍后重试')
+        this.setState({
+          isUpdate:false
+        })
     });
+    }
+
   }; 
   render() {
     return (
