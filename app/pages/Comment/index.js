@@ -6,10 +6,10 @@ import {
   Image,
   ScrollView,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import Modal from "react-native-modal";
-import Spinner from "react-native-spinkit";
 import CardView from "react-native-cardview";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import Ripple from "react-native-material-ripple";
@@ -374,12 +374,7 @@ export default class index extends Component {
               cornerRadius={2}
               style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
-              <Spinner
-                isVisible={this.state.isModalVisible}
-                size={45}
-                type={"Circle"}
-                color={"#00a2ed"}
-              />
+                <ActivityIndicator animating={true} size="large" />
               <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
             </CardView>
           ) : (

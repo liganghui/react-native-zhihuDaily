@@ -5,6 +5,7 @@ import {
   createDrawerNavigator,
   createSwitchNavigator
 } from "react-navigation";
+import SplashScreen from 'react-native-splash-screen'
 import { DeviceEventEmitter, YellowBox,Platform } from "react-native";
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "./pages/Home";
@@ -153,18 +154,16 @@ class App extends React.Component {
     };
   }
   componentDidMount() {
+    SplashScreen.hide();
     JPushModule.initPush();
-
     if(Platform.OS==='android'){ 
       JPushModule.notifyJSDidLoad((resultCode) => {
       });
     }
-    // 接收推送事件
+    // 点击推送事件
     JPushModule.addReceiveOpenNotificationListener((res)=>{
-      let id=JSON.parse(res.extras).id;
-
-
-
+      // 获取额外参数
+      let param=JSON.parse(res.extras);
     })
   }
 
