@@ -31,12 +31,13 @@ export default class index extends Component {
         key={item.id}
         style={styles.cardWrapper}
       >
-        <Ripple
+        {/* <Ripple
           rippleDuration={400}
           rippleOpacity={0.15}
-          onPress={this.props.onPress.bind(this, item, index, section)}
-        >
+        
+        > */}
           <ListItem
+            onPress={this.props.onPress.bind(this, item, index, section)}
             containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
             title={item.title}
             subtitle={item.display_date ? item.display_date : null}
@@ -69,7 +70,7 @@ export default class index extends Component {
               ) : null
             }
           />
-        </Ripple>
+        {/* </Ripple> */}
       </CardView>
     );
   };

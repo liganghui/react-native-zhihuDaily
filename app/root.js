@@ -5,7 +5,7 @@ import {
   createDrawerNavigator,
   createSwitchNavigator
 } from "react-navigation";
-import { DeviceEventEmitter } from "react-native";
+import { DeviceEventEmitter, YellowBox,Platform } from "react-native";
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "./pages/Home";
 import DetailsScreen from "./pages/Details";
@@ -26,6 +26,13 @@ import codePush from "react-native-code-push";
 import { Tools, Api, Axios } from "./config";
 import "./config/storage";
 import ProgressBarModal from "./componetns/ProgressBarModal";
+import JPushModule from "jpush-react-native";
+
+YellowBox.ignoreWarnings([
+  "Remote debugger is in a background tab which may cause apps to perform slowly",
+  "Require cycle: node_modules/rn-fetch-blob/index.js",
+  "Require cycle: node_modules/react-native/Libraries/Network/fetch.js"
+]);
 
 /*
  *   构建导航
@@ -41,7 +48,11 @@ import ProgressBarModal from "./componetns/ProgressBarModal";
 const MainScreen = createStackNavigator(
   {
     Home: HomeScreen,
-    Details: DetailsScreen,
+    Details: {
+      screen:  DetailsScreen,
+      path: 'details/:id',
+      //传参示例 daily://main/details/3892357
+    },
     ImgView: ImgScreen,
     Test: TestScreen,
     Section: SectionScreen,
@@ -50,7 +61,10 @@ const MainScreen = createStackNavigator(
     SignIn: SignInScreen,
     Registered: RegisteredScreen,
     Join: JoinScreen,
-    Setting: SettingScreen
+    Setting: {
+      screen:  SettingScreen,
+      path: 'setting',
+    },
   },
   {
     // 设置header默认样式
@@ -62,12 +76,12 @@ const MainScreen = createStackNavigator(
       headerTitleStyle: {
         fontSize: 16
       }
-    },
+    }, 
     // 设置转场动画效果（安卓实现类似iOS的push动画)    来源： https://www.jianshu.com/p/dc9df5826651
     transitionConfig: () => ({
       screenInterpolator: StackViewStyleInterpolator.forHorizontal,
       transitionSpec: {
-        duration: 280
+        duration: 300
       }
     })
   }
@@ -87,7 +101,8 @@ MainScreen.navigationOptions = ({ navigation }) => {
 const AppNavigator = createDrawerNavigator(
   {
     Main: {
-      screen: MainScreen
+      screen: MainScreen,
+      path: 'main',
     },
     Drawer: {
       screen: DrawerScreen
@@ -97,6 +112,8 @@ const AppNavigator = createDrawerNavigator(
     contentComponent: DrawerScreen
   }
 );
+
+
 
 const defaultGetStateForAction = AppNavigator.router.getStateForAction;
 
@@ -122,6 +139,7 @@ AppNavigator.router.getStateForAction = (action, state) => {
 };
 
 let Navigation = createAppContainer(AppNavigator);
+const prefix = 'daily://';
 
 @observer
 class App extends React.Component {
@@ -133,6 +151,25 @@ class App extends React.Component {
       totalPackageSize: null,
       receivedPackageSize: null
     };
+  }
+  componentDidMount() {
+    JPushModule.initPush();
+
+    if(Platform.OS==='android'){ 
+      JPushModule.notifyJSDidLoad((resultCode) => {
+      });
+    }
+    // 接收推送事件
+    JPushModule.addReceiveOpenNotificationListener((res)=>{
+      let id=JSON.parse(res.extras).id;
+
+
+
+    })
+  }
+
+  componentWillUnmount() {
+    JPushModule.removeReceiveOpenNotificationListener();
   }
   // 热更新状态
   codePushStatusDidChange(status) {
@@ -156,18 +193,21 @@ class App extends React.Component {
         // console.warn("当前为最新包");
         break;
       case codePush.SyncStatus.UPDATE_INSTALLED:
-     
         // console.warn("已安装更新。");
         break;
     }
   }
   // 热更新下载进度
   codePushDownloadDidProgress(progress) {
-    let percentage=parseInt((progress.receivedBytes/progress.totalBytes)*100)
+    let percentage = parseInt(
+      (progress.receivedBytes / progress.totalBytes) * 100
+    );
     this.setState({
-      progress:percentage,
-      totalPackageSize: Number(progress.totalBytes/1024/1024).toFixed(1),
-      receivedPackageSize:Number(progress.receivedBytes/1024/1024).toFixed(1)
+      progress: percentage,
+      totalPackageSize: Number(progress.totalBytes / 1024 / 1024).toFixed(1),
+      receivedPackageSize: Number(progress.receivedBytes / 1024 / 1024).toFixed(
+        1
+      )
     });
   }
   render() {
@@ -176,11 +216,12 @@ class App extends React.Component {
         <MenuProvider>
           <ProgressBarModal
             progress={this.state.progress}
-            totalPackageSize={this.state.totalPackageSize+"MB"}
+            totalPackageSize={this.state.totalPackageSize + "MB"}
             receivedPackageSize={this.state.receivedPackageSize}
             progressModalVisible={this.state.progressModalVisible} // 是否显示弹窗控制
           />
           <Navigation
+            uriPrefix={prefix}
             screenProps={{ theme: stores.theme.colors.navBackground }}
           />
         </MenuProvider>

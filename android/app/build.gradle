@@ -108,6 +108,11 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.2"
+        manifestPlaceholders = [
+                JPUSH_APPKEY: "fa2579dccb069b4b182e47f4",
+                APP_CHANNEL : "default"
+        ]
+
     }
      signingConfigs {
         release {
@@ -150,6 +155,8 @@ android {
 }
 
 dependencies {
+    implementation project(':jcore-react-native')
+    implementation project(':jpush-react-native')
     implementation project(':react-native-device-info')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-code-push')

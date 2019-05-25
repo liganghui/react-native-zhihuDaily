@@ -27,7 +27,7 @@ const Tools = {
     let day =
       nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
     if (symbol) {
-      return yaer + symbol + month + symbol + day;
+      return year + symbol + month + symbol + day;
     } else {
       return year + month + day;
     }

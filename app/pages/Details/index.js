@@ -166,7 +166,7 @@ export default class index extends Component {
       if (newWorkInfo.online) {
         this.getExtraData();
       }
-    });
+    })
     this.getDailyData();
     storage
       .load({
@@ -182,7 +182,8 @@ export default class index extends Component {
             webviewFirst: false
           });
         }
-      });
+      }).catch((err)=>[
+      ]);;
     storage
       .load({
         key: "bigSize"
@@ -193,7 +194,8 @@ export default class index extends Component {
             bigSize: true
           });
         }
-      });
+      }).catch((err)=>[
+      ]);;
   }
   // 页面数据初始化
   getDailyData() {
@@ -310,7 +312,7 @@ export default class index extends Component {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {
       if (direction == "down") {
-        if (tempHeight == HEAD_HEIGHT) {
+        if (tempHeight <= HEAD_HEIGHT) {
           this.state.headerHeight.setValue(HEADER_MIN_HEIGHT);
           tempHeight = HEADER_MIN_HEIGHT;
         }

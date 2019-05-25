@@ -23,11 +23,15 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
+import cn.jpush.reactnativejpush.JPushPackage;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+  // 设置为 true 将不会弹出 toast
+    private boolean SHUTDOWN_TOAST = false;
+    // 设置为 true 将不会打印 log
+    private boolean SHUTDOWN_LOG = false;
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
 
@@ -46,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new RNDeviceInfo(),
+            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new SplashScreenReactPackage(),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new ImagePickerPackage(),
