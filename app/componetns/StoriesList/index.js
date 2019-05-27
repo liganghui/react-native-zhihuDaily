@@ -41,6 +41,7 @@ export default class index extends Component {
             containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
             title={item.title}
             subtitle={item.display_date ? item.display_date : null}
+            subtitleStyle={{color:this.props.theme.colors.text}}
             titleStyle={[
               styles.itemTitle,
               { color: item.visited ? this.props.theme.colors.visitedItem : this.props.theme.colors.item}
