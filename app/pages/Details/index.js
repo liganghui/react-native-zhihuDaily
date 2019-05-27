@@ -156,7 +156,6 @@ export default class index extends Component {
   }
   componentDidMount() {
     this.init();
-    // 检测页面是否为初次加载
   }
   /*
    *  初始化
@@ -168,6 +167,7 @@ export default class index extends Component {
       }
     })
     this.getDailyData();
+    // 检测页面是否为初次加载
     storage
       .load({
         key: "webviewFirst"
@@ -183,7 +183,8 @@ export default class index extends Component {
           });
         }
       }).catch((err)=>[
-      ]);;
+      ]);
+    // 监测是否开启了大字体
     storage
       .load({
         key: "bigSize"
@@ -381,9 +382,9 @@ export default class index extends Component {
       extrapolate: "clamp"
     });
     return (
-      <Animated.View key="background" style={{ translateY: imgTop ,backgroundColor:'#fff'}}>
+      <Animated.View key="background" style={{ translateY: imgTop }}>
         <Image
-          style={[styles.backgroundImage]}
+          style={[styles.backgroundImage,{backgroundColor:this.props.theme.colors.containerBackground}]}
           source={{ uri: this.state.daily.image }}
         />
         <LinearGradient
@@ -455,14 +456,14 @@ export default class index extends Component {
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
-              style={styles.sectionWrapper}
+              style={[styles.sectionWrapper,{backgroundColor:this.props.theme.colors.buttonBackground}]}
               onPress={this.bindSectionTap}
             >
               <Image
                 style={styles.thumbnailImg}
                 source={{ uri: this.state.daily.section.thumbnail }}
               />
-              <Text style={styles.thumbnailName}>
+              <Text style={[styles.thumbnailName,{color:this.props.theme.colors.text}]}>
                 本文来自：{this.state.daily.section.name} · 合集
               </Text>
               <Icon
@@ -530,7 +531,6 @@ const styles = StyleSheet.create({
     right: 20
   },
   sectionWrapper: {
-    backgroundColor: "#f0f0f0",
     marginHorizontal: 20,
     marginBottom: 30,
     flexDirection: "row",
@@ -542,7 +542,6 @@ const styles = StyleSheet.create({
   },
   thumbnailName: {
     flex: 1,
-    color: "#000",
     marginLeft: 10
   },
   iconRightArrow: {

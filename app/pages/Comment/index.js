@@ -193,7 +193,7 @@ export default class index extends Component {
                 {item.content}
               </Text>
               {item.reply_to && (
-                <View style={styles.replyContainer}>
+                <TouchableOpacity style={styles.replyContainer} activeOpacity={1} onPress={this.bindMoreToggle.bind(this, index, item)}>
                   <Text
                     ellipsizeMode={"tail"}
                     numberOfLines={item.reply_to.status ? 0 : 2}
@@ -210,7 +210,7 @@ export default class index extends Component {
                       {item.reply_to.content}
                     </Text>
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
             </View>
             <View style={styles.extraContainer}>
@@ -234,9 +234,9 @@ export default class index extends Component {
             title={"展开"}
             buttonStyle={[
               styles.moreBtn,
-              { backgroundColor: this.props.theme.colors.bttonColor }
+              { backgroundColor: this.props.theme.colors.buttonBackground }
             ]}
-            titleStyle={styles.moreTitle}
+            titleStyle={[styles.moreTitle, { color: this.props.theme.colors.text }]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
         );
@@ -244,8 +244,11 @@ export default class index extends Component {
         return (
           <Button
             title={"收起"}
-            buttonStyle={styles.moreBtn}
-            titleStyle={styles.moreTitle}
+            buttonStyle={[
+              styles.moreBtn,
+              { backgroundColor: this.props.theme.colors.buttonBackground }
+            ]}
+            titleStyle={[styles.moreTitle, { color: this.props.theme.colors.text }]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
         );
@@ -303,7 +306,7 @@ export default class index extends Component {
               <Text
                 style={[
                   styles.placeholderText,
-                  { color: this.props.theme.colors.text }
+                  { color: this.props.theme.colors.visitedItem }
                 ]}
               >
                 深度长评虚位以待
@@ -340,13 +343,13 @@ export default class index extends Component {
               <Icon
                 type="material-community"
                 name="chevron-double-down"
-                color={this.props.theme.colors.content}
+                color={this.props.theme.colors.text}
               />
             ) : (
               <Icon
                 type="material-community"
                 name="chevron-double-up"
-                color={this.props.theme.colors.content}
+                color={this.props.theme.colors.text}
               />
             )}
           </TouchableOpacity>
@@ -422,7 +425,6 @@ const styles = StyleSheet.create({
     flex: 1
   },
   placeholderText: {
-    color: "rgba(0,0,0,0.2)",
     marginTop: 10
   },
   placeholderImg: {

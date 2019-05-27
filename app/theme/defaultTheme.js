@@ -12,6 +12,6 @@ export default{
   containerBackground:'#fff',
   listBackground:'#f3f3f3',
   itemBackground:'#ffffff',
-  buttonBackground:'#d8e4f4',
+  buttonBackground:'#f0f0f0',
   navBackground: '#00a2ed',
 };
