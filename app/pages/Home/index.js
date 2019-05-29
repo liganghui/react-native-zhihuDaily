@@ -53,20 +53,6 @@ export default class index extends Component {
           <Button
             type="clear"
             onPress={() => {
-              navigation.navigate("Test");
-            }}
-            icon={
-              <Icon
-                type="material"
-                name="help-outline"
-                size={24}
-                color="white"
-              />
-            }
-          />
-          <Button
-            type="clear"
-            onPress={() => {
               that.toggleDateTimePicker();
             }}
             icon={
@@ -490,8 +476,7 @@ const styles = StyleSheet.create({
   },
   headerRightWrapper: {
     justifyContent: "space-between",
-    // width: 90,
-    width: 130,
+    width: 90,
     flexDirection: "row"
   },
   popupWrapper: {
