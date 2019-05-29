@@ -4,6 +4,7 @@ import {
   createAppContainer,
   createDrawerNavigator,
 } from "react-navigation";
+import { DeviceEventEmitter } from "react-native";
 import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import HomeScreen from "../pages/Home";
 import DetailsScreen from "../pages/Details";
@@ -11,7 +12,6 @@ import DrawerScreen from "../pages/Drawer";
 import ImgScreen from "../pages/ImgView";
 import SectionScreen from "../pages/Section";
 import CommentScreen from "../pages/Comment";
-import TestScreen from "../pages/Test";
 import LoginScreen from "../pages/Login";
 import SignInScreen from "../pages/Login/SignIn";
 import RegisteredScreen from "../pages/Registered";
@@ -40,7 +40,6 @@ const MainScreen = createStackNavigator(
       //传参示例 daily://main/details/3892357
     },
     ImgView: ImgScreen,
-    Test: TestScreen,
     Section: SectionScreen,
     Comment: CommentScreen,
     Login: LoginScreen,

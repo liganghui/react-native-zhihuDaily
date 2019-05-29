@@ -27,6 +27,7 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 
 let that; //保存This引用
 @inject('theme') 
@@ -377,6 +378,14 @@ export default class index extends Component {
     });
     this.toggleDateTimePicker();
   };
+  onBackButtonPressAndroid = () => {
+    if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+        return false
+    }
+    this.lastBackPressed = Date.now();
+    Tools.toast('再按一次退出应用');
+    return true;
+  };
   /*
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据
@@ -403,6 +412,7 @@ export default class index extends Component {
 
   render() {
     return (
+      <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
       <MyScrollView
         pullupfresh={this.pullupfresh}
         onScroll={this.bindOnScroll.bind(this)}
@@ -467,6 +477,7 @@ export default class index extends Component {
           onCancel={this.toggleDateTimePicker}
         />
       </MyScrollView>
+      </AndroidBackHandler>
     );
   }
 }
