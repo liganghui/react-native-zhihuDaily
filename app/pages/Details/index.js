@@ -20,7 +20,7 @@ import {
 import Share from "react-native-share";
 import * as Animatable from "react-native-animatable";
 import {observer,inject} from 'mobx-react';
-import { Tools, Api, Axios } from "../../config";
+import { Tools, Api, Axios } from "../../utils";
 
 const IMG_MAX_HEIGHT = 200;
 const HEAD_HEIGHT = 50;

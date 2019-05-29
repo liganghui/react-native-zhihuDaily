@@ -16,7 +16,7 @@ import {
 } from "native-base";
 import codePush from "react-native-code-push";
 import DeviceInfo from 'react-native-device-info';
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
 
 
@@ -113,7 +113,7 @@ export default class index extends Component {
         }
     
     }).catch(()=>{
-        Tools.toast('版本服务器连接超时，请稍后重试')
+        Tools.toast('无法连接服务器，请稍后重试')
         this.setState({
           isUpdate:false
         })

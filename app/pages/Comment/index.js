@@ -13,7 +13,7 @@ import Modal from "react-native-modal";
 import CardView from "react-native-cardview";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import Ripple from "react-native-material-ripple";
-import { Tools, Api, Axios, System } from "../../config";
+import { Tools, Api, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
 
 @inject("theme")

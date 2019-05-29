@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { DrawerItems, SafeAreaView } from "react-navigation";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
 import Video from "react-native-video";
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     return {

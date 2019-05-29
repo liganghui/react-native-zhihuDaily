@@ -9,9 +9,8 @@ import React, { Component } from "react";
 import { View, Image, StyleSheet } from "react-native";
 import { observer, inject } from "mobx-react";
 import { Container, Header, Button, Content, Text } from "native-base";
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 import ProgressBarModal from "../../componetns/ProgressBarModal";
-import { setInterval } from "core-js";
 
 
 @inject("test")

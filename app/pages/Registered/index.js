@@ -17,7 +17,7 @@ import {
   Icon,
   Button
 } from "native-base";
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {
     return {

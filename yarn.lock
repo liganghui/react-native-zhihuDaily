@@ -5212,9 +5212,9 @@ react-native-share@^1.1.3:
   version "1.1.3"
   resolved "http://registry.npm.taobao.org/react-native-share/download/react-native-share-1.1.3.tgz#513ea61075e2bb945d33cfda120e12592916299e"
 
-react-native-spinkit@^1.2.0:
-  version "1.2.0"
-  resolved "http://registry.npm.taobao.org/react-native-spinkit/download/react-native-spinkit-1.2.0.tgz#bc3eb2cf44f0233928721b53f3eb1d6bfb1322e4"
+react-native-spinkit@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npm.taobao.org/react-native-spinkit/download/react-native-spinkit-1.3.0.tgz#d238fb2a52e7c4e121c1ee2025a4fd55568b1f7a"
   dependencies:
     prop-types "^15.5.8"
 

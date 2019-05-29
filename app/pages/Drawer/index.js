@@ -3,13 +3,12 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet,DeviceEventEmitter } from "react-native";
 import {
-  DrawerItems,
   SafeAreaView,
   withNavigationFocus
 } from "react-navigation";
 import AvatarPicker from "../../componetns/AvatarPicker";
-import { Icon, Button, Avatar, ListItem } from "react-native-elements";
-import { Tools } from "../../config";
+import { Button, Avatar } from "react-native-elements";
+import { Tools } from "../../utils";
 import { observer, inject } from "mobx-react";
 
 @inject("theme")
@@ -121,22 +120,6 @@ class Drawer extends Component {
           </Text>
         </View>
         <View style={[styles.listContainer,{backgroundColor:this.props.theme.colors.listBackground}]}>
-          <View>
-            <ListItem
-              chevron
-              title={"扫一扫"}
-              containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
-              titleStyle={[styles.itemTitle,{color:this.props.theme.colors.item}]}
-              leftIcon={
-                <Icon
-                  type="material"
-                  name="crop-free"
-                  size={24}
-                  color={this.props.theme.colors.item}
-                />
-              }
-            />
-          </View>
           {this.state.userInfo ? (
             <Button
               type={"clear"}
@@ -171,9 +154,6 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     color: "#fff",
     fontSize: 16
-  },
-  itemTitle: {
-    color: "#212121"
   },
   listContainer: {
     flex: 1

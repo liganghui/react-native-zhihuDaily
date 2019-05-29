@@ -22,7 +22,7 @@ import {
 } from "native-base";
 import { StackActions, NavigationActions } from "react-navigation";
 import LCCountDownButton from "../../componetns/CountDownButton";
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 let countDown;
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {

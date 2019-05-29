@@ -1,175 +1,61 @@
 import React, { Component } from "react";
-import {
-  createStackNavigator,
-  createAppContainer,
-  createDrawerNavigator,
-  createSwitchNavigator
-} from "react-navigation";
 import SplashScreen from 'react-native-splash-screen'
-import { DeviceEventEmitter, YellowBox,Platform } from "react-native";
-import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
-import HomeScreen from "./pages/Home";
-import DetailsScreen from "./pages/Details";
-import DrawerScreen from "./pages/Drawer";
-import ImgScreen from "./pages/ImgView";
-import SectionScreen from "./pages/Section";
-import CommentScreen from "./pages/Comment";
-import TestScreen from "./pages/Test";
-import LoginScreen from "./pages/Login";
-import SignInScreen from "./pages/Login/SignIn";
-import RegisteredScreen from "./pages/Registered";
-import JoinScreen from "./pages/Registered/Join";
-import SettingScreen from "./pages/Setting";
+import {Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
-import { Provider, observer, inject } from "mobx-react";
+import { Provider, observer } from "mobx-react";
 import stores from "./store";
 import codePush from "react-native-code-push";
-import { Tools, Api, Axios } from "./config";
-import "./config/storage";
+import { Tools} from "./utils";
+import "./utils/storage";
 import ProgressBarModal from "./componetns/ProgressBarModal";
 import JPushModule from "jpush-react-native";
-
-YellowBox.ignoreWarnings([
-  "Remote debugger is in a background tab which may cause apps to perform slowly",
-  "Require cycle: node_modules/rn-fetch-blob/index.js",
-  "Require cycle: node_modules/react-native/Libraries/Network/fetch.js"
-]);
-
-/*
- *   构建导航
- *
- *   导航结构 ：
- *      >Drawer
- *      >Home
- *          >>Details
- *          >>....
- *
- */
-// 二级导航
-const MainScreen = createStackNavigator(
-  {
-    Home: HomeScreen,
-    Details: {
-      screen:  DetailsScreen,
-      path: 'details/:id',
-      //传参示例 daily://main/details/3892357
-    },
-    ImgView: ImgScreen,
-    Test: TestScreen,
-    Section: SectionScreen,
-    Comment: CommentScreen,
-    Login: LoginScreen,
-    SignIn: SignInScreen,
-    Registered: RegisteredScreen,
-    Join: JoinScreen,
-    Setting: {
-      screen:  SettingScreen,
-      path: 'setting',
-    },
-  },
-  {
-    // 设置header默认样式
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: "#00a2ed"
-      },
-      headerTintColor: "#fff",
-      headerTitleStyle: {
-        fontSize: 16
-      }
-    }, 
-    // 设置转场动画效果（安卓实现类似iOS的push动画)    来源： https://www.jianshu.com/p/dc9df5826651
-    transitionConfig: () => ({
-      screenInterpolator: StackViewStyleInterpolator.forHorizontal,
-      transitionSpec: {
-        duration: 300
-      }
-    })
-  }
-);
-
-MainScreen.navigationOptions = ({ navigation }) => {
-  let drawerLockMode = "unlocked";
-  if (navigation.state.index > 0) {
-    drawerLockMode = "locked-closed";
-  }
-  return {
-    drawerLockMode
-  };
-};
-
-//  根节点抽屉导航
-const AppNavigator = createDrawerNavigator(
-  {
-    Main: {
-      screen: MainScreen,
-      path: 'main',
-    },
-    Drawer: {
-      screen: DrawerScreen
-    }
-  },
-  {
-    contentComponent: DrawerScreen
-  }
-);
+import AppNavigation from "./routers/AppRouter";
 
 
 
-const defaultGetStateForAction = AppNavigator.router.getStateForAction;
+/* 
+ *   应用根组件 , 负责向 Navigation 挂载重要组件 .
+ *      
+ *   主要挂载：mobx , 热更新(codepush) , 极光推送 ,启动屏 ,本地存储.
+ * 
+*/
 
-AppNavigator.router.getStateForAction = (action, state) => {
-  if (action) {
-    if (action.type == "Navigation/MARK_DRAWER_SETTLING" && action.willShow) {
-      //Drawer 显示
-      DeviceEventEmitter.emit("drawerState", {
-        focus: true
-      });
-    } else if (
-      action.type == "Navigation/MARK_DRAWER_SETTLING" &&
-      !action.willShow
-    ) {
-      // Drawer 关闭
-      // DeviceEventEmitter.emit('drawerState',{
-      //   focus:false
-      // })
-    }
-  }
 
-  return defaultGetStateForAction(action, state);
-};
-
-let Navigation = createAppContainer(AppNavigator);
-const prefix = 'daily://';
+const prefix = "daily://"; //react-navigation 深连接的URI前缀
 
 @observer
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      progress: 0,
-      progressModalVisible: false,
-      totalPackageSize: null,
-      receivedPackageSize: null
+      progress: 0,//热更新下载进度(百分比)
+      progressModalVisible: false, //控制热更新下载弹层显示
+      totalPackageSize: null,//热更新下载数据总量
+      receivedPackageSize: null//当前下载数据量
     };
   }
   componentDidMount() {
-    SplashScreen.hide();
-    JPushModule.initPush();
+    SplashScreen.hide();//隐藏启动屏
+    JPushModule.initPush();//初始化极光推送
     if(Platform.OS==='android'){ 
+      // 安卓需要增加 否则点击推送消息无反应
       JPushModule.notifyJSDidLoad((resultCode) => {
       });
     }
-    // 点击推送事件
+    // 推送消息点击事件
     JPushModule.addReceiveOpenNotificationListener((res)=>{
       // 获取额外参数
       let param=JSON.parse(res.extras);
+      // ...
     })
   }
 
   componentWillUnmount() {
+    // 移除事件
     JPushModule.removeReceiveOpenNotificationListener();
   }
+
+
   // 热更新状态
   codePushStatusDidChange(status) {
     switch (status) {
@@ -204,32 +90,30 @@ class App extends React.Component {
     this.setState({
       progress: percentage,
       totalPackageSize: Number(progress.totalBytes / 1024 / 1024).toFixed(1),
-      receivedPackageSize: Number(progress.receivedBytes / 1024 / 1024).toFixed(
-        1
-      )
+      receivedPackageSize: Number(progress.receivedBytes / 1024 / 1024).toFixed(1)
     });
   }
   render() {
     return (
+      
       <Provider {...stores}>
+        {/* <Provider> 用于集成 Mobx   <MenuProvider>是弹出菜单组件  此处确保遮罩层 层级高于Navigation显示  */}
         <MenuProvider>
-          <ProgressBarModal
+           <AppNavigation  uriPrefix={prefix}  screenProps={{ theme: stores.theme.colors.navBackground }}/>
+          {/* 下载进度组件 */}
+           <ProgressBarModal
             progress={this.state.progress}
             totalPackageSize={this.state.totalPackageSize + "MB"}
             receivedPackageSize={this.state.receivedPackageSize}
-            progressModalVisible={this.state.progressModalVisible} // 是否显示弹窗控制
+            progressModalVisible={this.state.progressModalVisible} 
           />
-          <Navigation
-            uriPrefix={prefix}
-            screenProps={{ theme: stores.theme.colors.navBackground }}
-          />
-        </MenuProvider>
+       </MenuProvider> 
       </Provider>
     );
   }
 }
 
-// 热更新配置
+// codePush 热更新配置
 const CodePushOptions = {
   updateDialog: {
     //指示是否要将可用版本的描述附加到显示给最终用户的通知消息中。默认为false。

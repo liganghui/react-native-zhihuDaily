@@ -8,7 +8,7 @@ import {
 import MyScrollView from "../../componetns/ScrollView";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
-import { Tools, Axios, Api } from "../../config";
+import { Tools, Axios, Api } from "../../utils";
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {
     return {

@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import Spinner from "react-native-spinkit";
 
-import { Api, Tools, Axios, System } from "../../config";
+import { Api, Tools, Axios, System } from "../../utils";
 export default class index extends Component {
   static navigationOptions = ({ navigation,screenProps }) => {
     return {

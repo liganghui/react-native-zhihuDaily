@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Bar from "../Bar";
 import hotUpdateBg from "../../assets/images/hot-update-bg.png";
-import { Px2Dp } from "../../config";
+import { Px2Dp } from "../../utils";
 
 const propTypes = {
   ...Modal.propTypes

@@ -18,7 +18,7 @@ import {
 } from "react-native-popup-menu";
 import {observer,inject} from 'mobx-react';
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { Api, Tools, Axios } from "../../config";
+import { Api, Tools, Axios } from "../../utils";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
 // 上滑触底加载状态

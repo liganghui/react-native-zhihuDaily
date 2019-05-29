@@ -8,7 +8,7 @@ import {
 import ImageViewer from "react-native-image-zoom-viewer";
 import { Icon, Button } from "react-native-elements";
 import RNFetchBlob from "rn-fetch-blob";
-import { Tools } from "../../config";
+import { Tools } from "../../utils";
 
 export default class App extends React.Component {
   static navigationOptions = ({ navigation }) => {

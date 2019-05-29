@@ -9,7 +9,7 @@ import {
   Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { Px2Dp } from '../../config';
+import { Px2Dp } from '../../utils';
  
 const propTypes = {
   progress: PropTypes.number.isRequired,
