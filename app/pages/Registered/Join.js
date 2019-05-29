@@ -89,7 +89,7 @@ export default class index extends Component {
       ]
     });
     this.clearTime();
-    // this.props.navigation.dispatch(resetAction);
+    this.props.navigation.dispatch(resetAction);
     Tools.toast("注册成功，请登录");
   };
   clearTime=()=>{
