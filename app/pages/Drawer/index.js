@@ -1,7 +1,7 @@
 //  侧栏抽屉
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet,DeviceEventEmitter } from "react-native";
+import { View, Text, StyleSheet,DeviceEventEmitter,PermissionsAndroid } from "react-native";
 import {
   SafeAreaView,
   withNavigationFocus
@@ -94,6 +94,7 @@ class Drawer extends Component {
   selectImg(){
     this.avatarPicker.show()
   }
+  
   render() {
     return (
       <SafeAreaView style={styles.container}>

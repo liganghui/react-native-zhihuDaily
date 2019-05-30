@@ -155,6 +155,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-android-open-settings')
     implementation project(':jcore-react-native')
     implementation project(':jpush-react-native')
     implementation project(':react-native-device-info')

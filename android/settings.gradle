@@ -1,4 +1,6 @@
 rootProject.name = 'demo'
+include ':react-native-android-open-settings'
+project(':react-native-android-open-settings').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-android-open-settings/android')
 include ':jcore-react-native'
 project(':jcore-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/jcore-react-native/android')
 

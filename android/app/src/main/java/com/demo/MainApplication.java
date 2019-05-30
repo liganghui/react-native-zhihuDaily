@@ -3,6 +3,7 @@ package com.demo;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.microsoft.codepush.react.CodePush;
@@ -49,6 +50,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new AndroidOpenSettingsPackage(),
             new RNDeviceInfo(),
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new SplashScreenReactPackage(),
