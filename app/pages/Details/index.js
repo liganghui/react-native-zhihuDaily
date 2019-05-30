@@ -158,7 +158,10 @@ export default class index extends Component {
     this.init();
   }
   /*
-   *  初始化
+   *  日报内容初始化
+   *    
+   *    详情页 首次打开时 WebView初始化会占用大量性能 , 
+   *    导致页面push动画丢帧 , 这里通过判断状态延缓WebView加载.
    */
   init() {
     Tools.getNetworkState().then(newWorkInfo => {
@@ -235,7 +238,7 @@ export default class index extends Component {
                       });
                   }
                 );
-              }, 0);
+               }, 100);
               });
             }
           );
