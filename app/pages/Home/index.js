@@ -114,7 +114,7 @@ export default class index extends Component {
         });
     });
   }
-  /*
+  /**
    * 下拉刷新
    */
   bindOnRefresh() {
@@ -130,7 +130,7 @@ export default class index extends Component {
       });
   }
 
-  /*
+  /**
    * 处理首屏数据渲染
    * @oaram  {responseJson} data 数据对象
    */
@@ -155,7 +155,7 @@ export default class index extends Component {
     });
   }
 
-  /*
+  /**
    * 更新列表项访问状态
    * @param {Object} lsitData 列表数据对象
    * @param {Function} callback 回调函数
@@ -184,7 +184,7 @@ export default class index extends Component {
     });
   }
 
-  /*
+  /**
    *  上滑触底数据加载
    */
   pullupfresh = () => {
@@ -231,7 +231,7 @@ export default class index extends Component {
         });
       });
   };
-  /*
+  /**
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
@@ -266,7 +266,7 @@ export default class index extends Component {
       });
   };
 
-  /*
+  /**
    * 格式化分组标题日期
    *
    *  @param {String} val 日期字符串
@@ -284,7 +284,7 @@ export default class index extends Component {
         : null;
     }
   }
-  /*
+  /**
    * 滚动监听
    * 跟随滚动位置更新Header标题
    * @param {Object} event 滚动事件
@@ -308,7 +308,7 @@ export default class index extends Component {
       }
     }
   }
-  /*
+  /**
    * 监听列表高度变化
    * @param {Object} event 列表高度数值
    */
@@ -325,7 +325,7 @@ export default class index extends Component {
     });
   }
 
-  /*
+  /**
    * 监听监听应用状态的变化
    */
   handleAppStateChange = nextAppState => {
@@ -342,7 +342,7 @@ export default class index extends Component {
       }
     }
   };
-  /*
+  /**
    * 控制弹出菜单切换显示
    */
   tooglePopupMenu=()=>{
@@ -372,7 +372,7 @@ export default class index extends Component {
     Tools.toast('再按一次退出应用');
     return true;
   };
-  /*
+  /**
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据
    */
@@ -383,7 +383,7 @@ export default class index extends Component {
       </Text>
     );
   };
-  /*
+  /**
    * 渲染右上角自定义菜单
    */
   renderCustomMenu = props => {
@@ -452,6 +452,8 @@ export default class index extends Component {
         <DateTimePicker
           // 最大日期
           maximumDate={
+            //判断当前时间 是否大于早上7点 , 每天日报早上7点更新 
+            //如果时间早于7点 ,则最大可选择日起为昨天.
             Number(Tools.formatTime().split(":")[0]) >= 7
               ? new Date()
               : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)

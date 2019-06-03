@@ -16,7 +16,7 @@ import AppNavigation from "./routers/AppRouter";
 /* 
  *   应用根组件 , 负责向 Navigation 挂载重要组件 .
  *      
- *   主要挂载：mobx , 热更新(codepush) , 极光推送 ,启动屏 ,本地存储.
+ *   主要挂载：mobx , 热更新(codepush) , 极光推送 ,启动屏 ,本地存储 ,深连接.
  * 
 */
 
@@ -97,7 +97,7 @@ class App extends React.Component {
     return (
       
       <Provider {...stores}>
-        {/* <Provider> 用于集成 Mobx   <MenuProvider>是弹出菜单组件  此处确保遮罩层 层级高于Navigation显示  */}
+        {/* <Provider> 用于集成 Mobx   <MenuProvider>是弹出菜单组件  此处用于确保遮罩层 层级高于Navigation显示  */}
         <MenuProvider>
            <AppNavigation  uriPrefix={prefix}  screenProps={{ theme: stores.theme.colors.navBackground }}/>
           {/* 下载进度组件 */}

@@ -19,7 +19,6 @@ export default class index extends Component {
   //指定id作为列表每一项的key。
   keyExtractor = (item, index) => item.id.toString();
   renderHeader = info => {
-    console.warn(this.props.theme);
     return <Text style={styles.headerTitle}>{info.section.key}</Text>;
   };
   //列表项渲染方法

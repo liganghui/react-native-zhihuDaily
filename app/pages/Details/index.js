@@ -37,7 +37,6 @@ export default class index extends Component {
     return {
       headerTransparent: true,
       headerStyle: {
-        overflow: "hidden",
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor:screenProps.theme,
         opacity: params.opacity

@@ -55,7 +55,7 @@ const Tools = {
       return new Date();
     }
   },
-  /*
+  /**
    *  格式化日期
    *   @param {String} date 日期字符串(可选)
    *   @param {String } symbol 日期分隔符 (可选 默认为 "-")
@@ -186,7 +186,6 @@ const Tools = {
       }
     });
   },
-
 };
 
 
