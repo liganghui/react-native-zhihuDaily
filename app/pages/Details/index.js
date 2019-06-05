@@ -22,9 +22,9 @@ import * as Animatable from "react-native-animatable";
 import {observer,inject} from 'mobx-react';
 import { Tools, Api, Axios } from "../../utils";
 
-const IMG_MAX_HEIGHT = 200;
-const HEAD_HEIGHT = 50;
-const HEADER_MIN_HEIGHT = 0;
+const IMG_MAX_HEIGHT = 200;//图像最大高度
+const HEAD_HEIGHT = 50;//导航栏高度
+const HEADER_MIN_HEIGHT = 0;//导航栏最小高度
 let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
 let offsetY=0; // 记录Y轴坐标
 let that; //保存this引用
@@ -96,6 +96,7 @@ export default class index extends Component {
           {/* 点赞 */}
           <Button
             title={
+              // 判断是否大于1000 ,大于 1000 用 K 为单位
               params.extra
                 ? String(
                     params.extra.popularity > 1000
@@ -145,8 +146,8 @@ export default class index extends Component {
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
     let opacity = this.scrollY.interpolate({
-      inputRange: [0, IMG_MAX_HEIGHT, 210, 211],
-      outputRange: [1, 0, 0, 1],
+      inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
+      outputRange: [1, 0, 0, 1], //导航栏透明度 0 透明 1 不透明
       extrapolate: "clamp"
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
@@ -198,7 +199,7 @@ export default class index extends Component {
           });
         }
       }).catch((err)=>[
-      ]);;
+      ]);
   }
   // 页面数据初始化
   getDailyData() {
@@ -290,7 +291,7 @@ export default class index extends Component {
       });
     }
   }
-  /*
+  /**
    *  系统分享弹窗
    */
   openShare() {
@@ -303,7 +304,7 @@ export default class index extends Component {
     Share.open(shareOptions);
   }
 
-  /*
+  /**
    *  监听页面滚动 记录滚动方向 , 控制Header显示.
    *  @param {Object} event 滚动事件对象
    */
@@ -327,7 +328,7 @@ export default class index extends Component {
       }
     }
   };
-  /*
+  /**
    * 跳转到栏目列表
    */
   bindSectionTap = () => {
@@ -336,7 +337,7 @@ export default class index extends Component {
       title: this.state.daily.section.name
     });
   };
-  /*
+  /**
    * 处理收藏与点赞点击事件(静态模拟无实际功能)
    * @param {String} type 区分收藏和点赞
    */
@@ -377,6 +378,7 @@ export default class index extends Component {
     }
   }
 
+  // 渲染背景图 
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 400],

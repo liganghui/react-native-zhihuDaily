@@ -21,6 +21,7 @@ sync = {
                 return null
             }
         }).catch(err => {
+            // 抛出异常
             return Promise.reject(err);
         });
     },
