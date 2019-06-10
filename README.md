@@ -2,21 +2,25 @@
 
 知乎日报的 react-native 版本 , 用于日常使用和项目练习.   
 
+<br/>
 
-> ### 运行
+
+> #### 运行
 
   由于缺少IOS开发环境 , 无法确定IOS存在的问题 , 所以暂时只支持安卓运行 .
   
      react-native run-android
   
   注：启动后会有一些警告 , 来自依赖的开源组件自身问题 , 后续会随着组件增加对RN0.59+支持而被移除.
-
-> ### 运行演示
+<br/>
+<br/>
+> #### 演示
 <img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/>
 <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/3.gif"/>
 
-
-> ### 功能
+<br/>
+<br/>
+> #### 功能
    - 轮播图
    - 日期选择器
    - 主题化
@@ -28,13 +32,15 @@
    - 启动屏
    - 极光推送
    - Mobx集成
+ 
+<br/>
+> #### 待办项 
 
-> ### 待办项 
+- [ ] IOS适配 
+- [ ] 适配iPhoneX和安卓异形屏  
+<br/>
 
-   - [] IOS适配 
-   - [] 适配iPhoneX和安卓异形屏  
-
->  ### 目录结构
+>  #### 目录结构
 ```
 ├─assets 资源文件夹
 │  ├─images  图像资源
