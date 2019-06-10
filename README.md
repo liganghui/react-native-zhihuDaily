@@ -12,10 +12,9 @@
   注：启动后会有一些警告 , 来自依赖的开源组件自身问题 , 后续会随着组件增加对RN0.59+支持而被移除.
 
 > ### 运行演示
+<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/>
+<img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/3.gif"/>
 
-    ![avatar](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/gif/1.gif)
-    ![avatar](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/gif/2.gif)
-    ![avatar](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/gif/3.gif)
 
 > ### 功能
    - 轮播图
@@ -80,4 +79,4 @@
 
 ```
 
-> (了解更多)[https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md]
+> ### [了解更多](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
