@@ -1,10 +1,9 @@
 //  侧栏抽屉
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet,DeviceEventEmitter,PermissionsAndroid } from "react-native";
+import { View, Text, StyleSheet,DeviceEventEmitter} from "react-native";
 import {
   SafeAreaView,
-  withNavigationFocus
 } from "react-navigation";
 import AvatarPicker from "../../componetns/AvatarPicker";
 import { Button, Avatar } from "react-native-elements";
@@ -136,8 +135,7 @@ class Drawer extends Component {
     );
   }
 }
-export default withNavigationFocus(Drawer);
-// export default Drawer;
+export default Drawer;
 
 const styles = StyleSheet.create({
   container: {

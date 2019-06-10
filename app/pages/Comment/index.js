@@ -103,8 +103,8 @@ export default class index extends Component {
       });
     }
   };
-  /*
-   * 监听列表高度
+  /** 
+   *  监听列表高度
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;

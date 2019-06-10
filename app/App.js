@@ -46,12 +46,12 @@ class App extends React.Component {
     JPushModule.addReceiveOpenNotificationListener((res)=>{
       // 获取额外参数
       let param=JSON.parse(res.extras);
-      // ...
+      // ......
     })
   }
 
   componentWillUnmount() {
-    // 移除事件
+    // 移除事件监听
     JPushModule.removeReceiveOpenNotificationListener();
   }
 

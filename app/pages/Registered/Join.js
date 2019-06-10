@@ -4,21 +4,16 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  TextInput
 } from "react-native";
 import {
   Container,
-  Header,
   Content,
-  Form,
   Item,
   Input,
   Label,
   Icon,
   Button,
-  H1,
   H2,
-  H3
 } from "native-base";
 import { StackActions, NavigationActions } from "react-navigation";
 import LCCountDownButton from "../../componetns/CountDownButton";

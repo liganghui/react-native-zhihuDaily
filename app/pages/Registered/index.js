@@ -1,20 +1,14 @@
 import React, { Component } from "react";
 import {
-  View,
   Text,
   StyleSheet,
-  TouchableOpacity,
-  TextInput
 } from "react-native";
 import {
   Container,
-  Header,
   Content,
-  Form,
   Item,
   Input,
   Label,
-  Icon,
   Button
 } from "native-base";
 import { Api, Tools, Axios, System } from "../../utils";
