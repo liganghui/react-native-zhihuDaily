@@ -11,15 +11,19 @@
   
      react-native run-android
   
-  注：启动后会有一些警告 , 来自依赖的开源组件自身问题 , 后续会随着组件增加对RN0.59+支持而被移除.
+  >>注：启动后会有一些警告 , 来自依赖的开源组件自身问题 , 后续会随着组件增加对RN0.59+支持而被移除.
+
 <br/>
 <br/>
+
 > #### 演示
+
 <img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/>
 <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/3.gif"/>
 
 <br/>
 <br/>
+
 > #### 功能
    - 轮播图
    - 日期选择器
@@ -32,8 +36,10 @@
    - 启动屏
    - 极光推送
    - Mobx集成
- 
+   
+   
 <br/>
+
 > #### 待办项 
 
 - [ ] IOS适配 
@@ -85,4 +91,4 @@
 
 ```
 
-> ### [了解更多](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
+> ### [详细文档](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
