@@ -91,4 +91,4 @@
 
 ```
 
-> ### [详细文档](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
+> ### [组件文档](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
