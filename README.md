@@ -18,11 +18,7 @@
 
 > ### 演示
 
-<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> 
-<img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/>
-<img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/3.gif"/>
-<img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/4.gif"/>
-<img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/5.gif"/>
+<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/3.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/4.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/5.gif"/>
 <br/>
 <br/>
 
