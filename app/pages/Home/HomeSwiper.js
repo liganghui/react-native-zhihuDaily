@@ -51,7 +51,8 @@ export default class HomeSwiper extends Component {
         activeDotIndex={this.state.activeSlide}
         containerStyle={{ backgroundColor:'transparent',position:'absolute',bottom:-18,left:0,right:0}}
         dotContainerStyle={{
-          width:5
+          width:15,
+          marginHorizontal:0,
         }}
         dotStyle={{
           width: 8,
@@ -60,7 +61,7 @@ export default class HomeSwiper extends Component {
           backgroundColor: "rgba(255, 255, 255, 0.8)"
         }}
         inactiveDotOpacity={0.4}
-        inactiveDotScale={0.8}
+        inactiveDotScale={0.85}
       />
     );
   }
