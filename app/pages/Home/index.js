@@ -1,22 +1,13 @@
 import React, { Component } from "react";
-import {
-  View,
-  Dimensions,
-  StyleSheet,
-  Text,
-  AppState,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, Text, AppState } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import {
   Menu,
-  MenuProvider,
   MenuOptions,
   MenuOption,
-  MenuTrigger,
-  renderers
+  MenuTrigger
 } from "react-native-popup-menu";
-import {observer,inject} from 'mobx-react';
+import { observer, inject } from "mobx-react";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { Api, Tools, Axios } from "../../utils";
 // 日报列表组件
@@ -27,17 +18,18 @@ import PullUpLoad from "../../componetns/PullUpLoading";
 import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
-import { AndroidBackHandler } from 'react-navigation-backhandler';
+import { AndroidBackHandler } from "react-navigation-backhandler";
 
 let that; //保存This引用
-@inject('theme') 
-@observer
+@inject("theme") //引入主题Store (Mobx)
+@observer //装饰器语法 , 将其转换成可观察的 (Mobx)
 export default class index extends Component {
-  static navigationOptions = ({ navigation,screenProps }) => {
+  // 配置标题栏参数
+  static navigationOptions = ({ navigation, screenProps }) => {
     return {
       title: navigation.getParam("title"),
-      headerStyle:{
-        backgroundColor:screenProps.theme
+      headerStyle: {
+        backgroundColor: screenProps.theme
       },
       headerLeft: (
         <Button
@@ -77,21 +69,24 @@ export default class index extends Component {
     this.state = {
       stories: [], //列表数据
       topStories: [], //轮播图数据
-      pullUpLoading: false, //上滑加载loading显示标识符
-      title: "", //header标题
-      refresh: false, //下拉刷新loading显示标识符
+      pullUpLoading: false, //控制上滑加载Loading显示标识符
+      title: "", //标题栏(Header)标题
+      refresh: false, //控制下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
       opened: false, //控制Header弹出菜单显示
-      isDateTimePickerVisible: false //控制日期选择控件
+      isDateTimePickerVisible: false, //控制日期选择控件
+      finished: false //判断列表是否全部加载完
     };
+    // 默认标题
     this.props.navigation.setParams({ title: "首页" });
+    // 保存this引用
     that = this;
   }
   componentDidMount() {
     this.init();
     // 监听应用状态(后台运行/前台运行)
     AppState.addEventListener("change", this.handleAppStateChange);
-    // 用于记录日报详情页 访问状态
+    // 初始化 日报详情页访问状态 (用于详情(Details)页使用)
     global.storage.save({
       key: "webviewFirst",
       data: true
@@ -147,16 +142,25 @@ export default class index extends Component {
           data: res
         }
       ];
-      this.setState({
-        topStories: responseJson.top_stories,
-        stories: data,
-        listHeight: [] //重置列表高度数组
-      });
+      this.setState(
+        {
+          topStories: responseJson.top_stories,
+          stories: data,
+          listHeight: [], //重置列表高度数组
+          finished: false,
+        },
+        () => {
+          // 当最新的日报数量较少时  触发触底加载 , 避免数据少时页面无法滚动 ,无法加载更多日报.
+          if (this.state.stories[0].data.length <= 3) {
+            this.pullupfresh();
+          }
+        }
+      );
     });
   }
 
   /**
-   * 更新列表项访问状态
+   * 读取列表项访问状态 (访问过的日报 标题变为灰色)
    * @param {Object} lsitData 列表数据对象
    * @param {Function} callback 回调函数
    */
@@ -195,6 +199,7 @@ export default class index extends Component {
     this.setState({
       pullUpLoading: true
     });
+
     // 获得日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
     storage
@@ -203,27 +208,35 @@ export default class index extends Component {
         id: beforeDay
       })
       .then(responseJson => {
-        if (!responseJson || !responseJson.stories) {
-          Tools.toast("数据格式异常");
-          return false;
+        if (responseJson && responseJson.stories.length== 0) {
+          this.setState({
+            finished: true,
+            pullUpLoading: false
+          });
+        } else if (!responseJson || !responseJson.stories) {
+          Tools.toast("服务器数据异常");
+          this.setState({
+            pullUpLoading: false
+          });
+        } else {
+          // 获取数据访问状态
+          this.updateVistedState(responseJson.stories, res => {
+            // 合并数据
+            let newData = this.state.stories.concat({
+              key: responseJson.date,
+              data: res
+            });
+            // 更新数据
+            this.setState({ stories: newData }, () => {
+              // 等待数据渲染完成,避免loading状态早于渲染结束
+              setTimeout(() => {
+                this.setState({
+                  pullUpLoading: false
+                });
+              }, 550);
+            });
+          });
         }
-        // 获取数据访问状态
-        this.updateVistedState(responseJson.stories, res => {
-          // 合并数据
-          let newData = this.state.stories.concat({
-            key: responseJson.date,
-            data: res
-          });
-          // 更新数据
-          this.setState({ stories: newData }, () => {
-            // 等待数据渲染完成,避免loading状态早于渲染结束
-            setTimeout(() => {
-              this.setState({
-                pullUpLoading: false
-              });
-            }, 550);
-          });
-        });
       })
       .catch(error => {
         this.setState({
@@ -345,16 +358,23 @@ export default class index extends Component {
   /**
    * 控制弹出菜单切换显示
    */
-  tooglePopupMenu=()=>{
+  tooglePopupMenu = () => {
     this.setState({
       opened: !this.state.opened
     });
-  }
+  };
+  /**
+   *  控制日期选择器显示
+   */
   toggleDateTimePicker = () => {
     this.setState({
       isDateTimePickerVisible: !this.state.isDateTimePickerVisible
     });
   };
+
+  /**
+   *  日期选择器点击行为
+   */
   handleDatePicked = date => {
     let dateStr = Tools.formatDay(date)
       .split("-")
@@ -364,21 +384,28 @@ export default class index extends Component {
     });
     this.toggleDateTimePicker();
   };
+
+  /**
+   * 处理安卓返回键行为
+   */
   onBackButtonPressAndroid = () => {
     if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
-        return false
+      return false;
     }
     this.lastBackPressed = Date.now();
-    Tools.toast('再按一次退出应用');
+    Tools.toast("再按一次退出应用");
     return true;
   };
+
   /**
    *  日报列表分组头部组件
    *  @param  {Object}   分组日报数据
    */
   renderSectioHeader = items => {
     return (
-      <Text style={[styles.sectionTitle,{color:this.props.theme.colors.text}]}>
+      <Text
+        style={[styles.sectionTitle, { color: this.props.theme.colors.text }]}
+      >
         {this.formatDate(items.section.key)}
       </Text>
     );
@@ -398,73 +425,85 @@ export default class index extends Component {
 
   render() {
     return (
+      //  安卓返回键监听组件
       <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
-      <MyScrollView
-        pullupfresh={this.pullupfresh}
-        onScroll={this.bindOnScroll.bind(this)}
-        refresh={this.state.refresh}
-        onRefresh={this.bindOnRefresh.bind(this)}
-      >
-        <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
-        <View onLayout={this.listenListHeight.bind(this)}>
-          <StoriesList
-            ref={listView => (this.listView = listView)}
-            data={this.state.stories}
-            onPress={this.bindListTap}
-            sectionHeader={this.renderSectioHeader}
-          />
-        </View>
-        {this.state.stories.length > 0 ? (
-          <PullUpLoad loading={this.state.pullUpLoading} />
-        ) : null}
-        {/* Header弹出选择菜单 */}
-        <Menu
-          opened={this.state.opened}
-          style={styles.popupWrapper}
-          onBackdropPress={this.tooglePopupMenu}
+        <MyScrollView
+          pullupfresh={this.pullupfresh}
+          onScroll={this.bindOnScroll.bind(this)}
+          refresh={this.state.refresh}
+          onRefresh={this.bindOnRefresh.bind(this)}
         >
-          <MenuTrigger />
-          <MenuOptions
-            customStyles={{
-              optionsContainer: styles.popupOptionsContainer,
-              optionText: styles.popupOptionText
-            }}
+          {/* 轮播图 */}
+          <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
+          {/* 日报列表 */}
+          <View onLayout={this.listenListHeight.bind(this)}>
+            <StoriesList
+              ref={listView => (this.listView = listView)}
+              data={this.state.stories}
+              onPress={this.bindListTap}
+              sectionHeader={this.renderSectioHeader}
+            />
+          </View>
+          {/* 避免无数据时还显示触底加载文字 */}
+          {this.state.stories.length > 0 ? (
+            <PullUpLoad
+              loading={this.state.pullUpLoading}
+              onPress={this.pullupfresh}
+              finished={this.state.finished}
+            />
+          ) : null}
+          {/* Header弹出选择菜单 */}
+          <Menu
+            opened={this.state.opened}
+            style={styles.popupWrapper}
+            onBackdropPress={this.tooglePopupMenu}
           >
-            <MenuOption
-              onSelect={()=>{
-                this.props.theme.switchTheme()
-                this.setState({
-                  opened:false
-                })
+            <MenuTrigger />
+            <MenuOptions
+              customStyles={{
+                optionsContainer: styles.popupOptionsContainer,
+                optionText: styles.popupOptionText
               }}
-              text={this.props.theme.colors.themeType=='default'?'夜间主题':'日间主题'}
-            />
-            <MenuOption
-              onSelect={() =>  {
-                this.tooglePopupMenu()
-                this.props.navigation.navigate("Setting")
-              }}
-              text="设置选项"
-            />
-          </MenuOptions>
-        </Menu>
-        {/* 日期选择器 */}
-        <DateTimePicker
-          // 最大日期
-          maximumDate={
-            //判断当前时间 是否大于早上7点 , 每天日报早上7点更新 
-            //如果时间早于7点 ,则最大可选择日起为昨天.
-            Number(Tools.formatTime().split(":")[0]) >= 7
-              ? new Date()
-              : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
-          }
-          // 最小日期
-          minimumDate={new Date(2013, 10, 20)}
-          isVisible={this.state.isDateTimePickerVisible}
-          onConfirm={this.handleDatePicked}
-          onCancel={this.toggleDateTimePicker}
-        />
-      </MyScrollView>
+            >
+              <MenuOption
+                onSelect={() => {
+                  this.props.theme.switchTheme();
+                  this.setState({
+                    opened: false
+                  });
+                }}
+                text={
+                  this.props.theme.colors.themeType == "default"
+                    ? "夜间主题"
+                    : "日间主题"
+                }
+              />
+              <MenuOption
+                onSelect={() => {
+                  this.tooglePopupMenu();
+                  this.props.navigation.navigate("Setting");
+                }}
+                text="设置选项"
+              />
+            </MenuOptions>
+          </Menu>
+          {/* 日期选择器 */}
+          <DateTimePicker
+            // 最大日期
+            maximumDate={
+              //判断当前时间 是否大于早上7点 , 每天日报早上7点更新
+              //如果时间早于7点 ,则最大可选择日起为昨天.
+              Number(Tools.formatTime().split(":")[0]) >= 7
+                ? new Date()
+                : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+            }
+            // 最小日期
+            minimumDate={new Date(2013, 10, 20)}
+            isVisible={this.state.isDateTimePickerVisible}
+            onConfirm={this.handleDatePicked}
+            onCancel={this.toggleDateTimePicker}
+          />
+        </MyScrollView>
       </AndroidBackHandler>
     );
   }
@@ -474,7 +513,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginTop: 15,
     marginBottom: 10,
-    marginLeft: 15,
+    marginLeft: 15
   },
   headerRightWrapper: {
     justifyContent: "space-between",
@@ -487,7 +526,7 @@ const styles = StyleSheet.create({
     top: -50
   },
   popupOptionsContainer: {
-    width: 180,
+    width: 180
   },
   popupOptionText: {
     paddingLeft: 5,

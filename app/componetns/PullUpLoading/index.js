@@ -13,8 +13,9 @@ export default class PullUpLoad extends Component {
                     <ActivityIndicator animating={true} color='#666' size="small" />
                     <Text style={[styles.remindText,{color:this.props.theme.colors.text}]}>正在加载...</Text>
                 </View>
-            :<Text style={{color:this.props.theme.colors.item}}>下拉加载更多</Text>}
-            {this.props.finished?<Text style={[styles.remindText,,{color:this.props.theme.colors.text}]}>没有更多了</Text>:null}  
+            :null}         
+             {!this.props.loading&&!this.props.finished?<Text style={{color:this.props.theme.colors.text}}>下拉加载更多</Text>:null}
+             {this.props.finished&&!this.props.loading?<Text style={[styles.remindText,{color:this.props.theme.colors.text}]}>没有更多了...</Text>:null}  
         </View> 
       )
   }

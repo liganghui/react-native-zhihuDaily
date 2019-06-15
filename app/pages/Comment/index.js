@@ -10,9 +10,7 @@ import {
   ActivityIndicator
 } from "react-native";
 import Modal from "react-native-modal";
-import CardView from "react-native-cardview";
 import { Icon, Button, Avatar, ListItem } from "react-native-elements";
-import Ripple from "react-native-material-ripple";
 import { Tools, Api, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
 
@@ -372,14 +370,12 @@ export default class index extends Component {
           useNativeDriver={true}
         >
           {this.state.isModalVisible ? (
-            <CardView
-              cardElevation={3}
-              cornerRadius={2}
+            <View
               style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
                 <ActivityIndicator animating={true} size="large" />
               <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
-            </CardView>
+            </View>
           ) : (
             <View />
           )}

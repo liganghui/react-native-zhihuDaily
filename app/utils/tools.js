@@ -154,7 +154,7 @@ const Tools = {
    *
    */
   async getNetworkState() {
-    let info = await NetInfo.getConnectionInfo().then(connectionInfo => {
+    let info = await NetInfo.fetch().then(connectionInfo => {
       let data = {
         type: "", //链接类型
         online: "" //是否连接网络

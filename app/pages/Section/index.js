@@ -27,7 +27,8 @@ export default class index extends Component {
       sectionId: id,
       date,
       pullUpLoading: false,
-      stories: [] //栏目列表数据
+      stories: [], //栏目列表数据
+      finished:false
     };
     this.props.navigation.setParams({ title });
   }
@@ -38,7 +39,7 @@ export default class index extends Component {
     } else if (this.state.sectionId) {
       this.initSectionList();
     } else {
-      Tools.toast("加载失败，错误信息：参数异常");
+      Tools.toast("加载失败，参数异常");
     }
   }
   initdaliyList() {
@@ -180,17 +181,29 @@ export default class index extends Component {
     }
     Axios.get(apiUrl)
       .then(responseJson => {
-        this.handleDataRender(responseJson.data, res => {
-          let data = [...this.state.stories];
-          data.push({
-            key: this.state.date?responseJson.data.date:responseJson.data.timestamp,
-            data: res
-          });
+        if (responseJson && responseJson.stories.length== 0) {
+          Tools.toast("没有更多了...");
           this.setState({
-            pullUpLoading: false,
-            stories: data
+            pullUpLoading: false
           });
-        });
+        } else if (!responseJson || !responseJson.stories) {
+          Tools.toast("服务器数据异常");
+          this.setState({
+            pullUpLoading: false
+          });
+        } else {
+          this.handleDataRender(responseJson.data, res => {
+            let data = [...this.state.stories];
+              data.push({
+              key: this.state.date?responseJson.data.date:responseJson.data.timestamp,
+              data: res
+            });
+            this.setState({
+              pullUpLoading: false,
+              stories: data
+            });
+          });
+        }
       })
       .catch(err => {
         this.setState({
