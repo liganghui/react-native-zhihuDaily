@@ -5,7 +5,7 @@
 <br/>
 
 
-> ### 运行
+> ### 安装
 
     yarn
 或者
@@ -13,7 +13,7 @@
     npm install
      
   >> 依赖项中存在Github社区版本, 请确保网络访问性.
-  
+> ### 运行  
      react-native run-android
   >>由于缺少IOS开发环境 , 无法确定IOS存在的问题 , 所以暂时只支持安卓运行 .  
  
