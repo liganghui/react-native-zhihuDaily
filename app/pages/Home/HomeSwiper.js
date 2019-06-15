@@ -1,8 +1,16 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text,TouchableOpacity  } from "react-native";
-import Swiper from "react-native-swiper";
-import { Image } from "react-native-elements";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  ImageBackground
+} from "react-native";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 import LinearGradient from "react-native-linear-gradient";
+import { System } from "../../utils";
+
+
 /*
  *  首页轮播组件
  *
@@ -10,38 +18,68 @@ import LinearGradient from "react-native-linear-gradient";
  *  @param  {Function} onPress   列表项点击事件               [必填]
  */
 export default class HomeSwiper extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeSlide:0
+    };
+  }
+  renderItem({ item, index }) {
+    return (
+      <ImageBackground  source={{ uri: item.image }}  style={styles.sliderWrapper} key={item.id}>
+        <LinearGradient
+          colors={["rgba(0,0,0,0)", "rgba(0,0,0,.9)"]}
+          style={styles.linearGradient}
+        >
+          <TouchableOpacity
+            style={styles.mask}
+            activeOpacity={1}
+            onPress={this.props.onPress.bind( this,item,index,this.props.data)}
+          >
+            <Text style={styles.title}>{item.title}</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+      </ImageBackground>
+    );
+  }
+  // 轮播图指示器
+  get pagination() {
+    return (
+      <Pagination
+        dotsLength={this.props.data.length}
+        activeDotIndex={this.state.activeSlide}
+        containerStyle={{ backgroundColor:'transparent',position:'absolute',bottom:-18,left:0,right:0}}
+        dotContainerStyle={{
+          width:5
+        }}
+        dotStyle={{
+          width: 8,
+          height: 8,
+          borderRadius: 5,
+          backgroundColor: "rgba(255, 255, 255, 0.8)"
+        }}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.8}
+      />
+    );
+  }
   render() {
     return (
       <View style={styles.wrapper}>
-        {this.props.data ? (
-          <Swiper
-            loop={false}
-            key={this.props.data.length}
-            toplay={true}
-            autoplayTimeout={5}
-            paginationStyle={{ bottom: 5 }}
-            dotColor="#999"
-            activeDotColor="#fff"
-            dotStyle={styles.dotStyle}
-            activeDotStyle={styles.dotStyle}
-          >
-            {this.props.data.map((item,index) => {
-              return (
-                <View style={styles.sliderWrapper} key={item.id} >
-                  <Image source={{ uri: item.image }} style={styles.image}  />
-                  <LinearGradient
-                    colors={["rgba(0,0,0,0)", "rgba(0,0,0,.9)"]}
-                    style={styles.linearGradient}
-                  >
-                  <TouchableOpacity   style={styles.mask} activeOpacity={1}  onPress={this.props.onPress.bind(this, item,index,this.props.data)}>
-                    <Text style={styles.title}>{item.title}</Text>
-                  </TouchableOpacity >
-                  </LinearGradient>
-                </View>
-              );
-            })}
-          </Swiper>
-        ) : null}
+        <Carousel
+          autoplay={true} //自动播放
+          autoplayDelay={3500} //间隔延迟
+          loop={true}  // 循环
+          data={this.props.data}
+          renderItem={this.renderItem.bind(this)}
+          sliderWidth={System.SCREEN_WIDTH}
+          itemWidth={System.SCREEN_WIDTH}
+          onSnapToItem={index => this.setState({ activeSlide: index })} //更新指示器标识
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1} //去除边距
+        />
+        {this.pagination}
       </View>
     );
   }
@@ -52,37 +90,22 @@ const styles = StyleSheet.create({
     height: 230
   },
   sliderWrapper: {
-    position: "relative",
     flex: 1
-  },
-  image: {
-    width: "100%",
-    height: 230
   },
   linearGradient: {
     width: "100%",
     height: 230,
-    zIndex: 2,
-    position: "absolute",
   },
   title: {
-    fontSize: 22, 
-    fontWeight:'400',
+    fontSize: 22,
+    fontWeight: "400",
     paddingBottom: 30,
-    marginHorizontal: 20 ,
-    color: "#fff",
+    marginHorizontal: 20,
+    color: "#fff"
   },
-  // 轮播图指示器样式
-  dotStyle:{
-    width:6,
-    height:6,
-    marginBottom: 6,
-  },
-  mask:{
-    width:'100%',
-    height:'100%',
-    position:'absolute',
-    zIndex:100,
-    justifyContent:'flex-end',
+  mask: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "flex-end"
   }
 });
