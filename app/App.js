@@ -14,7 +14,7 @@ import AppNavigation from "./routers/AppRouter";
 
 
 /* 
- *   应用根组件 , 负责向 Navigation 挂载重要组件 .
+ *   应用根组件 , 负责向 Navigation(导航) 挂载重要组件 , 并导出APP.
  *      
  *   主要挂载：mobx , 热更新(codepush) , 极光推送 ,启动屏 ,本地存储 ,深连接.
  * 
