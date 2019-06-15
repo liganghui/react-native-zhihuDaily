@@ -5708,9 +5708,9 @@ rimraf@~2.2.6:
   version "2.2.8"
   resolved "http://registry.npm.taobao.org/rimraf/download/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
 
-"rn-fetch-blob@git+https://github.com/Frekansapp/rn-fetch-blob.git":
+"rn-fetch-blob@git://github.com/Frekansapp/rn-fetch-blob.git":
   version "0.10.16"
-  resolved "git+https://github.com/Frekansapp/rn-fetch-blob.git#9509b62f3f80873011ed04cc0af732740d6284c1"
+  resolved "git://github.com/Frekansapp/rn-fetch-blob.git#9509b62f3f80873011ed04cc0af732740d6284c1"
   dependencies:
     base-64 "0.1.0"
     glob "7.0.6"
