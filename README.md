@@ -6,7 +6,12 @@
 
 
 > ### 运行
-     yarn || npm install 
+
+    yarn
+或者
+  
+    npm install
+     
   >> 依赖项中存在Github社区版本, 请确保网络访问性.
   
      react-native run-android
