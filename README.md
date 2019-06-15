@@ -6,8 +6,8 @@
 
 
 > ### 运行
-
-  
+     yarn || npm install 
+  >> 依赖项中存在Github社区版本, 请确保网络访问性.
   
      react-native run-android
   >>由于缺少IOS开发环境 , 无法确定IOS存在的问题 , 所以暂时只支持安卓运行 .  
@@ -35,7 +35,7 @@
    - 极光推送
    - Mobx集成
    - 头像拍摄和裁切
-   - 深连接
+   - 消息推送深连接
    
 <br/>
 
@@ -90,4 +90,4 @@
 
 ```
 
-> ### [组件文档](https://github.com/liganghui/react-native-zhihuDaily/blob/master/doc/%E8%AF%B4%E6%98%8E%E6%96%87%E6%A1%A3.md)
+> 
