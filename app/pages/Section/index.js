@@ -181,17 +181,6 @@ export default class index extends Component {
     }
     Axios.get(apiUrl)
       .then(responseJson => {
-        if (responseJson && responseJson.stories.length== 0) {
-          Tools.toast("没有更多了...");
-          this.setState({
-            pullUpLoading: false
-          });
-        } else if (!responseJson || !responseJson.stories) {
-          Tools.toast("服务器数据异常");
-          this.setState({
-            pullUpLoading: false
-          });
-        } else {
           this.handleDataRender(responseJson.data, res => {
             let data = [...this.state.stories];
               data.push({
@@ -203,7 +192,6 @@ export default class index extends Component {
               stories: data
             });
           });
-        }
       })
       .catch(err => {
         this.setState({

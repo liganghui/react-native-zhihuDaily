@@ -11,7 +11,6 @@ import { Text, StyleSheet, SectionList, View } from "react-native";
 import CardView from "react-native-cardview";
 import { observer, inject } from "mobx-react";
 import { ListItem, Image, Icon } from "react-native-elements";
-import Ripple from "react-native-material-ripple";
 
 @inject("theme")
 @observer
@@ -30,11 +29,6 @@ export default class index extends Component {
         key={item.id}
         style={styles.cardWrapper}
       >
-        {/* <Ripple
-          rippleDuration={400}
-          rippleOpacity={0.15}
-        
-        > */}
           <ListItem
             onPress={this.props.onPress.bind(this, item, index, section)}
             containerStyle={{backgroundColor:this.props.theme.colors.itemBackground}}
@@ -48,7 +42,7 @@ export default class index extends Component {
             stickySectionHeadersEnabled={true}
             titleContainerStyle={styles.titleContainer}
             rightElement={
-              item.images[0] ? (
+              item.images ? (
                 <View style={{ position: "relative" }}>
                   {/* 判断是否增加多图标识 */}
                   {item.multipic ? (
@@ -63,14 +57,13 @@ export default class index extends Component {
                     </View>
                   ) : null}
                   <Image
-                    source={{ uri: item.images[0] }}
+                    source={{ uri: item.images[0]?item.images[0]:null }}
                     style={{ width: 75, height: 70 }}
                   />
                 </View>
               ) : null
             }
           />
-        {/* </Ripple> */}
       </CardView>
     );
   };

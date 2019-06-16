@@ -7,10 +7,6 @@ import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.microsoft.codepush.react.CodePush;
-import com.imagepicker.ImagePickerPackage;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.brentvatne.react.ReactVideoPackage;
-import com.react.rnspinkit.RNSpinkitPackage;
 import cl.json.RNSharePackage;
 import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
@@ -55,10 +51,6 @@ public class MainApplication extends Application implements ReactApplication {
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new SplashScreenReactPackage(),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
-            new ImagePickerPackage(),
-            new PickerPackage(),
-            new ReactVideoPackage(),
-            new RNSpinkitPackage(),
             new RNSharePackage(),
             new NetInfoPackage(),
             new AsyncStoragePackage(),

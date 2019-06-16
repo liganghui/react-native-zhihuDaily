@@ -373,7 +373,7 @@ export default class index extends Component {
             <View
               style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
-                <ActivityIndicator animating={true} size="large" />
+                <ActivityIndicator animating={true} size={40} />
               <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
             </View>
           ) : (

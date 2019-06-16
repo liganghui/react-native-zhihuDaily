@@ -31,15 +31,6 @@ export default class index extends Component {
       headerStyle: {
         backgroundColor: screenProps.theme
       },
-      headerLeft: (
-        <Button
-          type="clear"
-          onPress={() => {
-            navigation.openDrawer();
-          }}
-          icon={<Icon type="material" name="menu" size={24} color="white" />}
-        />
-      ),
       headerRight: (
         <View style={styles.headerRightWrapper}>
           <Button
@@ -49,6 +40,15 @@ export default class index extends Component {
             }}
             icon={
               <Icon type="antdesign" name="calendar" size={24} color="white" />
+            }
+          />
+          <Button
+            type="clear"
+            onPress={() => {
+              that.handleHistoryClick();
+            }}
+            icon={
+              <Icon type='material' name="history" size={25} color="white" />
             }
           />
           <Button
@@ -93,6 +93,8 @@ export default class index extends Component {
     });
     // 传递到navigation (navigation中无法使用this调用)
     this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
+    this.props.navigation.setParams({ handleHistoryClick: this.handleHistoryClick });
+
   }
   init() {
     // 根据网络状态初始化数据
@@ -355,6 +357,24 @@ export default class index extends Component {
       }
     }
   };
+  /** 
+   * 历史日报点击事件
+  */
+  handleHistoryClick(){
+    // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
+    let m=new Date('October 23 , 2013 00:00:00');
+     m=m.getTime();
+
+    let n=new Date();
+     n=n.getTime();
+
+    let s=n-m;
+    s=Math.floor(Math.random()*s)
+    s=m+s;
+    s=new Date(s);
+
+    this.handleDatePicked(s);
+  }
   /**
    * 控制弹出菜单切换显示
    */
@@ -372,6 +392,9 @@ export default class index extends Component {
     });
   };
 
+  // 
+
+
   /**
    *  日期选择器点击行为
    */
@@ -382,7 +405,9 @@ export default class index extends Component {
     this.props.navigation.navigate("Section", {
       date: dateStr
     });
-    this.toggleDateTimePicker();
+    this.setState({
+      isDateTimePickerVisible:false
+    });
   };
 
   /**
@@ -517,7 +542,7 @@ const styles = StyleSheet.create({
   },
   headerRightWrapper: {
     justifyContent: "space-between",
-    width: 90,
+    width: 140,
     flexDirection: "row"
   },
   popupWrapper: {

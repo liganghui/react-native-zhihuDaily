@@ -107,7 +107,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.0.1"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "fa2579dccb069b4b182e47f4",
                 APP_CHANNEL : "default"
@@ -161,10 +161,6 @@ dependencies {
     implementation project(':react-native-device-info')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-code-push')
-    implementation project(':react-native-image-picker')
-    implementation project(':react-native-image-crop-picker')
-    implementation project(':react-native-video')
-    implementation project(':react-native-spinkit')
     implementation project(':react-native-share')
     implementation project(':@react-native-community_netinfo')
     implementation project(':@react-native-community_async-storage')

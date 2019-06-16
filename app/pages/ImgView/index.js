@@ -10,7 +10,7 @@ import { Icon, Button } from "react-native-elements";
 import RNFetchBlob from "rn-fetch-blob";
 import { Tools } from "../../utils";
 
-export default class App extends React.Component {
+export default class index extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
     return {

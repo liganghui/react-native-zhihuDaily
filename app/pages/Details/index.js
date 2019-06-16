@@ -52,7 +52,7 @@ export default class index extends Component {
             icon={<Icon type="material" name="share" size={24} color="white" />}
           />
           {/* 收藏 */}
-          <Button
+          {/* <Button
             type="clear"
             onPress={() => {
               that.bindHeaderBtnTap("collect");
@@ -67,7 +67,7 @@ export default class index extends Component {
                 />
               </Animatable.View>
             }
-          />
+          /> */}
           {/* 评论 */}
           <Button
             title={
@@ -193,6 +193,7 @@ export default class index extends Component {
         key: "bigSize"
       })
       .then(res => {
+
         if (res) {
           this.setState({
             bigSize: true
@@ -215,7 +216,6 @@ export default class index extends Component {
         }
         let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=0.5, maximum-scale=1, user-scalable=no"></head>
                     <link rel="stylesheet" href="${response.css[0]}" />
-                    ${this.state.bigSize? " <style>*{font-size:120%;}</style>": ""}
                     <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${response.body}</body></html>`;
         if (this.state.webviewFirst) {
           this.setState(
@@ -450,10 +450,13 @@ export default class index extends Component {
                   }
                 }
                `}
-              customStyle={` 
-               .img-place-holder{ 
-                 display:none
-               }
+              customStyle={
+                ` ${this.state.bigSize?`
+                *{font-size:125%}
+                .img-place-holder{ 
+                  display:none
+                }
+                `:`.img-place-holder{ display:none`}
              `}
             />
           ) : null}
@@ -492,7 +495,7 @@ const styles = StyleSheet.create({
   headerRightWrapper: {
     justifyContent: "space-around",
     flexDirection: "row",
-    width: 230
+    width: 200
   },
   headerRightButton: {
     fontSize: 14,

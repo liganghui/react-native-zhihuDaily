@@ -74,6 +74,9 @@ export default class index extends Component {
     //Todo  清楚缓存
     Tools.toast("开发中...敬请期待");
   };
+  openAbout=()=>{
+    this.props.navigation.navigate("About");
+  }
   checkUpdates = () => {
     if(this.state.isUpdate){
       Tools.toast('检查更新中...')
@@ -140,9 +143,9 @@ export default class index extends Component {
           <ListItem itemDivider style={{backgroundColor:this.props.theme.colors.listBackground}}>
             <Text style={{color:this.props.theme.colors.text}}>其他</Text>
           </ListItem>
-          <ListItem onPress={this.clearCache}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
+          {/* <ListItem onPress={this.clearCache}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
               <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>清楚缓存</Text>
-          </ListItem>
+          </ListItem> */}
           <ListItem onPress={this.checkUpdates}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
             <Left>
               <Text style={[styles.itemText,{color:this.props.theme.colors.item}]}>检查更新</Text>
@@ -150,6 +153,9 @@ export default class index extends Component {
             <Right>
                 <Text style={styles.version}>{this.state.version}</Text>
             </Right>
+          </ListItem>
+             <ListItem onPress={this.openAbout}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
+              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>关于我们</Text>
           </ListItem>
         </Content>
       </Container>
