@@ -213,9 +213,7 @@ export default class index extends Component {
             </View>
             <View style={styles.extraContainer}>
               <Text style={styles.date}>
-                {Tools.formatMonthDay(item.time) +
-                  " " +
-                  Tools.formatTime(item.time)}
+                {Tools.formatMonthDay(item.time) +" " +Tools.formatTime(item.time)}
               </Text>
               {this.renderMoreBtn(item, index)}
             </View>

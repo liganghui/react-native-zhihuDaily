@@ -20,12 +20,11 @@ const Tools = {
   getNowadays(symbol) {
     let nowDate = new Date();
     let year = nowDate.getFullYear();
-    let month =
+    let month =   
       nowDate.getMonth() + 1 < 10
         ? "0" + (nowDate.getMonth() + 1)
         : nowDate.getMonth() + 1;
-    let day =
-      nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+    let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
     if (symbol) {
       return year + symbol + month + symbol + day;
     } else {
@@ -92,7 +91,7 @@ const Tools = {
       let month =
         currentDate.getMonth() + 1 < 10
           ? "0" + (currentDate.getMonth() + 1)
-          : nowDate.getMonth() + 1;
+          : currentDate.getMonth() + 1;
       let day =
         currentDate.getDate() < 10
           ? "0" + currentDate.getDate()
