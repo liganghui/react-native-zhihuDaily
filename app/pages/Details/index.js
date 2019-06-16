@@ -39,7 +39,8 @@ export default class index extends Component {
       headerStyle: {
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor:screenProps.theme,
-        opacity: params.opacity
+        opacity: params.opacity,
+        overflow:'hidden',
       },
       headerRight: (
         <View style={styles.headerRightWrapper}>
@@ -52,7 +53,7 @@ export default class index extends Component {
             icon={<Icon type="material" name="share" size={24} color="white" />}
           />
           {/* 收藏 */}
-          {/* <Button
+          <Button
             type="clear"
             onPress={() => {
               that.bindHeaderBtnTap("collect");
@@ -67,7 +68,7 @@ export default class index extends Component {
                 />
               </Animatable.View>
             }
-          /> */}
+          />
           {/* 评论 */}
           <Button
             title={
@@ -493,9 +494,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   headerRightWrapper: {
+    overflow:'hidden',
     justifyContent: "space-around",
     flexDirection: "row",
-    width: 200
+    width: 230
   },
   headerRightButton: {
     fontSize: 14,

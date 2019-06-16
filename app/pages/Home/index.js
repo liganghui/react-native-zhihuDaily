@@ -373,7 +373,7 @@ export default class index extends Component {
     s=m+s;
     s=new Date(s);
 
-    this.handleDatePicked(s);
+    this.handleDatePicked(s,'随便看看');
   }
   /**
    * 控制弹出菜单切换显示
@@ -398,12 +398,13 @@ export default class index extends Component {
   /**
    *  日期选择器点击行为
    */
-  handleDatePicked = date => {
+  handleDatePicked = (date,title="") => {
     let dateStr = Tools.formatDay(date)
       .split("-")
       .join("");
     this.props.navigation.navigate("Section", {
-      date: dateStr
+      date: dateStr,
+      title
     });
     this.setState({
       isDateTimePickerVisible:false
