@@ -1,7 +1,7 @@
 ## RN版知乎日报
 
 知乎日报的 react-native 开发版本 , 用于日常使用和项目练习.   
-日常使用请使用simple分支版本
+日常使用请使用[simple](https://github.com/liganghui/react-native-zhihuDaily/tree/simple)分支版本
 
 <br/>
 
