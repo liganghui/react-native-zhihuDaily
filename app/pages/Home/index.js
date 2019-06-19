@@ -31,6 +31,15 @@ export default class index extends Component {
       headerStyle: {
         backgroundColor: screenProps.theme
       },
+      headerLeft: (
+        <Button
+          type="clear"
+          onPress={() => {
+            navigation.openDrawer();
+          }}
+          icon={<Icon type="material" name="menu" size={24} color="white" />}
+        />
+      ),
       headerRight: (
         <View style={styles.headerRightWrapper}>
           <Button
@@ -100,6 +109,11 @@ export default class index extends Component {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
     Tools.getNetworkState().then(newWorkInfo => {
+      if(newWorkInfo.online){
+        this.setState({
+          refresh:true
+        })
+      }
       let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({ key: "latest", syncInBackground: syncInBackgroundState })
@@ -148,6 +162,7 @@ export default class index extends Component {
         {
           topStories: responseJson.top_stories,
           stories: data,
+          refresh:false,
           listHeight: [], //重置列表高度数组
           finished: false,
         },

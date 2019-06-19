@@ -1,16 +1,20 @@
-import React, { Component } from "react";
 import {
   createStackNavigator,
   createAppContainer,
+  createSwitchNavigator,
+  createDrawerNavigator,
+  StackViewTransitionConfigs
 } from "react-navigation";
-import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
+import StackViewStyleInterpolator from 'react-navigation-stack/lib/module/views/StackView/StackViewStyleInterpolator'
 import HomeScreen from "../pages/Home";
 import DetailsScreen from "../pages/Details";
 import ImgScreen from "../pages/ImgView";
 import SectionScreen from "../pages/Section";
 import CommentScreen from "../pages/Comment";
+import DrawerScreen from "../pages/Drawer";
 import SettingScreen from "../pages/Setting";
 import AboutScreen from "../pages/About";
+import SplashScreen from "../pages/SplashScreen";
 
 
 /*
@@ -53,7 +57,6 @@ const MainScreen = createStackNavigator(
         fontSize: 16
       }
     },
-    // 设置转场动画效果（安卓实现类似iOS的push动画)    来源： https://www.jianshu.com/p/dc9df5826651
     transitionConfig: () => ({
       screenInterpolator: StackViewStyleInterpolator.forHorizontal,
       transitionSpec: {
@@ -63,8 +66,48 @@ const MainScreen = createStackNavigator(
   }
 );
 
+/*
+ * 处理抽屉的锁定模式
+ * 当页面层级大于一时 ,抽屉将关闭，意味着抽屉将保持关闭而不响应右滑打开手势。
+ */
+MainScreen.navigationOptions = ({ navigation }) => {
+  let drawerLockMode = "unlocked";
+  if (navigation.state.index > 0) {
+    drawerLockMode = "locked-closed";
+  }
+  return {
+    drawerLockMode
+  };
+};
+
+/*
+ * 抽屉导航
+ */
+const DrawerNavigator = createDrawerNavigator(
+  {
+    Main: {
+      screen: MainScreen,
+      path: "main" //路径地址
+    },
+    Drawer: {
+      screen: DrawerScreen
+    }
+  },
+  {
+    contentComponent: DrawerScreen
+  }
+);
 
 //创建应用
-const AppNavigator = createAppContainer(MainScreen); 
+const AppNavigator = createAppContainer(createSwitchNavigator(
+  {
+    Drawer: DrawerNavigator,
+    Splash: SplashScreen,
+  },
+  {
+    initialRouteName: 'Splash',
+  }
+
+)); 
 
 export default AppNavigator

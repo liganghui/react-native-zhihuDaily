@@ -1,4 +1,3 @@
-﻿<resources>
-    <string name="app_name">知乎日报</string>
-    <string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">SWzfoN39rrfbPEK8rlzQ58xLJQe710c52269-af3b-4aff-9cfc-a01c6bd303aa</string>
+<resources>
+    <string name="app_name">zhihuDaily</string>
 </resources>

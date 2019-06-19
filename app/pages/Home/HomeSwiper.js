@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     height: 230
   },
   sliderWrapper: {
-    flex: 1
+    height: 230
   },
   linearGradient: {
     width: "100%",
