@@ -1,0 +1,54 @@
+{
+    "name": "zhihuDaily",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "node node_modules/react-native/local-cli/cli.js start",
+        "test": "jest"
+    },
+    "dependencies": {
+        "@babel/plugin-proposal-decorators": "^7.4.4",
+        "@babel/plugin-transform-runtime": "^7.4.4",
+        "@react-native-community/async-storage": "^1.5.0",
+        "@react-native-community/netinfo": "^3.2.1",
+        "axios": "^0.19.0",
+        "mobx": "^5.9.4",
+        "mobx-react": "^5.4.3",
+        "native-base": "^2.12.1",
+        "react": "16.8.3",
+        "react-native": "0.59.9",
+        "react-native-animatable": "^1.3.2",
+        "react-native-autoheight-webview": "^1.1.3",
+        "react-native-cardview": "^2.0.2",
+        "react-native-device-info": "^2.1.2",
+        "react-native-elements": "^1.0.0",
+        "react-native-gesture-handler": "^1.3.0",
+        "react-native-image-zoom-viewer": "^2.2.25",
+        "react-native-linear-gradient": "^2.5.4",
+        "react-native-modal": "^11.0.2",
+        "react-native-modal-datetime-picker": "^7.4.2",
+        "react-native-parallax-scroll-view": "^0.21.3",
+        "react-native-popup-menu": "^0.15.6",
+        "react-native-root-toast": "^3.1.1",
+        "react-native-share": "^1.2.1",
+        "react-native-snap-carousel": "^3.8.0",
+        "react-native-storage": "^1.0.1",
+        "react-native-vector-icons": "^6.5.0",
+        "react-native-webview": "5.8.2",
+        "react-navigation": "^3.9.1",
+        "react-navigation-backhandler": "^1.3.2",
+        "rn-fetch-blob": "git://github.com/Frekansapp/rn-fetch-blob.git",
+        "rn-placeholder": "^2.0.0"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.4.5",
+        "@babel/runtime": "^7.4.5",
+        "babel-jest": "^24.8.0",
+        "jest": "^24.8.0",
+        "metro-react-native-babel-preset": "^0.54.1",
+        "react-test-renderer": "16.8.3"
+    },
+    "jest": {
+        "preset": "react-native"
+    }
+}
