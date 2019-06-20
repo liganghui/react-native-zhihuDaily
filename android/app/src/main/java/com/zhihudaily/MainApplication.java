@@ -3,6 +3,7 @@ package com.zhihudaily;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.kishanjvaghela.cardview.RNCardViewPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -33,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new SplashScreenReactPackage(),
             new RNCardViewPackage(),
             new RNCWebViewPackage(),
             new RNFetchBlobPackage(),

@@ -14,14 +14,18 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      copyright: ""
+      copyright:false,
+      newWorkState:''
     };
   }
   componentDidMount() {
     Tools.getNetworkState().then(newWorkInfo => {
       if (newWorkInfo.online) {
       this.getImageInfo()
-      }else{
+      setTimeout(() => {
+        this.props.navigation.navigate("Main");
+      }, 2000);  
+    }else{
         this.props.navigation.navigate("Main");
       }
     })
@@ -34,19 +38,10 @@ export default class index extends Component {
         this.setState(
           {
             copyright: responseJson.data.images[0].copyright
-          },
-          () => {
-            setTimeout(() => {
-              this.props.navigation.navigate("Main");
-            }, 2000);
           }
         );
       })
-      .catch(error => {
-        setTimeout(() => {
-          this.props.navigation.navigate("Main");
-        }, 1500);
-    });
+      .catch(error => { });
   }
   render() {
     return (
@@ -63,7 +58,7 @@ export default class index extends Component {
             style={styles.linearGradient}
           >
            {this.state.copyright?
-            <Animatable.Text animation="fadeInUp" style={styles.title}>{this.state.copyright}</Animatable.Text>
+            <Animatable.Text animation="fadeIn" style={styles.title}>{this.state.copyright}</Animatable.Text>
             :null}
           </LinearGradient>
         </ImageBackground>

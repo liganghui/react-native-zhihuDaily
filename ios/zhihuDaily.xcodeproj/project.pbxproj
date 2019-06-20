@@ -85,6 +85,7 @@
 		8DC82F8EB1734EDB94375E57 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850F37151DCC4C2598AAB1A3 /* libBVLinearGradient.a */; };
 		E89861A936F34C61B94F73C6 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B243929901A4CCFA35FF7FB /* libRNFetchBlob.a */; };
 		65EF1D124E25456CBCC54279 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A810893F5FBF46E7A1F3A2CA /* libRNCWebView.a */; };
+		D64B1B01AB854E4B938062F3 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0D862189CE449EA468AF13 /* libSplashScreen.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -447,6 +448,8 @@
 		5B243929901A4CCFA35FF7FB /* libRNFetchBlob.a */ = {isa = PBXFileReference; name = "libRNFetchBlob.a"; path = "libRNFetchBlob.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		63A9D8B8FC4B4B2B976C80A6 /* RNCWebView.xcodeproj */ = {isa = PBXFileReference; name = "RNCWebView.xcodeproj"; path = "../node_modules/react-native-webview/ios/RNCWebView.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		A810893F5FBF46E7A1F3A2CA /* libRNCWebView.a */ = {isa = PBXFileReference; name = "libRNCWebView.a"; path = "libRNCWebView.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		97DABD5E11944995B1389690 /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; name = "SplashScreen.xcodeproj"; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		3D0D862189CE449EA468AF13 /* libSplashScreen.a */ = {isa = PBXFileReference; name = "libSplashScreen.a"; path = "libSplashScreen.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -484,6 +487,7 @@
 				8DC82F8EB1734EDB94375E57 /* libBVLinearGradient.a in Frameworks */,
 				E89861A936F34C61B94F73C6 /* libRNFetchBlob.a in Frameworks */,
 				65EF1D124E25456CBCC54279 /* libRNCWebView.a in Frameworks */,
+				D64B1B01AB854E4B938062F3 /* libSplashScreen.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -686,6 +690,7 @@
 				B52BF2E56083430ABD8455A2 /* BVLinearGradient.xcodeproj */,
 				B883DF17A56B42A6AE761F48 /* RNFetchBlob.xcodeproj */,
 				63A9D8B8FC4B4B2B976C80A6 /* RNCWebView.xcodeproj */,
+				97DABD5E11944995B1389690 /* SplashScreen.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1401,6 +1406,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1413,6 +1419,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1447,6 +1454,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1459,6 +1467,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1490,6 +1499,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1520,6 +1530,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1562,6 +1573,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1574,6 +1586,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1616,6 +1629,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1628,6 +1642,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
@@ -1669,6 +1684,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1681,6 +1697,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Debug;
@@ -1722,6 +1739,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1734,6 +1752,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-linear-gradient\BVLinearGradient",
 					"$(SRCROOT)\..\node_modules\rn-fetch-blob\ios/**",
 					"$(SRCROOT)\..\node_modules\react-native-webview\ios",
+					"$(SRCROOT)\..\node_modules\react-native-splash-screen\ios",
 				);
 			};
 			name = Release;
