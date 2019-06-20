@@ -4,6 +4,10 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:windowIsTranslucent">true</item>
+         <!-- Customize your theme here. -->
+        <item name="colorPrimary">#09aaf4</item>
+        <!-- Status Bar color -->
+         <item name="colorPrimaryDark">#1976d3</item>
     </style>
 
 </resources>
