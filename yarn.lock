@@ -5268,10 +5268,9 @@ react-native-autoheight-webview@^1.1.3:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-cardview@^2.0.2:
+"react-native-cardview@git://github.com/codlab/react-native-cardview.git":
   version "2.0.2"
-  resolved "https://registry.npm.taobao.org/react-native-cardview/download/react-native-cardview-2.0.2.tgz#e07c13c61fbfce2152c1a2c18579895c7d9e7956"
-  integrity sha1-4HwTxh+/ziFSwaLBhXmJXH2eeVY=
+  resolved "git://github.com/codlab/react-native-cardview.git#8eee6f53b8ff1ce0a4ff57ab4f750fbfdf268668"
   dependencies:
     prop-types "^15.6.0"
 
