@@ -99,6 +99,7 @@
 		99C4D8D1358B47DFB5DEB3D4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 97A60E8A18DB4A259DB2AE2E /* UIKit.framework */; };
 		08AAB548583B41588100E39F /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D83441F8D00419A82F16AFC /* libresolv.tbd */; };
 		AEF8AD5F6C8B424792484A93 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23B115AAE6FB4AFCBDD02384 /* CoreGraphics.framework */; };
+		CA1CB05F88014F01A81FBC4C /* libRNDynamicSplash.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 66B3061BEA9F4F4ABECE8705 /* libRNDynamicSplash.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -480,6 +481,8 @@
 		97A60E8A18DB4A259DB2AE2E /* UIKit.framework */ = {isa = PBXFileReference; name = "UIKit.framework"; path = "System/Library/Frameworks/UIKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		1D83441F8D00419A82F16AFC /* libresolv.tbd */ = {isa = PBXFileReference; name = "libresolv.tbd"; path = "usr/lib/libresolv.tbd"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = sourcecode.text-based-dylib-definition; explicitFileType = undefined; includeInIndex = 0; };
 		23B115AAE6FB4AFCBDD02384 /* CoreGraphics.framework */ = {isa = PBXFileReference; name = "CoreGraphics.framework"; path = "System/Library/Frameworks/CoreGraphics.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
+		2BEEFB52AB114087BEC42463 /* RNDynamicSplash.xcodeproj */ = {isa = PBXFileReference; name = "RNDynamicSplash.xcodeproj"; path = "../node_modules/react-native-dynamic-splash/ios/RNDynamicSplash.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		66B3061BEA9F4F4ABECE8705 /* libRNDynamicSplash.a */ = {isa = PBXFileReference; name = "libRNDynamicSplash.a"; path = "libRNDynamicSplash.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -532,6 +535,7 @@
 				99C4D8D1358B47DFB5DEB3D4 /* UIKit.framework in Frameworks */,
 				08AAB548583B41588100E39F /* libresolv.tbd in Frameworks */,
 				AEF8AD5F6C8B424792484A93 /* CoreGraphics.framework in Frameworks */,
+				CA1CB05F88014F01A81FBC4C /* libRNDynamicSplash.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -749,6 +753,7 @@
 				9FED5B3815C741638CC1892D /* CodePush.xcodeproj */,
 				F14E4AE663A9492698B01FD1 /* RCTJCoreModule.xcodeproj */,
 				C31A69EF33324470A8988B00 /* RCTJPushModule.xcodeproj */,
+				2BEEFB52AB114087BEC42463 /* RNDynamicSplash.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1468,6 +1473,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1484,6 +1490,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Debug;
@@ -1522,6 +1529,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1538,6 +1546,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Release;
@@ -1573,6 +1582,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Debug;
@@ -1607,6 +1617,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Release;
@@ -1653,6 +1664,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1669,6 +1681,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Debug;
@@ -1715,6 +1728,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1731,6 +1745,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Release;
@@ -1776,6 +1791,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1792,6 +1808,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Debug;
@@ -1837,6 +1854,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1853,6 +1871,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-code-push\ios\CodePush/**",
 					"$(SRCROOT)\..\node_modules\jcore-react-native\ios\RCTJCoreModule",
 					"$(SRCROOT)\..\node_modules\jpush-react-native\ios\RCTJPushModule",
+					"$(SRCROOT)\..\node_modules\react-native-dynamic-splash\ios/**",
 				);
 			};
 			name = Release;

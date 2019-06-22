@@ -155,12 +155,13 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-dynamic-splash')
     implementation project(':jcore-react-native')
     implementation project(':jpush-react-native')
     implementation project(':react-native-code-push')
-    // implementation project(':react-native-splash-screen')
     implementation project(':react-native-cardview')
     implementation project(':react-native-webview')
+    implementation project(':react-native-splash-screen')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-linear-gradient')
     implementation project(':react-native-gesture-handler')

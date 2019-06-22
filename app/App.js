@@ -5,6 +5,7 @@ import { Provider, observer } from "mobx-react";
 import stores from "./store";
 import codePush from "react-native-code-push";
 import "./utils/storage";
+import SplashScreen from "react-native-splash-screen";
 import JPushModule from "jpush-react-native";
 import AppNavigation from "./routers/AppRouter";
 
@@ -20,6 +21,7 @@ const prefix = "daily://"; //react-navigation 深连接的URI前缀
 @observer
 class App extends React.Component {
   componentDidMount() {
+    SplashScreen.hide();
     JPushModule.initPush(); //初始化极光推送
     if (Platform.OS === "android") {
       // 安卓需要增加 否则点击推送消息无反应
