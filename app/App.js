@@ -3,7 +3,7 @@ import {Platform } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { Provider, observer } from "mobx-react";
 import stores from "./store";
-// import codePush from "react-native-code-push";
+import codePush from "react-native-code-push";
 import "./utils/storage";
 import SplashScreen from 'react-native-splash-screen'
 // import JPushModule from "jpush-react-native";
@@ -32,10 +32,12 @@ class App extends React.Component {
         {/* <Provider> 用于集成 Mobx   <MenuProvider>是弹出菜单组件  此处用于确保遮罩层 层级高于Navigation显示  */}
         <MenuProvider>
            <AppNavigation  uriPrefix={prefix}  screenProps={{ theme: stores.theme.colors.navBackground }}/>
-          {/* 下载进度组件 */}
        </MenuProvider> 
       </Provider>
     );
   }
 }
-export default App;
+
+
+
+export default codePush(App);

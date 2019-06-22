@@ -14,7 +14,7 @@ import {
   Left,
   Right,
 } from "native-base";
-// import codePush from "react-native-code-push";
+import codePush from "react-native-code-push";
 import DeviceInfo from 'react-native-device-info';
 import { Api, Tools, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
@@ -79,50 +79,50 @@ export default class index extends Component {
     this.props.navigation.navigate("About");
   }
   checkUpdates = () => {
-    // if(this.state.isUpdate){
-    //   Tools.toast('检查更新中...')
-    //   this.setState({
-    //     isUpdate:true
-    //   })
-    // }else{
-    //   Tools.toast('正在检查更新...',500)
-    //   this.setState({
-    //     isUpdate:true
-    //   })
-    //   codePush.checkForUpdate().then((update) => {
-    //     if (!update) {
-    //       Tools.toast('应用是最新的')
-    //       this.setState({
-    //         isUpdate:false
-    //       })
-    //     } else {
-    //       Alert.alert(
-    //         '发现可用更新',
-    //         '是否更新到最新版本？',
-    //         [
-    //           {text: '更新', onPress: () => {
-    //             codePush.sync();
-    //             Tools.toast('正在下载更新，更新将在后台自动安装')
-    //             this.setState({
-    //               isUpdate:false
-    //             })
-    //           }},
-    //           {text: '取消',  style: 'cancel', onPress: () => {
-    //             this.setState({
-    //               isUpdate:false
-    //             })
-    //           }},
-    //         ],
-    //       )
-    //     }
+    if(this.state.isUpdate){
+      Tools.toast('检查更新中...')
+      this.setState({
+        isUpdate:true
+      })
+    }else{
+      Tools.toast('正在检查更新...',500)
+      this.setState({
+        isUpdate:true
+      })
+      codePush.checkForUpdate().then((update) => {
+        if (!update) {
+          Tools.toast('应用是最新的')
+          this.setState({
+            isUpdate:false
+          })
+        } else {
+          Alert.alert(
+            '发现可用更新',
+            '是否更新到最新版本？',
+            [
+              {text: '更新', onPress: () => {
+                codePush.sync();
+                Tools.toast('正在下载更新，更新将在后台自动安装')
+                this.setState({
+                  isUpdate:false
+                })
+              }},
+              {text: '取消',  style: 'cancel', onPress: () => {
+                this.setState({
+                  isUpdate:false
+                })
+              }},
+            ],
+          )
+        }
     
-    // }).catch(()=>{
-    //     Tools.toast('无法连接服务器，请稍后重试')
-    //     this.setState({
-    //       isUpdate:false
-    //     })
-    // });
-    // }
+    }).catch(()=>{
+        Tools.toast('无法连接服务器，请稍后重试')
+        this.setState({
+          isUpdate:false
+        })
+    });
+    }
 
   }; 
   render() {
