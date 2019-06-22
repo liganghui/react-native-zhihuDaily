@@ -43,6 +43,8 @@ export default class index extends Component {
           <Text>意见反馈邮箱：lsalol@foxmail.com</Text>
 
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
+          <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/06/22</Text>
+          <Text style={{ marginLeft: 20}}>· 测试动态启动图</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/06/17</Text>
           <Text style={{ marginLeft: 20}}>· 增加侧边栏 栏目入口</Text>
           <Text style={{ marginLeft: 20}}>· 随机日报 增加刷新按钮</Text>
