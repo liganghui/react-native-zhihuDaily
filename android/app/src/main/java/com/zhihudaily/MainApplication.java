@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.microsoft.codepush.react.CodePush;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
+// import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import com.kishanjvaghela.cardview.RNCardViewPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -48,7 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
-            new SplashScreenReactPackage(),
+            // new SplashScreenReactPackage(),
             new RNCardViewPackage(),
             new RNCWebViewPackage(),
             new RNFetchBlobPackage(),

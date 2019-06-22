@@ -85,7 +85,6 @@
 		8DC82F8EB1734EDB94375E57 /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 850F37151DCC4C2598AAB1A3 /* libBVLinearGradient.a */; };
 		E89861A936F34C61B94F73C6 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B243929901A4CCFA35FF7FB /* libRNFetchBlob.a */; };
 		65EF1D124E25456CBCC54279 /* libRNCWebView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A810893F5FBF46E7A1F3A2CA /* libRNCWebView.a */; };
-		D64B1B01AB854E4B938062F3 /* libSplashScreen.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D0D862189CE449EA468AF13 /* libSplashScreen.a */; };
 		11727056C3B94DC9BDBE7447 /* libCodePush.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7ED4E52F7ABE4E9BA743BB6E /* libCodePush.a */; };
 		C57463F7BB5347549E59BEC6 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AE7BD046B61E4AFBB466439C /* libz.tbd */; };
 		36C122CF029F4E03A9C68DDD /* libRCTJCoreModule.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E5D28651EDE342C6B34CF4B9 /* libRCTJCoreModule.a */; };
