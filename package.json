@@ -12,6 +12,8 @@
         "@react-native-community/async-storage": "^1.5.0",
         "@react-native-community/netinfo": "^3.2.1",
         "axios": "^0.19.0",
+        "jcore-react-native": "^1.3.2",
+        "jpush-react-native": "^2.5.3",
         "mobx": "^5.9.4",
         "mobx-react": "^5.4.3",
         "native-base": "^2.12.1",

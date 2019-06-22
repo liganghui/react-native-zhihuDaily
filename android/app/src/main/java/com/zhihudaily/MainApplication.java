@@ -20,13 +20,18 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import cn.jpush.reactnativejpush.JPushPackage; 
+
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-
+ // 设置为 true 将不会弹出 toast
+    private boolean SHUTDOWN_TOAST = true;
+    // 设置为 true 将不会打印 log
+    private boolean SHUTDOWN_LOG = true;
         @Override
         protected String getJSBundleFile() {
         return CodePush.getJSBundleFile();
@@ -41,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
             new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
             new SplashScreenReactPackage(),
             new RNCardViewPackage(),
