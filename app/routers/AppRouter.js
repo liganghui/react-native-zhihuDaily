@@ -99,15 +99,16 @@ const DrawerNavigator = createDrawerNavigator(
 );
 
 //创建应用
-const AppNavigator = createAppContainer(createSwitchNavigator(
-  {
-    Drawer: DrawerNavigator,
-    Splash: SplashScreen,
-  },
-  {
-    initialRouteName: 'Splash',
-  }
+// const AppNavigator = createAppContainer(createSwitchNavigator(
+//   {
+//     Drawer: DrawerNavigator,
+//     Splash: SplashScreen,
+//   },
+//   {
+//     initialRouteName: 'Drawer',
+//   }
 
-)); 
+// )); 
+const AppNavigator = createAppContainer(DrawerNavigator); 
 
 export default AppNavigator
