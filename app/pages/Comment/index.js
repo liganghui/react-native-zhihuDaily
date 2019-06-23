@@ -30,7 +30,7 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisible: false,
+      isModalVisible: true,
       id: this.props.navigation.getParam("id"),
       shortCommentsState: false,
       longCommentsListHeight: 0,
@@ -63,12 +63,10 @@ export default class index extends Component {
             shortCommentsState: true
           },
           () => {
-            setTimeout(() => {
               this.scrollView.scrollTo({
                 y: this.state.longCommentsListHeight,
                 animated: true
               });
-            }, 100);
           }
         );
       }
@@ -83,9 +81,6 @@ export default class index extends Component {
     } else {
       return;
     }
-    setTimeout(()=>{
-      this.bindModalSwitch();
-    },100)
     Axios.get(apiUrl)
       .then(res => {
         this.bindModalSwitch(false);
@@ -371,9 +366,9 @@ export default class index extends Component {
           animationIn={"fadeIn"}
           style={styles.moda}
           isVisible={this.state.isModalVisible}
-          backdropTransitionInTiming={400}
-          backdropTransitionOutTiming={400}
-          backdropOpacity={0.5}
+          backdropTransitionInTiming={300}
+          backdropTransitionOutTiming={300}
+          backdropOpacity={0.4}
           onBackdropPress={this.bindModalSwitch}
           onBackButtonPress={this.bindAndroidBack}
           useNativeDriver={true}
@@ -384,7 +379,7 @@ export default class index extends Component {
               style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
                 <ActivityIndicator animating={true} size={40} />
-              <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
+                <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
             </View>
           ) : (
             <View />
