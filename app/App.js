@@ -8,7 +8,6 @@ import "./utils/storage";
 import SplashScreen from "react-native-splash-screen";
 import JPushModule from "jpush-react-native";
 import AppNavigation from "./routers/AppRouter";
-
 /*
  *   应用根组件 , 负责向导航路由(Navigation) 挂载全局组件 , 并导出APP.
  *
@@ -21,7 +20,6 @@ const prefix = "daily://"; //react-navigation 深连接的URI前缀
 @observer
 class App extends React.Component {
   componentDidMount() {
-    SplashScreen.hide();
     JPushModule.initPush(); //初始化极光推送
     if (Platform.OS === "android") {
       // 安卓需要增加 否则点击推送消息无反应
@@ -33,6 +31,7 @@ class App extends React.Component {
       let param = JSON.parse(res.extras);
       // ......
     });
+    SplashScreen.hide();
   }
 
   componentWillUnmount() {

@@ -35,7 +35,8 @@ export default class index extends Component {
       shortCommentsState: false,
       longCommentsListHeight: 0,
       longComments: [],
-      shortComments: []
+      shortComments: [],
+      hardwareTextureSwitch:true
     };
   }
   componentDidMount() {
@@ -46,6 +47,7 @@ export default class index extends Component {
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "long";
         this.setState({
+          hardwareTextureSwitch:false,
           longComments: res.data.comments
         });
       }
@@ -81,14 +83,16 @@ export default class index extends Component {
     } else {
       return;
     }
-    this.bindModalSwitch();
+    setTimeout(()=>{
+      this.bindModalSwitch();
+    },100)
     Axios.get(apiUrl)
       .then(res => {
-        this.bindModalSwitch();
+        this.bindModalSwitch(false);
         callBack && callBack(res);
       })
       .catch(() => {
-        this.bindModalSwitch();
+        this.bindModalSwitch(false);
       });
   }
   toggleShortComments = () => {
@@ -110,10 +114,17 @@ export default class index extends Component {
       longCommentsListHeight: height
     });
   }
-  bindModalSwitch = () => {
-    this.setState({
-      isModalVisible: !this.state.isModalVisible
-    });
+  bindModalSwitch = (val) => {
+    if(val){
+      this.setState({
+        isModalVisible:val
+      });
+    }else{
+      this.setState({
+        isModalVisible: !this.state.isModalVisible
+      });
+    }
+    
   };
   bindAndroidBack = () => {
     if (this.state.isModalVisible) {
@@ -369,6 +380,7 @@ export default class index extends Component {
         >
           {this.state.isModalVisible ? (
             <View
+              renderToHardwareTextureAndroid={this.state.hardwareTextureSwitch}
               style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
             >
                 <ActivityIndicator animating={true} size={40} />

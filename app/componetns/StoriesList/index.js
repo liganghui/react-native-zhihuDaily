@@ -69,7 +69,6 @@ export default class index extends Component {
   };
   render() {
     return (
-      <View>
         <SectionList
           keyExtractor={this.keyExtractor}
           sections={this.props.data}
@@ -79,7 +78,6 @@ export default class index extends Component {
           renderItem={this.renderItem}
           style={{backgroundColor:this.props.theme.colors.listBackground}}
         />
-      </View>
     );
   }
 }

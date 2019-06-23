@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, AppState } from "react-native";
+import { View, StyleSheet, Text, AppState,InteractionManager } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import {
   Menu,
@@ -270,6 +270,7 @@ export default class index extends Component {
     this.props.navigation.navigate("Details", {
       id: item.id
     });
+    InteractionManager.runAfterInteractions(() => {
     // 存储访问状态
     storage
       .save({
@@ -294,6 +295,7 @@ export default class index extends Component {
           stories
         });
       });
+    })
   };
 
   /**

@@ -14,7 +14,6 @@ import CommentScreen from "../pages/Comment";
 import DrawerScreen from "../pages/Drawer";
 import SettingScreen from "../pages/Setting";
 import AboutScreen from "../pages/About";
-import SplashScreen from "../pages/SplashScreen";
 
 
 /*
@@ -60,7 +59,7 @@ const MainScreen = createStackNavigator(
     transitionConfig: () => ({
       screenInterpolator: StackViewStyleInterpolator.forHorizontal,
       transitionSpec: {
-        duration: 300 //动画时间
+        duration: 280 //动画时间
       }
     })
   }
@@ -94,21 +93,11 @@ const DrawerNavigator = createDrawerNavigator(
     }
   },
   {
+    initialRouteName:'Main',
     contentComponent: DrawerScreen
   }
 );
 
-//创建应用
-// const AppNavigator = createAppContainer(createSwitchNavigator(
-//   {
-//     Drawer: DrawerNavigator,
-//     Splash: SplashScreen,
-//   },
-//   {
-//     initialRouteName: 'Drawer',
-//   }
-
-// )); 
 const AppNavigator = createAppContainer(DrawerNavigator); 
 
 export default AppNavigator

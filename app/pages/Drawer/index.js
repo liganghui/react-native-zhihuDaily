@@ -35,7 +35,7 @@ export default class index extends Component {
             { backgroundColor: this.props.theme.colors.navBackground }
           ]}
         >
-          <Text>专栏</Text>
+          <Text style={{color:'#fff',fontSize:18}}>专栏</Text>
         </View>
         <ScrollView>
           <View >

@@ -144,12 +144,14 @@ export default class index extends Component {
       collect: false, //收藏按钮
       bigSize: null, //webview大字号
       opacity: new Animated.Value(0),
+      hardwareTextureSwitch:true,//GPU加速开关
       headerHeight: new Animated.Value(HEAD_HEIGHT)
     };
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
       outputRange: [1, 0, 0, 1], //导航栏透明度 0 透明 1 不透明
-      extrapolate: "clamp"
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
@@ -215,40 +217,35 @@ export default class index extends Component {
           Tools.toast("服务器数据异常");
           return false;
         }
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=0.5, maximum-scale=1, user-scalable=no"></head>
+        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
                     <link rel="stylesheet" href="${response.css[0]}" />
+                    <style>${this.state.bigSize?`*{font-size:125%} .img-place-holder{display:none}`:`.img-place-holder{ display:none`}</style>
                     <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${response.body}</body></html>`;
         if (this.state.webviewFirst) {
-          this.setState(
-            {
-              daily: response
-            },
-            () => {
-              // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
-              InteractionManager.runAfterInteractions(() => {
-                setTimeout(() => {
-                this.setState(
-                  {
-                    body: html,
-                    webviewFirst: false
-                  },
-                  () => {
-                      global.storage.save({
-                        key: "webviewFirst",
-                        data: false
-                      });
-                  }
-                );
-               }, 100);
+          InteractionManager.runAfterInteractions(() => {
+            this.setState(
+             {
+              daily: response,
+              body: html,
+              webviewFirst: false,
+              hardwareTextureSwitch:false,
+              },
+              () => {
+                global.storage.save({
+                  key: "webviewFirst",
+                  data: false
               });
             }
           );
+        })
+
         } else {
           this.setState({
             daily: response,
-            body: html
+            body: html,
+            hardwareTextureSwitch:false,
           });
-        }
+        } 
       })
       .catch(error => {});
   }
@@ -384,7 +381,8 @@ export default class index extends Component {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 400],
       outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
-      extrapolate: "clamp"
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     return (
       <Animated.View key="background" style={{ translateY: imgTop }}>
@@ -406,6 +404,7 @@ export default class index extends Component {
     return (
       <Container
         style={{backgroundColor:this.props.theme.colors.containerBackground}}
+        renderToHardwareTextureAndroid={this.state.hardwareTextureSwitch}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
@@ -414,17 +413,15 @@ export default class index extends Component {
           // 无数据时 禁止滚动
           scrollEnabled={this.state.body ? true : false}
           contentBackgroundColor={this.props.theme.colors.containerBackground}
-          onMessage={this.bindMessage}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
             {
-              listener: this.bindOnScroll
+              listener: this.bindOnScroll,
             }
           )}
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
-          {this.state.body ? (
             <AutoHeightWebView
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
@@ -451,16 +448,7 @@ export default class index extends Component {
                   }
                 }
                `}
-              customStyle={
-                ` ${this.state.bigSize?`
-                *{font-size:125%}
-                .img-place-holder{ 
-                  display:none
-                }
-                `:`.img-place-holder{ display:none`}
-             `}
             />
-          ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
