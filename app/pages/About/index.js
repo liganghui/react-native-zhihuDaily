@@ -35,12 +35,11 @@ export default class index extends Component {
             在未经知乎日报官方授权下使用日报的数据API接口，仅限学习开发之用，请勿用于任何商业用途。
           </Text>
           <View style={{ flexDirection: "row" , height:50,alignItems: 'center',}}>
-            <Text style={{ marginVertical: 15 }}>Github开源地址：</Text>
+            <Text style={{ marginVertical: 15 }}>Github开源项目地址：</Text>
             <TouchableOpacity onPress={this.handleLinkOpen} style={{ marginLeft:5 }}>
               <Icon type='font-awesome' name='github' size={32} color='#000' />
             </TouchableOpacity>
           </View>
-          <Text>意见反馈邮箱：lsalol@foxmail.com</Text>
 
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/06/22</Text>

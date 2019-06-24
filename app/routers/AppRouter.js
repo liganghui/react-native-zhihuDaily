@@ -14,6 +14,8 @@ import CommentScreen from "../pages/Comment";
 import DrawerScreen from "../pages/Drawer";
 import SettingScreen from "../pages/Setting";
 import AboutScreen from "../pages/About";
+import FeedbackScreen from "../pages/Feedback";
+
 
 
 /*
@@ -40,6 +42,7 @@ const MainScreen = createStackNavigator(
     Section: SectionScreen,
     Comment: CommentScreen,
     About:AboutScreen,
+    Feedback:FeedbackScreen,
     Setting: {
       screen: SettingScreen,
       path: "setting" //路径地址
@@ -48,6 +51,7 @@ const MainScreen = createStackNavigator(
   {
     // 设置header默认样式
     defaultNavigationOptions: {
+      gesturesEnabled:true,
       headerStyle: {
         backgroundColor: "#00a2ed"
       },

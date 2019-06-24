@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import {
   Text,
   StyleSheet,
-  View,
   Alert
 } from "react-native";
 import {
@@ -72,11 +71,23 @@ export default class index extends Component {
       });
   };
   clearCache = () => {
-    //Todo  清楚缓存
-    Tools.toast("开发中...敬请期待");
+    Tools.toast("正在清空缓存...");
+    storage.clearMapForKey('details').then(()=>{
+      setTimeout(() => {
+      Tools.toast("缓存已清空");
+      }, 1000);
+    }).catch(()=>{
+      setTimeout(() => {
+      Tools.toast("系统异常,操作失败");
+        }, 1000);
+    });
+
   };
   openAbout=()=>{
     this.props.navigation.navigate("About");
+  }
+  openFeedBack=()=>{
+    this.props.navigation.navigate("Feedback");
   }
   checkUpdates = () => {
     if(this.state.isUpdate){
@@ -141,12 +152,15 @@ export default class index extends Component {
               onPress={this.switchBigSizeSelct}
             />
           </ListItem>
+          <ListItem onPress={this.clearCache}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
+              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>清楚缓存</Text>
+          </ListItem>
           <ListItem itemDivider style={{backgroundColor:this.props.theme.colors.listBackground}}>
             <Text style={{color:this.props.theme.colors.text}}>其他</Text>
           </ListItem>
-          {/* <ListItem onPress={this.clearCache}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
-              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>清楚缓存</Text>
-          </ListItem> */}
+          <ListItem onPress={this.openFeedBack}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
+              <Text  style={[styles.itemText,{color:this.props.theme.colors.item}]}>意见反馈</Text>
+          </ListItem>
           <ListItem onPress={this.checkUpdates}  last style={{backgroundColor:this.props.theme.colors.itemBackground}}>
             <Left>
               <Text style={[styles.itemText,{color:this.props.theme.colors.item}]}>检查更新</Text>

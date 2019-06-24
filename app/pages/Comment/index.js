@@ -50,10 +50,12 @@ export default class index extends Component {
           hardwareTextureSwitch:false,
           longComments: res.data.comments
         });
+        this.bindModalSwitch(false);
       }
     });
   }
   initShortComments() {
+    this.bindModalSwitch(true);
     this.getCommentsData("short", res => {
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "short";
@@ -63,10 +65,13 @@ export default class index extends Component {
             shortCommentsState: true
           },
           () => {
+           this.bindModalSwitch(false);
+            setTimeout(() => {
               this.scrollView.scrollTo({
                 y: this.state.longCommentsListHeight,
                 animated: true
               });
+            },100);
           }
         );
       }
@@ -83,7 +88,6 @@ export default class index extends Component {
     }
     Axios.get(apiUrl)
       .then(res => {
-        this.bindModalSwitch(false);
         callBack && callBack(res);
       })
       .catch(() => {
@@ -363,13 +367,14 @@ export default class index extends Component {
         </View>
         {/*  遮罩层 */}
         <Modal
+          onPress={this.bindModalSwitch.bind(this,false)}
           animationIn={"fadeIn"}
           style={styles.moda}
           isVisible={this.state.isModalVisible}
           backdropTransitionInTiming={300}
           backdropTransitionOutTiming={300}
           backdropOpacity={0.4}
-          onBackdropPress={this.bindModalSwitch}
+          onBackdropPress={this.bindModalSwitch.bind(this,false)}
           onBackButtonPress={this.bindAndroidBack}
           useNativeDriver={true}
         >
