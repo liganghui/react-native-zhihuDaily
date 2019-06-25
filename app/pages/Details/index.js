@@ -422,7 +422,12 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
+            {this.state.body ? (
             <AutoHeightWebView
+            onShouldStartLoadWithRequest={request => {
+              console.warn(request)
+              return true;
+            }}
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
               // 为webview图片绑定点击事件 , 触发查看大图
@@ -449,6 +454,7 @@ export default class index extends Component {
                 }
                `}
             />
+            ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
