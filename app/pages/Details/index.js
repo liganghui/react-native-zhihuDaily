@@ -230,11 +230,11 @@ export default class index extends Component {
               <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${htmlString}</body></html>`;
               return  renderHtml
         }
-        // 用户为平板设备时不裁切Html
-        if(System.SCREEN_WIDTH>=768&&response.body.length>900){
+        // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
+        if(System.SCREEN_WIDTH>=768&&response.body.length>850){
           html=response.body;
         }else{
-          html=response.body.slice(0,900);
+          html=response.body.slice(0,850);
           setTimeout(()=>{
             this.setState({
               body:formatHtml(response.body)
