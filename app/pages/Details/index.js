@@ -435,7 +435,6 @@ export default class index extends Component {
         }}
       >
 
-        萨达撒司法所
         <ParallaxScrollView
           // 无数据时 禁止滚动
           scrollEnabled={this.state.body ? true : false}
