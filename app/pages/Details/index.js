@@ -20,7 +20,7 @@ import {
 import Share from "react-native-share";
 import * as Animatable from "react-native-animatable";
 import {observer,inject} from 'mobx-react';
-import { Tools, Api, Axios } from "../../utils";
+import { Tools, Api, Axios,System } from "../../utils";
 
 const IMG_MAX_HEIGHT = 200;//图像最大高度
 const HEAD_HEIGHT = 50;//导航栏高度
@@ -28,7 +28,6 @@ const HEADER_MIN_HEIGHT = 0;//导航栏最小高度
 let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
 let offsetY=0; // 记录Y轴坐标
 let that; //保存this引用
-
 @inject('theme') 
 @observer
 export default class index extends Component {
@@ -128,10 +127,9 @@ export default class index extends Component {
   };
   constructor(props) {
     super(props);
-    let id = this.props.navigation.getParam("id");
     this.scrollY = new Animated.Value(0); // 记录Y轴滚动坐标 用户计算滚动方向
     this.state = {
-      dailyId: id,
+      dailyId: this.props.navigation.getParam("id"),
       daily: {
         section: null //栏目分类信息
       },
@@ -145,8 +143,9 @@ export default class index extends Component {
       bigSize: null, //webview大字号
       opacity: new Animated.Value(0),
       hardwareTextureSwitch:true,//GPU加速开关
-      headerHeight: new Animated.Value(HEAD_HEIGHT)
-    };
+      headerHeight: new Animated.Value(HEAD_HEIGHT),
+      webViewHeight:System.SCREEN_HEIGHT-250 
+    }
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
       outputRange: [1, 0, 0, 1], //导航栏透明度 0 透明 1 不透明
@@ -217,37 +216,63 @@ export default class index extends Component {
           Tools.toast("服务器数据异常");
           return false;
         }
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
-                    <link rel="stylesheet" href="${response.css[0]}" />
-                    <style>${this.state.bigSize?`*{font-size:125%} .img-place-holder{display:none}`:`.img-place-holder{ display:none`}</style>
-                    <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${response.body}</body></html>`;
+
+        /*
+        *  为了提升页面初始化渲染速度 , HTML内容被裁切分块渲染 
+        *  为了减少页面 初次 打开时webview初始化导致导航切换动画丢帧 , 需要延缓webview初始化时间.
+        */
+        let  html;
+        // 格式化HTML
+        let formatHtml = (htmlString)=>{
+             let  renderHtml=`<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
+              <link rel="stylesheet" href="${response.css[0]}" />
+              <style>${this.state.bigSize?`*{font-size:125%} .img-place-holder{display:none}`:`.img-place-holder{ display:none`}</style>
+              <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${htmlString}</body></html>`;
+              return  renderHtml
+        }
+        // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
+        if(System.SCREEN_WIDTH>=768&&response.body.length>850){
+          html=response.body;
+        }else{
+          html=response.body.slice(0,850);
+          setTimeout(()=>{
+            this.setState({
+              body:formatHtml(response.body)
+            })
+          },1500)
+        }
         if (this.state.webviewFirst) {
           InteractionManager.runAfterInteractions(() => {
             this.setState(
              {
               daily: response,
-              body: html,
               webviewFirst: false,
               hardwareTextureSwitch:false,
               },
               () => {
-                global.storage.save({
-                  key: "webviewFirst",
-                  data: false
-              });
+                setTimeout(()=>{
+                  this.setState({
+                    body: formatHtml(html),
+                  })
+                  global.storage.save({
+                    key: "webviewFirst",
+                    data: false
+                });
+                },350)
             }
           );
         })
-
         } else {
           this.setState({
             daily: response,
-            body: html,
+            body:formatHtml(html),
             hardwareTextureSwitch:false,
           });
         } 
       })
-      .catch(error => {});
+      .catch(error => {
+        console.warn('111')
+      });
   }
   // 日报额外信息  (评论数,点赞数等)
   getExtraData() {
@@ -409,6 +434,7 @@ export default class index extends Component {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
       >
+
         <ParallaxScrollView
           // 无数据时 禁止滚动
           scrollEnabled={this.state.body ? true : false}
@@ -422,7 +448,14 @@ export default class index extends Component {
           parallaxHeaderHeight={250}
           renderBackground={this.renderSectioHeader}
         >
+            {this.state.body ? (
             <AutoHeightWebView
+            style={{height:this.state.webViewHeight}}
+            onSizeUpdated={(size)=>{
+              this.setState({
+                webViewHeight:size.height
+              })
+            }}
               source={{ html: this.state.body }}
               onMessage={this.bindMessage.bind(this)}
               // 为webview图片绑定点击事件 , 触发查看大图
@@ -449,6 +482,7 @@ export default class index extends Component {
                 }
                `}
             />
+            ) : null}
           {/* 栏目信息  */}
           {this.state.daily.section && this.state.webviewInit ? (
             <TouchableOpacity
