@@ -5653,10 +5653,10 @@ react-native-drawer@2.5.1:
     prop-types "^15.5.8"
     tween-functions "^1.0.1"
 
-react-native-dynamic-splash@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npm.taobao.org/react-native-dynamic-splash/download/react-native-dynamic-splash-1.1.0.tgz#bc42cf54b5db88737b5a061ed07704812c902d73"
-  integrity sha1-vELPVLXbiHN7WgYe0HcEgSyQLXM=
+react-native-dynamic-splash@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npm.taobao.org/react-native-dynamic-splash/download/react-native-dynamic-splash-1.1.2.tgz#2601e9bdc9d3ddd8b3fd0e2e022f61844ba76e6a"
+  integrity sha1-JgHpvcnT3diz/Q4uAi9hhEunbmo=
 
 react-native-easy-grid@0.2.1:
   version "0.2.1"

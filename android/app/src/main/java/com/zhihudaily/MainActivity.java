@@ -32,7 +32,7 @@ public class MainActivity extends ReactActivity {
             Config splashConfig = new Config(); 
             splashConfig.setImageUrl("http://106.52.75.247:3000/build/daliy.png&date="+currentDateandTime);
             splashConfig.setDynamicShow(true);
-            splashConfig.setAutoHideTime(3200);
+            splashConfig.setAutoHideTime(3500);
             splashConfig.setAutoHide(true);
             new DynamicSplash(this, splashConfig);
          }

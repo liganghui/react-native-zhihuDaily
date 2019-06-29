@@ -239,7 +239,7 @@ export default class index extends Component {
             this.setState({
               body:formatHtml(response.body)
             })
-          },1500)
+          },1000)
         }
         if (this.state.webviewFirst) {
           InteractionManager.runAfterInteractions(() => {
