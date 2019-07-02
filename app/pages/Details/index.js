@@ -21,10 +21,11 @@ import Share from "react-native-share";
 import * as Animatable from "react-native-animatable";
 import {observer,inject} from 'mobx-react';
 import { Tools, Api, Axios,System } from "../../utils";
-
+import Carousel from "react-native-snap-carousel";
 const IMG_MAX_HEIGHT = 200;//图像最大高度
 const HEAD_HEIGHT = 50;//导航栏高度
 const HEADER_MIN_HEIGHT = 0;//导航栏最小高度
+let CLONES_NUMBER;
 let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
 let offsetY=0; // 记录Y轴坐标
 let that; //保存this引用
@@ -133,6 +134,7 @@ export default class index extends Component {
       daily: {
         section: null //栏目分类信息
       },
+      idArray:this.props.navigation.getParam("idArray"),
       body: null, //供webview渲染的HTML格式内容
       extra: {}, //日报额外信息
       webviewWidth: null, // 动态调整webview为设备的宽度
@@ -157,7 +159,9 @@ export default class index extends Component {
     that = this;
   }
   componentDidMount() {
-    this.init();
+    this.init(this.props.navigation.getParam("id"));
+    CLONES_NUMBER=this.props.navigation.getParam("idArray").length;
+    console.warn(this.props.navigation.getParam("idArray"))
   }
   /*
    *  日报内容初始化
@@ -165,13 +169,13 @@ export default class index extends Component {
    *    详情页 首次打开时 WebView初始化会占用大量性能 , 
    *    导致页面push动画丢帧 , 这里通过判断状态延缓WebView加载.
    */
-  init() {
+  init(id) {
     Tools.getNetworkState().then(newWorkInfo => {
       if (newWorkInfo.online) {
-        this.getExtraData();
+        this.getExtraData(id);
       }
     })
-    this.getDailyData();
+    this.getDailyData(id);
     // 检测页面是否为初次加载
     storage
       .load({
@@ -205,11 +209,11 @@ export default class index extends Component {
       ]);
   }
   // 页面数据初始化
-  getDailyData() {
+  getDailyData(id) {
     storage
       .load({
         key: "details",
-        id: this.state.dailyId
+        id
       })
       .then(response => {
         if (!response || !response.body) {
@@ -275,11 +279,11 @@ export default class index extends Component {
       });
   }
   // 日报额外信息  (评论数,点赞数等)
-  getExtraData() {
+  getExtraData(id) {
     storage
       .load({
         key: "extra",
-        id: this.state.dailyId
+        id:id
       })
       .then(res => {
         if (res) {
@@ -401,6 +405,84 @@ export default class index extends Component {
     }
   }
 
+  renderSilder=(data,index)=>{
+    return(
+        <View style={{flex:1}}>
+ {data.item.selected?
+ <ParallaxScrollView
+ // 无数据时 禁止滚动
+ scrollEnabled={this.state.body ? true : false}
+ contentBackgroundColor={this.props.theme.colors.containerBackground}
+ onScroll={Animated.event(
+   [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
+   {
+     listener: this.bindOnScroll,
+   }
+ )}
+ parallaxHeaderHeight={250}
+ renderBackground={this.renderSectioHeader}
+>
+      <AutoHeightWebView
+      style={{height:this.state.webViewHeight}}
+      onSizeUpdated={(size)=>{
+        this.setState({
+          webViewHeight:size.height
+        })
+      }}
+        source={{ html: this.state.body }}
+        onMessage={this.bindMessage.bind(this)}
+        // 为webview图片绑定点击事件 , 触发查看大图
+        customScript={`
+            window.onload=function(){
+              window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+              var imgs = document.getElementsByTagName("img");
+              if(imgs){
+                for(var i=0;i<imgs.length;i++){
+                  imgs[i].addEventListener('click',function(e){
+                    window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                  })
+                }
+              }
+              var a = document.getElementsByTagName('a');
+              if(a){
+                for(var i = 0; i < a.length; i++){
+                a[i].onclick = function (event) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                  event.preventDefault();
+                }
+              }
+            }
+          }
+         `}
+      />
+      
+          {/* 栏目信息  */}
+          {this.state.daily.section && this.state.webviewInit ? (
+            <TouchableOpacity
+              style={[styles.sectionWrapper,{backgroundColor:this.props.theme.colors.buttonBackground}]}
+              onPress={this.bindSectionTap}
+            >
+              <Image
+                style={styles.thumbnailImg}
+                source={{ uri: this.state.daily.section.thumbnail }}
+              />
+              <Text style={[styles.thumbnailName,{color:this.props.theme.colors.text}]}>
+                本文来自：{this.state.daily.section.name} · 合集
+              </Text>
+              <Icon
+                iconStyle={styles.iconRightArrow}
+                name="angle-right"
+                type="font-awesome"
+                color="#333"
+                size={22}
+              />
+            </TouchableOpacity>
+          ) : null}
+        </ParallaxScrollView>
+      :<Text>11111</Text>}
+        </View>)
+  }
+
   // 渲染背景图 
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
@@ -435,77 +517,58 @@ export default class index extends Component {
         }}
       >
 
-        <ParallaxScrollView
-          // 无数据时 禁止滚动
-          scrollEnabled={this.state.body ? true : false}
-          contentBackgroundColor={this.props.theme.colors.containerBackground}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
-            {
-              listener: this.bindOnScroll,
+           
+           <Carousel
+          ref={(c) => { this._carousel = c; }}
+          autoplay={false} //自动播放
+          loop={true} // 循环
+          data={this.state.idArray}
+          renderItem={this.renderSilder}
+          sliderWidth={System.SCREEN_WIDTH}
+          itemWidth={System.SCREEN_WIDTH}
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1} //去除边距
+          // loopClonesPerSide={2}
+          onBeforeSnapToItem={(previousIndex,) => {
+            let index=this._carousel.currentIndex
+            let swipeDirection;
+            if (previousIndex === 0 && index === CLONES_NUMBER) {
+              swipeDirection = "right";
+            } else if (previousIndex === CLONES_NUMBER && index === 0) {
+              swipeDirection = "left";
+            } else {
+              swipeDirection = previousIndex < index ? "left" : "right";
             }
-          )}
-          parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}
-        >
-            {this.state.body ? (
-            <AutoHeightWebView
-            style={{height:this.state.webViewHeight}}
-            onSizeUpdated={(size)=>{
-              this.setState({
-                webViewHeight:size.height
-              })
-            }}
-              source={{ html: this.state.body }}
-              onMessage={this.bindMessage.bind(this)}
-              // 为webview图片绑定点击事件 , 触发查看大图
-              customScript={`
-                  window.onload=function(){
-                    window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-                    var imgs = document.getElementsByTagName("img");
-                    if(imgs){
-                      for(var i=0;i<imgs.length;i++){
-                        imgs[i].addEventListener('click',function(e){
-                          window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
-                        })
-                      }
-                    }
-                    var a = document.getElementsByTagName('a');
-                    if(a){
-                      for(var i = 0; i < a.length; i++){
-                      a[i].onclick = function (event) {
-                        window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
-                        event.preventDefault();
-                      }
-                    }
-                  }
-                }
-               `}
-            />
-            ) : null}
-          {/* 栏目信息  */}
-          {this.state.daily.section && this.state.webviewInit ? (
-            <TouchableOpacity
-              style={[styles.sectionWrapper,{backgroundColor:this.props.theme.colors.buttonBackground}]}
-              onPress={this.bindSectionTap}
-            >
-              <Image
-                style={styles.thumbnailImg}
-                source={{ uri: this.state.daily.section.thumbnail }}
-              />
-              <Text style={[styles.thumbnailName,{color:this.props.theme.colors.text}]}>
-                本文来自：{this.state.daily.section.name} · 合集
-              </Text>
-              <Icon
-                iconStyle={styles.iconRightArrow}
-                name="angle-right"
-                type="font-awesome"
-                color="#333"
-                size={22}
-              />
-            </TouchableOpacity>
-          ) : null}
-        </ParallaxScrollView>
+            let i;
+            let ary=this.state.idArray;
+            this.state.idArray.forEach((item,index)=>{
+              if(item.selected){
+                i=index
+              }
+            })
+            if(swipeDirection=='left'){
+              this.init(this.state.idArray[i-1].id)
+              ary[i-1].selected=true;
+              ary[i].selected=false;
+            }else if(swipeDirection=='right'){
+              this.init(this.state.idArray[i+1].id)
+              ary[i+1].selected=true;
+              ary[i].selected=false;
+            }
+            this.setState({
+              daily: {
+                section: null
+              },
+              body: null, 
+              extra: {},
+              like: false, 
+              collect: false, 
+              idArray:ary
+            })
+          }}
+        />
+
+
       </Container>
     );
   }

@@ -83,7 +83,7 @@ export default class index extends Component {
       refresh: false, //控制下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
       opened: false, //控制Header弹出菜单显示
-      isDateTimePickerVisible: false, //控制日期选择控件
+      isDateTimePickerVisible: false, //控制日期选择控件显示
       finished: false //判断列表是否全部加载完
     };
     // 默认标题
@@ -169,7 +169,8 @@ export default class index extends Component {
         () => {
           // 当最新的日报数量较少时  触发触底加载 , 避免数据少时页面无法滚动 ,无法加载更多日报.
           if (this.state.stories[0].data.length <= 3) {
-            this.pullupfresh();
+            console.warn(this.state.stories[0].data.length)
+            // this.pullupfresh();
           }
         }
       );
@@ -200,6 +201,7 @@ export default class index extends Component {
           item.visited = false;
           if (index === listData.length - 1) {
             callback(listData);
+            
           }
         });
     });
@@ -267,8 +269,18 @@ export default class index extends Component {
    */
   bindListTap = item => {
     // 页面跳转
+    let idArray=[]
+    this.state.stories.forEach((items)=>{
+      items.data.forEach((el)=>{
+        idArray.push({
+          id:el.id,
+          selected:el.id==item.id?true:false
+        })
+      })
+    })
     this.props.navigation.navigate("Details", {
-      id: item.id
+      idArray,
+      id:item.id
     });
     InteractionManager.runAfterInteractions(() => {
     // 存储访问状态
