@@ -169,8 +169,7 @@ export default class index extends Component {
         () => {
           // 当最新的日报数量较少时  触发触底加载 , 避免数据少时页面无法滚动 ,无法加载更多日报.
           if (this.state.stories[0].data.length <= 3) {
-            console.warn(this.state.stories[0].data.length)
-            // this.pullupfresh();
+            this.pullupfresh();
           }
         }
       );
@@ -269,7 +268,8 @@ export default class index extends Component {
    */
   bindListTap = item => {
     // 页面跳转
-    let idArray=[]
+    let idArray=[]; //日报ID数组
+    let selectdIndex; //点击项的数组下标
     this.state.stories.forEach((items)=>{
       items.data.forEach((el)=>{
         idArray.push({
@@ -278,9 +278,14 @@ export default class index extends Component {
         })
       })
     })
+    idArray.forEach((el,index)=>{
+      if(el.id==item.id){
+        selectdIndex=index
+      }
+    })
     this.props.navigation.navigate("Details", {
       idArray,
-      id:item.id
+      selectdIndex
     });
     InteractionManager.runAfterInteractions(() => {
     // 存储访问状态
@@ -393,15 +398,12 @@ export default class index extends Component {
     // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
     let m=new Date('October 23 , 2013 00:00:00');
      m=m.getTime();
-
     let n=new Date();
      n=n.getTime();
-
     let s=n-m;
     s=Math.floor(Math.random()*s)
     s=m+s;
     s=new Date(s);
-
     this.handleDatePicked(s,'随便看看');
   }
   /**
