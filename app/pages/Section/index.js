@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { StyleSheet, Text } from "react-native";
-import { Button,Icon} from "react-native-elements";
+import { Button, Icon } from "react-native-elements";
 // 集成触底和上拉加载的滚动容器
 import MyScrollView from "../../componetns/ScrollView";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
 import { Tools, Axios, Api } from "../../utils";
+import DateTimePicker from "react-native-modal-datetime-picker";
 let that; //保存This引用
 export default class index extends Component {
   static navigationOptions = ({ navigation, screenProps }) => {
@@ -14,18 +15,31 @@ export default class index extends Component {
       headerStyle: {
         backgroundColor: screenProps.theme
       },
-      headerRight: (
-        navigation.getParam("date")?
+      headerRight: navigation.getParam("date") ? (
         <Button
-          type="clear"
+          type='clear'
           onPress={() => {
-            that.restList()
+            that.restList();
           }}
           icon={
-            <Icon type="material" name="refresh" size={24} color="white" containerStyle={{marginRight:20}} />
+            <Icon
+              type='material'
+              name='refresh'
+              size={24}
+              color='white'
+              containerStyle={{ marginRight: 20 }}
+            />
           }
-        />:null
-      )
+        />
+      ) :         <Button
+      type="clear"
+      onPress={() => {
+        that.toggleDateTimePicker();
+      }}
+      icon={
+        <Icon type="antdesign" name="calendar" size={24} color="white" />
+      }
+    />
     };
   };
   constructor(props) {
@@ -38,9 +52,10 @@ export default class index extends Component {
       date,
       pullUpLoading: false,
       stories: [], //栏目列表数据
-      finished: false
+      finished: false,
+      isDateTimePickerVisible: false, //控制日期选择控件显示
     };
-    that=this;
+    that = this;
     this.props.navigation.setParams({ title });
   }
   componentDidMount() {
@@ -53,14 +68,31 @@ export default class index extends Component {
       Tools.toast("加载失败，参数异常");
     }
   }
+
+  initBeforeList(id,date) {
+      Axios.get(`https://news-at.zhihu.com/api/4/section/${id}/before/${date}`).then((responseJson)=>{
+        this.handleDataRender(responseJson.data, (res) => {
+          let sectionData = [
+            {
+              key: responseJson.data.timestamp,
+              data: res
+            }
+          ];
+          this.setState({
+            stories: sectionData
+          });
+        });
+      })
+  }
+
   initdaliyList() {
     storage
       .load({
         key: "before",
         id: this.state.date
       })
-      .then(responseJson => {
-        this.handleDataRender(responseJson, res => {
+      .then((responseJson) => {
+        this.handleDataRender(responseJson, (res) => {
           let sectionData = [
             {
               key: responseJson.date,
@@ -72,12 +104,12 @@ export default class index extends Component {
           });
         });
       })
-      .catch(error => {
+      .catch((error) => {
         console.warn(error);
       });
   }
   initSectionList() {
-    Tools.getNetworkState().then(newWorkInfo => {
+    Tools.getNetworkState().then((newWorkInfo) => {
       let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({
@@ -85,8 +117,8 @@ export default class index extends Component {
           id: this.state.sectionId,
           syncInBackground: syncInBackgroundState
         })
-        .then(responseJson => {
-          this.handleDataRender(responseJson, res => {
+        .then((responseJson) => {
+          this.handleDataRender(responseJson, (res) => {
             let sectionData = [
               {
                 key: responseJson.timestamp,
@@ -98,7 +130,7 @@ export default class index extends Component {
             });
           });
         })
-        .catch(error => {
+        .catch((error) => {
           console.warn(error);
         });
     });
@@ -106,7 +138,7 @@ export default class index extends Component {
 
   handleDataRender(responseJson, callback) {
     if (responseJson.stories) {
-      this.updateVistedState(responseJson.stories, res => {
+      this.updateVistedState(responseJson.stories, (res) => {
         callback(res);
       });
     } else {
@@ -125,7 +157,7 @@ export default class index extends Component {
           key: "visited",
           id: item.id
         })
-        .then(res => {
+        .then((res) => {
           // 标记已访问
           item.visited = true;
           if (index === listData.length - 1) {
@@ -133,7 +165,7 @@ export default class index extends Component {
           }
         })
         // 未访问
-        .catch(error => {
+        .catch((error) => {
           item.visited = false;
           if (index === listData.length - 1) {
             callback(listData);
@@ -145,12 +177,12 @@ export default class index extends Component {
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
-  bindListTap = item => {
+  bindListTap = (item) => {
     // 页面跳转
     let idArray = []; //日报ID数组
     let selectdIndex; //点击项的数组下标
-    this.state.stories.forEach(items => {
-      items.data.forEach(el => {
+    this.state.stories.forEach((items) => {
+      items.data.forEach((el) => {
         idArray.push({
           id: el.id,
           selected: el.id == item.id ? true : false
@@ -178,8 +210,8 @@ export default class index extends Component {
         // 更新访问状态
         // PS：这里需要将旧数据解构成一个新数组 , 可以避免setState不生效问题，因为setState是浅比较 。
         let stories = [...this.state.stories];
-        stories.forEach(items => {
-          items.data.forEach(i => {
+        stories.forEach((items) => {
+          items.data.forEach((i) => {
             if (i.id == item.id) {
               i.visited = true;
               return false;
@@ -207,8 +239,8 @@ export default class index extends Component {
       apiUrl = `${Api.section}${this.state.sectionId}/before/${date}`;
     }
     Axios.get(apiUrl)
-      .then(responseJson => {
-        this.handleDataRender(responseJson.data, res => {
+      .then((responseJson) => {
+        this.handleDataRender(responseJson.data, (res) => {
           let data = [...this.state.stories];
           data.push({
             key: this.state.date
@@ -222,37 +254,56 @@ export default class index extends Component {
           });
         });
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({
           pullUpLoading: false
         });
         console.warn(err);
       });
   };
-    /** 
+    /**
+   *  日期选择器点击行为
+   */
+  handleDatePicked = (date) => {
+    let dateStr = Date.parse(date).toString();
+    dateStr = dateStr.substr(0,10);
+    this.initBeforeList(this.state.sectionId,dateStr)
+    this.setState({
+      isDateTimePickerVisible:false
+    });
+  };
+    /**
+   *  控制日期选择器显示
+   */
+  toggleDateTimePicker = () => {
+    this.setState({
+      isDateTimePickerVisible: !this.state.isDateTimePickerVisible
+    });
+  };
+  /**
    *  重新随机日期  , 刷新列表
-  */
- restList=()=>{
-  // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
-  let m=new Date('October 23 , 2013 00:00:00');
-   m=m.getTime();
-  let n=new Date();
-   n=n.getTime();
-  let s=n-m;
-  s=Math.floor(Math.random()*s)
-  s=m+s;
-  s=new Date(s);
-  let dateStr = Tools.formatDay(s)
-  .split("-")
-  .join("");
-  this.setState({
-    date:dateStr,
-    stories: [], //栏目列表数据
-    finished:false
-  })
-  this.initdaliyList();
- }
-  renderSectioHeader = items => {
+   */
+  restList = () => {
+    // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
+    let m = new Date("October 23 , 2013 00:00:00");
+    m = m.getTime();
+    let n = new Date();
+    n = n.getTime();
+    let s = n - m;
+    s = Math.floor(Math.random() * s);
+    s = m + s;
+    s = new Date(s);
+    let dateStr = Tools.formatDay(s)
+      .split("-")
+      .join("");
+    this.setState({
+      date: dateStr,
+      stories: [], //栏目列表数据
+      finished: false
+    });
+    this.initdaliyList();
+  };
+  renderSectioHeader = (items) => {
     let date =
       String(items.section.key).substring(0, 4) +
       "年" +
@@ -269,6 +320,22 @@ export default class index extends Component {
           data={this.state.stories}
           onPress={this.bindListTap}
           sectionHeader={this.state.date ? this.renderSectioHeader : null}
+        />
+        {/* 日期选择器 */}
+        <DateTimePicker
+          // 最大日期
+          maximumDate={
+            //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
+            //如果时间早于7点 ,则最大可选择日起为昨天.
+            Number(Tools.formatTime().split(":")[0]) >= 7
+              ? new Date()
+              : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
+          }
+          // 最小日期
+          minimumDate={new Date(2013, 10, 20)}
+          isVisible={this.state.isDateTimePickerVisible}
+          onConfirm={this.handleDatePicked}
+          onCancel={this.toggleDateTimePicker}
         />
       </MyScrollView>
     );

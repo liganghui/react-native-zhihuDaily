@@ -295,7 +295,9 @@ export default class index extends Component {
         }
       })
       .catch(error => {
-        console.warn("111");
+        this.setState({
+          webviewInit:true
+        })
       });
   }
   // 日报额外信息  (评论数,点赞数等)
@@ -330,7 +332,7 @@ export default class index extends Component {
     } else if (String(data).indexOf("init:") !== -1) {
       setTimeout(() => {
         this.setState({ webviewInit: true });
-      }, 350);
+      }, 100);
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {
@@ -557,9 +559,11 @@ export default class index extends Component {
           ref={el => {
             this.carousel = el;
           }}
-          autoplay={false} //自动播放
-          initialNumToRender={this.state.idArray.length}
           firstItem={this.state.silderFristItem}
+          initialScrollIndex={this.state.silderFristItem}
+          getItemLayout={(data, index) => (
+            {length: System.SCREEN_WIDTH, offset: System.SCREEN_WIDTH * index, index}
+          )}
           data={this.state.idArray}
           renderItem={this.renderSilder}
           sliderWidth={System.SCREEN_WIDTH}
