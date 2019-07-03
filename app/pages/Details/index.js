@@ -80,7 +80,7 @@ export default class index extends Component {
             onPress={() => {
               if (params.extra) {
                 navigation.navigate("Comment", {
-                  id: navigation.getParam("id"),
+                  id: navigation.getParam("idArray")[navigation.getParam("selectdIndex")].id,
                   comments: params.extra.comments,
                   longComments: params.extra.long_comments,
                   shortComments: params.extra.short_comments
@@ -166,7 +166,7 @@ export default class index extends Component {
    *  日报内容初始化
    *
    *    详情页 首次打开时 WebView初始化会占用大量性能 ,
-   *    导致页面push动画丢帧 , 这里通过判断状态延缓WebView加载.
+   *    导致页面push动画丢帧 , 通过判断状态延缓WebView加载.
    */
   init(id) {
     //避免用户急速滑动切换
@@ -219,7 +219,11 @@ export default class index extends Component {
       })
       .catch(err => []);
   }
-  // 页面数据初始化
+   /*
+   * 日报数据初始化
+   *    详情页 首次打开时 WebView初始化会占用大量性能 ,
+   *    导致页面push动画丢帧 , 通过判断状态延缓WebView加载.
+  */
   getDailyData(id) {
     storage
       .load({
