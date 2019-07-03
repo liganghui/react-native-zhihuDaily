@@ -54,4 +54,4 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
-/.history
+*.history

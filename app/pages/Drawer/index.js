@@ -35,8 +35,6 @@ export default class index extends Component {
             { backgroundColor: this.props.theme.colors.navBackground }
           ]}
         >
-        
-         
           <Text style={{color:'#fff',fontSize:16}}>日报专栏</Text>
         </View> 
         <ScrollView>
@@ -53,9 +51,8 @@ export default class index extends Component {
             <Text style={{color:this.props.theme.colors.text,fontSize:12}}>历史栏目</Text>
           </View>
           <View >
-             <ListItem   containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"放映机"} onPress={this.bindSectionTap.bind(this,'放映机',28)} />
+             <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"放映机"} onPress={this.bindSectionTap.bind(this,'放映机',28)} />
              <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"《职人介绍所》"}  onPress={this.bindSectionTap.bind(this,'《职人介绍所》',33)}/>
-             <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"读读日报 24 小时热门"}  onPress={this.bindSectionTap.bind(this,'读读日报 24 小时热门',34)}/>
              <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"选个好专业"} onPress={this.bindSectionTap.bind(this,'选个好专业',36)} />
              <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"上个好大学"}  onPress={this.bindSectionTap.bind(this,'上个好大学',37)}/>
              <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"报个好志愿"}  onPress={this.bindSectionTap.bind(this,'报个好志愿',108)}/>

@@ -548,7 +548,7 @@ export default class index extends Component {
           <DateTimePicker
             // 最大日期
             maximumDate={
-              //判断当前时间 是否大于早上7点 , 每天日报早上7点更新
+              //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
               //如果时间早于7点 ,则最大可选择日起为昨天.
               Number(Tools.formatTime().split(":")[0]) >= 7
                 ? new Date()

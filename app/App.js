@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Platform,Alert } from "react-native";
+import { Platform,Alert,Linking } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { Provider, observer } from "mobx-react";
 import stores from "./store";
@@ -61,6 +61,9 @@ class App extends React.Component {
     JPushModule.addReceiveOpenNotificationListener(res => {
       // 获取额外参数
       let param = JSON.parse(res.extras);
+      if(param.link){
+        Linking.openURL(param.link )
+      }
       // ......
     });
     SplashScreen.hide();

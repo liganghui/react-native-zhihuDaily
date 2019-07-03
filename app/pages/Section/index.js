@@ -1,21 +1,31 @@
 import React, { Component } from "react";
-import NetInfo from "@react-native-community/netinfo";
-import {
-  StyleSheet,
-  Text,
-} from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { Button,Icon} from "react-native-elements";
 // 集成触底和上拉加载的滚动容器
 import MyScrollView from "../../componetns/ScrollView";
 // 日报列表组件
 import StoriesList from "../../componetns/StoriesList";
 import { Tools, Axios, Api } from "../../utils";
+let that; //保存This引用
 export default class index extends Component {
-  static navigationOptions = ({ navigation,screenProps }) => {
+  static navigationOptions = ({ navigation, screenProps }) => {
     return {
       title: navigation.getParam("title"),
-      headerStyle:{
-        backgroundColor:screenProps.theme
+      headerStyle: {
+        backgroundColor: screenProps.theme
       },
+      headerRight: (
+        navigation.getParam("date")?
+        <Button
+          type="clear"
+          onPress={() => {
+            that.restList()
+          }}
+          icon={
+            <Icon type="material" name="refresh" size={24} color="white" containerStyle={{marginRight:20}} />
+          }
+        />:null
+      )
     };
   };
   constructor(props) {
@@ -28,8 +38,9 @@ export default class index extends Component {
       date,
       pullUpLoading: false,
       stories: [], //栏目列表数据
-      finished:false
+      finished: false
     };
+    that=this;
     this.props.navigation.setParams({ title });
   }
   componentDidMount() {
@@ -136,8 +147,24 @@ export default class index extends Component {
    */
   bindListTap = item => {
     // 页面跳转
-    this.props.navigation.push("Details", {
-      id: item.id
+    let idArray = []; //日报ID数组
+    let selectdIndex; //点击项的数组下标
+    this.state.stories.forEach(items => {
+      items.data.forEach(el => {
+        idArray.push({
+          id: el.id,
+          selected: el.id == item.id ? true : false
+        });
+      });
+    });
+    idArray.forEach((el, index) => {
+      if (el.id == item.id) {
+        selectdIndex = index;
+      }
+    });
+    this.props.navigation.navigate("Details", {
+      idArray,
+      selectdIndex
     });
     // 存储访问状态
     storage
@@ -174,24 +201,26 @@ export default class index extends Component {
     });
     let date = this.state.stories[this.state.stories.length - 1].key;
     let apiUrl;
-    if(this.state.date){
-      apiUrl=`${Api.before}${date}`;
-    }else{
-      apiUrl=`${Api.section}${this.state.sectionId}/before/${date}`;
+    if (this.state.date) {
+      apiUrl = `${Api.before}${date}`;
+    } else {
+      apiUrl = `${Api.section}${this.state.sectionId}/before/${date}`;
     }
     Axios.get(apiUrl)
       .then(responseJson => {
-          this.handleDataRender(responseJson.data, res => {
-            let data = [...this.state.stories];
-              data.push({
-              key: this.state.date?responseJson.data.date:responseJson.data.timestamp,
-              data: res
-            });
-            this.setState({
-              pullUpLoading: false,
-              stories: data
-            });
+        this.handleDataRender(responseJson.data, res => {
+          let data = [...this.state.stories];
+          data.push({
+            key: this.state.date
+              ? responseJson.data.date
+              : responseJson.data.timestamp,
+            data: res
           });
+          this.setState({
+            pullUpLoading: false,
+            stories: data
+          });
+        });
       })
       .catch(err => {
         this.setState({
@@ -200,16 +229,47 @@ export default class index extends Component {
         console.warn(err);
       });
   };
+    /** 
+   *  重新随机日期  , 刷新列表
+  */
+ restList=()=>{
+  // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
+  let m=new Date('October 23 , 2013 00:00:00');
+   m=m.getTime();
+  let n=new Date();
+   n=n.getTime();
+  let s=n-m;
+  s=Math.floor(Math.random()*s)
+  s=m+s;
+  s=new Date(s);
+  let dateStr = Tools.formatDay(s)
+  .split("-")
+  .join("");
+  this.setState({
+    date:dateStr,
+    stories: [], //栏目列表数据
+    finished:false
+  })
+  this.initdaliyList();
+ }
   renderSectioHeader = items => {
-    let date=String(items.section.key).substring(0,4)+"年"+String(items.section.key).substring(4,6)+'月'+String(items.section.key).substring(6,8)+"日"
-    return (
-      <Text style={styles.sectionTitle}>{date}</Text>
-    );
+    let date =
+      String(items.section.key).substring(0, 4) +
+      "年" +
+      String(items.section.key).substring(4, 6) +
+      "月" +
+      String(items.section.key).substring(6, 8) +
+      "日";
+    return <Text style={styles.sectionTitle}>{date}</Text>;
   };
   render() {
     return (
       <MyScrollView pullupfresh={this.pullupfresh}>
-        <StoriesList data={this.state.stories} onPress={this.bindListTap}  sectionHeader={this.state.date?this.renderSectioHeader:null}/>
+        <StoriesList
+          data={this.state.stories}
+          onPress={this.bindListTap}
+          sectionHeader={this.state.date ? this.renderSectioHeader : null}
+        />
       </MyScrollView>
     );
   }
@@ -221,4 +281,4 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     color: "#999"
   }
-})
+});

@@ -1,9 +1,7 @@
 import {
   createStackNavigator,
   createAppContainer,
-  createSwitchNavigator,
   createDrawerNavigator,
-  StackViewTransitionConfigs
 } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/lib/module/views/StackView/StackViewStyleInterpolator'
 import HomeScreen from "../pages/Home";
