@@ -80,7 +80,7 @@ export default class index extends Component {
             onPress={() => {
               if (params.extra) {
                 navigation.navigate("Comment", {
-                  id: navigation.getParam("idArray")[navigation.getParam("selectdIndex")].id,
+                  id: navigation.getParam("idArray")[that.state.activeIndex].id,
                   comments: params.extra.comments,
                   longComments: params.extra.long_comments,
                   shortComments: params.extra.short_comments
@@ -144,6 +144,7 @@ export default class index extends Component {
       headerHeight: new Animated.Value(HEAD_HEIGHT),
       webViewHeight: System.SCREEN_HEIGHT - 250,
       silderFristItem:this.props.navigation.getParam("selectdIndex"),
+      activeIndex:this.props.navigation.getParam("selectdIndex")
     };
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
@@ -583,6 +584,7 @@ export default class index extends Component {
             });
             if (swipeDirection == "left") {
               ary[i - 1].selected = true;
+
             } else if (swipeDirection == "right") {
               ary[i + 1].selected = true;
             }
@@ -596,6 +598,7 @@ export default class index extends Component {
             this.state.headerHeight.setValue(HEAD_HEIGHT);
             // 更新选中状态和重置数据
             this.setState({
+              activeIndex:previousIndex,
               daily: {
                 body:null,
                 section: null
@@ -608,6 +611,11 @@ export default class index extends Component {
             },()=>{
               // 根据滑动方向 获取数据
               swipeDirection=='left'?this.init(this.state.idArray[i - 1].id):this.init(this.state.idArray[i + 1].id);
+              if(previousIndex===0){
+                Tools.toast('当前为第一项')
+              }else if(previousIndex==this.state.idArray.length-1){
+                Tools.toast('当前为最后一项')
+              }
             });
           }}
         />

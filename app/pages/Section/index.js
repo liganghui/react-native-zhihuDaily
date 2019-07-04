@@ -44,18 +44,18 @@ export default class index extends Component {
   };
   constructor(props) {
     super(props);
-    let id = this.props.navigation.getParam("id") || null;
-    let date = this.props.navigation.getParam("date") || null;
-    let title = this.props.navigation.getParam("title") || null;
     this.state = {
-      sectionId: id,
-      date,
+      sectionId: this.props.navigation.getParam("id"),
+      date: this.props.navigation.getParam("date"),
       pullUpLoading: false,
       stories: [], //栏目列表数据
       finished: false,
+      minimumDate: this.props.navigation.getParam("startTime")||'2013-10-23',
       isDateTimePickerVisible: false, //控制日期选择控件显示
     };
     that = this;
+    let title = this.props.navigation.getParam("title") || null;
+    console.warn(this.props.navigation.getParam("startTime"))
     this.props.navigation.setParams({ title });
   }
   componentDidMount() {
@@ -332,7 +332,7 @@ export default class index extends Component {
               : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
           }
           // 最小日期
-          minimumDate={new Date(2013, 10, 20)}
+          minimumDate={new Date(this.state.minimumDate.split('-')[0], this.state.minimumDate.split('-')[1], this.state.minimumDate.split('-')[2])}
           isVisible={this.state.isDateTimePickerVisible}
           onConfirm={this.handleDatePicked}
           onCancel={this.toggleDateTimePicker}

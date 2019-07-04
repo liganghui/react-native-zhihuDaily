@@ -51,6 +51,8 @@ export default class index extends Component {
           longComments: res.data.comments
         });
         this.bindModalSwitch(false);
+      }else{
+        this.bindModalSwitch(false);
       }
     });
   }

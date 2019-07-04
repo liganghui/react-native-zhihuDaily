@@ -7,6 +7,30 @@ import { Button, Avatar, ListItem ,Icon} from "react-native-elements";
 import { Tools } from "../../utils";
 import { observer, inject } from "mobx-react";
 
+
+const SECTION_INFO=[
+  {
+    id:2,
+    title:'瞎扯',
+    startTime:'',
+  },
+  {
+    id:35,
+    title:'小事',
+    startTime:'2016-06-22',
+  },
+  {
+    id:1,
+    title:'深夜惊奇',
+    startTime:'',
+  },
+  {
+    id:29,
+    title:'大误',
+    startTime:'2016-02-01',
+  }
+]
+
 @inject("theme")
 @observer
 export default class index extends Component {
@@ -17,14 +41,34 @@ export default class index extends Component {
     };
   }
 
+
+
+
   /**
    * 跳转到栏目列表
    */
   bindSectionTap=(title,id)=>{
-    this.props.navigation.navigate("Section", {
-      id:id,
-      title:title
+    
+    SECTION_INFO.forEach((item,index) => {
+      if(item.id==id){
+        this.props.navigation.navigate("Section", {
+            ...item
+        });
+        console.warn('111')
+        return false
+      }
+      if(index==SECTION_INFO.length-1){
+        this.props.navigation.navigate("Section", {
+          id:id,
+          title:title
+      });
+      }
     });
+
+
+
+
+   
   };
   render() {
     return (

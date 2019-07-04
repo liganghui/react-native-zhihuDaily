@@ -121,7 +121,9 @@ export default class index extends Component {
           this.handleDataRender(responseJson);
         })
         .catch(error => {
-          console.warn(error);
+          this.setState({
+            refresh:false
+          })
         });
     });
   }
