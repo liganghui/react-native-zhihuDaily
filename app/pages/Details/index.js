@@ -33,6 +33,7 @@ export default class index extends Component {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
+      gesturesEnabled:false,
       headerStyle: {
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor: screenProps.theme,
@@ -264,7 +265,7 @@ export default class index extends Component {
             this.setState({
               body: formatHtml(response.body)
             });
-          }, 500);
+          }, 300);
         }
         if (this.state.webviewFirst) {
           InteractionManager.runAfterInteractions(() => {
@@ -333,7 +334,7 @@ export default class index extends Component {
     } else if (String(data).indexOf("init:") !== -1) {
       setTimeout(() => {
         this.setState({ webviewInit: true });
-      }, 100);
+      }, 400);
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {

@@ -92,8 +92,7 @@ export default class index extends Component {
   }
 
   initBeforeList(id, date) {
-
-    Axios.get(`https://news-at.zhihu.com/api/4/section/${id}/before/${date}`)
+    Axios.get(`${Api.section}${id}/before/${date}`)
       .then((responseJson) => {
         this.handleDataRender(responseJson.data, (res) => {
           let sectionData = [
@@ -268,16 +267,14 @@ export default class index extends Component {
     Axios.get(apiUrl)
       .then((responseJson) => {
         this.handleDataRender(responseJson.data, (res) => {
-          let data = [...this.state.stories];
-          data.push({
-            key: this.state.date
-              ? responseJson.data.date
-              : responseJson.data.key,
+          let list = [...this.state.stories];
+          list.push({
+            key:  this.state.state&&!this.state.id?responseJson.data.date:responseJson.data.timestamp,
             data: res
           });
           this.setState({
             pullUpLoading: false,
-            stories: data
+            stories: list
           });
         });
       })
