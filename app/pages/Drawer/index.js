@@ -13,21 +13,29 @@ const SECTION_INFO=[
     id:2,
     title:'瞎扯',
     startTime:'',
+    endTime:'',
+    dateSelect:true
   },
   {
     id:35,
     title:'小事',
     startTime:'2016-06-22',
+    endTime:'',
+    dateSelect:true
   },
   {
     id:1,
     title:'深夜惊奇',
     startTime:'',
+    endTime:'2016-06-01',
+    dateSelect:true
   },
   {
     id:29,
     title:'大误',
     startTime:'2016-02-01',
+    endTime:'',
+    dateSelect:true
   }
 ]
 
@@ -42,8 +50,6 @@ export default class index extends Component {
   }
 
 
-
-
   /**
    * 跳转到栏目列表
    */
@@ -54,7 +60,6 @@ export default class index extends Component {
         this.props.navigation.navigate("Section", {
             ...item
         });
-        console.warn('111')
         return false
       }
       if(index==SECTION_INFO.length-1){
