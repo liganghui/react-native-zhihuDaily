@@ -48,8 +48,6 @@ export default class index extends Component {
       userInfo: ""
     };
   }
-
-
   /**
    * 跳转到栏目列表
    */

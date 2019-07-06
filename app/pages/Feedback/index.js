@@ -67,7 +67,7 @@ export default class index extends Component {
   }
   render() {
     return (
-      <Container>
+      <Container style={{backgroundColor:this.props.theme.colors.containerBackground}}>
         <Content>
           <Form>
             <Textarea
@@ -91,6 +91,7 @@ export default class index extends Component {
           <Button
             title='提交反馈'
             containerStyle={styles.submitBtn}
+            buttonStyle={{backgroundColor:this.props.theme.colors.submitButtonBackground}}
             onPress={this.push.bind(this)}
             loading={this.state.loading}
           />
@@ -104,7 +105,6 @@ var styles = StyleSheet.create({
     borderRadius: 2,
     marginHorizontal: 30,
     justifyContent: "center",
-    backgroundColor: "#00a2ed",
     marginTop: 30
   },
   input: {

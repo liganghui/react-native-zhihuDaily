@@ -13,5 +13,6 @@ export default {
   listBackground:'#343434',
   itemBackground:'#404040',
   buttonBackground:'#292929',
+  submitButtonBackground:'#7f7f7f',
   navBackground: '#222222',
 };

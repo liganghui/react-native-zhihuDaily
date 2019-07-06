@@ -107,7 +107,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0.3"
+        versionName "1.0.4"
         manifestPlaceholders = [
                 JPUSH_APPKEY: "cbfd00c8280219f8147275f0",
                 APP_CHANNEL : "default"
