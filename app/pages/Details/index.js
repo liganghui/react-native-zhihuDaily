@@ -135,10 +135,10 @@ export default class index extends Component {
       extra: {}, //日报额外信息
       webviewWidth: null, // 动态调整webview为设备的宽度
       webviewInit: null, // 记录webviewI初始化状态
-      webviewFirst: null, // 用于判断页面是否为初次加载
+      webviewFirst: false, // 用于判断页面是否为初次加载
       like: false, //点赞按钮
       collect: false, //收藏按钮
-      bigSize: null, //webview大字号
+      bigSize: false, //webview大字号
       opacity: new Animated.Value(0),
       hardwareTextureSwitch: true, //GPU加速开关
       headerHeight: new Animated.Value(HEAD_HEIGHT),
@@ -178,17 +178,27 @@ export default class index extends Component {
         webviewInit:false
       })
     }
-
+    // 获取日报主体数据
+    this.getDailyData(id);
     // 检查网络状态 只有在连接网络下才加载评论
     Tools.getNetworkState().then(newWorkInfo => {
       if (newWorkInfo.online) {
         this.getExtraData(id);
       }
     });
-    
-    // 获取日报主体数据
-    this.getDailyData(id);
-
+    // 监测是否开启了大字体
+    storage
+    .load({
+      key: "bigSize"
+    })
+    .then(res => {
+      if (res) {
+        this.setState({
+          bigSize: true
+        });
+      }
+    })
+    .catch(err => []);
     // 检测页面是否为初次加载
     storage
       .load({
@@ -206,19 +216,7 @@ export default class index extends Component {
         }
       })
       .catch(err => []);
-    // 监测是否开启了大字体
-    storage
-      .load({
-        key: "bigSize"
-      })
-      .then(res => {
-        if (res) {
-          this.setState({
-            bigSize: true
-          });
-        }
-      })
-      .catch(err => []);
+  
   }
    /*
    * 日报数据初始化
@@ -248,11 +246,8 @@ export default class index extends Component {
               <style>${
                 this.state.bigSize
                   ? `*{font-size:125%} .img-place-holder{display:none}`
-                  : `.img-place-holder{ display:none`
-              }</style>
-              <body class=${
-                this.props.theme.colors.themeType == "black" ? "night" : ""
-              }>${htmlString}</body></html>`;
+                  : `.img-place-holder{ display:none`}</style>
+              <body class=${this.props.theme.colors.themeType == "black" ? "night" : "" }>${htmlString}</body></html>`;
           return renderHtml;
         };
         // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
@@ -264,7 +259,7 @@ export default class index extends Component {
             this.setState({
               body: formatHtml(response.body)
             });
-          }, 500);
+          }, 300);
         }
         if (this.state.webviewFirst) {
           InteractionManager.runAfterInteractions(() => {
@@ -283,7 +278,7 @@ export default class index extends Component {
                     key: "webviewFirst",
                     data: false
                   });
-                }, 350);
+                }, 300);
               }
             );
           });
@@ -333,7 +328,7 @@ export default class index extends Component {
     } else if (String(data).indexOf("init:") !== -1) {
       setTimeout(() => {
         this.setState({ webviewInit: true });
-      }, 100);
+      }, 400);
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {

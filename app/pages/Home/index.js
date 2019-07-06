@@ -219,7 +219,6 @@ export default class index extends Component {
     this.setState({
       pullUpLoading: true
     });
-
     // 获得日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
     storage
@@ -268,18 +267,30 @@ export default class index extends Component {
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
-  bindListTap = item => {
+  bindListTap = (item) => {
     // 页面跳转
     let idArray=[]; //日报ID数组
     let selectdIndex; //点击项的数组下标
-    this.state.stories.forEach((items)=>{
-      items.data.forEach((el)=>{
-        idArray.push({
-          id:el.id,
-          selected:el.id==item.id?true:false
+    if(item.image){//根据属性判断是列表或轮播图
+      //轮播图时
+      this.state.topStories.forEach((el)=>{
+          idArray.push({
+            id:el.id,
+            selected:el.id==item.id?true:false
+          })
+      })
+    }else{
+      // 列表时
+      this.state.stories.forEach((items)=>{
+        items.data.forEach((el)=>{
+          idArray.push({
+            id:el.id,
+            selected:el.id==item.id?true:false
+          })
         })
       })
-    })
+    }
+    // 获取数组下标
     idArray.forEach((el,index)=>{
       if(el.id==item.id){
         selectdIndex=index

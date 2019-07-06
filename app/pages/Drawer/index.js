@@ -54,7 +54,6 @@ export default class index extends Component {
         this.props.navigation.navigate("Section", {
             ...item
         });
-        console.warn('111')
         return false
       }
       if(index==SECTION_INFO.length-1){

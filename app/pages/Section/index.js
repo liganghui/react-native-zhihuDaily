@@ -55,7 +55,6 @@ export default class index extends Component {
     };
     that = this;
     let title = this.props.navigation.getParam("title") || null;
-    console.warn(this.props.navigation.getParam("startTime"))
     this.props.navigation.setParams({ title });
   }
   componentDidMount() {
