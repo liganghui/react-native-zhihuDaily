@@ -11,7 +11,7 @@ import AppNavigation from "./routers/AppRouter";
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
 import {setJSExceptionHandler,setNativeExceptionHandler} from 'react-native-exception-handler';
-import { Tools } from "./utils";
+import {Axios} from "./utils";
 /*
  *   应用根组件 , 负责向导航路由(Navigation) 挂载全局组件 , 并导出APP.
  *
@@ -55,7 +55,7 @@ setNativeExceptionHandler((errorString) => {
   }
   Axios.post("http://106.52.75.247:3000/feedback", {
     title: '知乎日报APP错误日志',
-    content: errInfo
+    content: JSON.stringify(errInfo)
   }).then((res) => {
 
   }).catch(() => {

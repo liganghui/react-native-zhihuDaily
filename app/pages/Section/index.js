@@ -22,37 +22,36 @@ export default class index extends Component {
             navigation.getParam("dateSelect")
               ? { justifyContent: "space-between" }
               : { justifyContent: "flex-end" }
-          ]}>
+          ]}
+        >
           {navigation.getParam("dateSelect") ? (
             <Button
-              type='clear'
+              type="clear"
               onPress={() => {
                 that.toggleDateTimePicker();
               }}
               icon={
                 <Icon
-                  type='antdesign'
-                  name='calendar'
+                  type="antdesign"
+                  name="calendar"
                   size={24}
-                  color='white'
+                  color="white"
                 />
               }
             />
           ) : null}
           {navigation.getParam("date") || navigation.getParam("dateSelect") ? (
             <Button
-              type='clear'
+              type="clear"
               onPress={() => {
-                that.restList(
-                  navigation.getParam("startTime") || "2013-10-20"
-                );
+                that.restList(navigation.getParam("startTime") || "2013-10-20");
               }}
               icon={
                 <Icon
-                  type='material'
-                  name='refresh'
+                  type="material"
+                  name="refresh"
                   size={24}
-                  color='white'
+                  color="white"
                   containerStyle={{ marginRight: 20 }}
                 />
               }
@@ -77,8 +76,7 @@ export default class index extends Component {
     that = this;
     let title = this.props.navigation.getParam("title") || null;
     this.props.navigation.setParams({ title });
-    this.props.navigation.setParams({ loading:this.state.loading });
-
+    this.props.navigation.setParams({ loading: this.state.loading });
   }
   componentDidMount() {
     // 根据参数区分加载 日报列表或栏目列表
@@ -93,8 +91,8 @@ export default class index extends Component {
 
   initBeforeList(id, date) {
     Axios.get(`${Api.section}${id}/before/${date}`)
-      .then((responseJson) => {
-        this.handleDataRender(responseJson.data, (res) => {
+      .then(responseJson => {
+        this.handleDataRender(responseJson.data, res => {
           let sectionData = [
             {
               key: responseJson.data.timestamp,
@@ -106,9 +104,7 @@ export default class index extends Component {
           });
         });
       })
-      .catch((error) => {
-
-      });
+      .catch(error => {});
   }
 
   initdaliyList() {
@@ -117,8 +113,8 @@ export default class index extends Component {
         key: "before",
         id: this.state.date
       })
-      .then((responseJson) => {
-        this.handleDataRender(responseJson, (res) => {
+      .then(responseJson => {
+        this.handleDataRender(responseJson, res => {
           let sectionData = [
             {
               key: responseJson.date,
@@ -130,12 +126,10 @@ export default class index extends Component {
           });
         });
       })
-      .catch((error) => {
-
-      });
+      .catch(error => {});
   }
   initSectionList() {
-    Tools.getNetworkState().then((newWorkInfo) => {
+    Tools.getNetworkState().then(newWorkInfo => {
       let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({
@@ -143,8 +137,8 @@ export default class index extends Component {
           id: this.state.sectionId,
           syncInBackground: syncInBackgroundState
         })
-        .then((responseJson) => {
-          this.handleDataRender(responseJson, (res) => {
+        .then(responseJson => {
+          this.handleDataRender(responseJson, res => {
             let sectionData = [
               {
                 key: responseJson.timestamp,
@@ -156,15 +150,13 @@ export default class index extends Component {
             });
           });
         })
-        .catch((error) => {
-      
-        });
+        .catch(error => {});
     });
   }
 
   handleDataRender(responseJson, callback) {
     if (responseJson.stories) {
-      this.updateVistedState(responseJson.stories, (res) => {
+      this.updateVistedState(responseJson.stories, res => {
         callback(res);
       });
     } else {
@@ -183,7 +175,7 @@ export default class index extends Component {
           key: "visited",
           id: item.id
         })
-        .then((res) => {
+        .then(res => {
           // 标记已访问
           item.visited = true;
           if (index === listData.length - 1) {
@@ -191,7 +183,7 @@ export default class index extends Component {
           }
         })
         // 未访问
-        .catch((error) => {
+        .catch(error => {
           item.visited = false;
           if (index === listData.length - 1) {
             callback(listData);
@@ -203,12 +195,12 @@ export default class index extends Component {
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
-  bindListTap = (item) => {
+  bindListTap = item => {
     // 页面跳转
     let idArray = []; //日报ID数组
     let selectdIndex; //点击项的数组下标
-    this.state.stories.forEach((items) => {
-      items.data.forEach((el) => {
+    this.state.stories.forEach(items => {
+      items.data.forEach(el => {
         idArray.push({
           id: el.id,
           selected: el.id == item.id ? true : false
@@ -236,8 +228,8 @@ export default class index extends Component {
         // 更新访问状态
         // PS：这里需要将旧数据解构成一个新数组 , 可以避免setState不生效问题，因为setState是浅比较 。
         let stories = [...this.state.stories];
-        stories.forEach((items) => {
-          items.data.forEach((i) => {
+        stories.forEach(items => {
+          items.data.forEach(i => {
             if (i.id == item.id) {
               i.visited = true;
               return false;
@@ -250,44 +242,53 @@ export default class index extends Component {
       });
   };
   pullupfresh = () => {
-    //避免重复请求
-    if (this.state.pullUpLoading) {
-      return false;
-    }
-    this.setState({
-      pullUpLoading: true
-    });
-    let date = this.state.stories[this.state.stories.length - 1].key;
-    let apiUrl;
-    if (this.state.date&&!this.props.navigation.getParam("dateSelect")) {
-      apiUrl = `${Api.before}${date}`;
-    } else {
-      apiUrl = `${Api.section}${this.state.sectionId}/before/${date}`;
-    }
-    Axios.get(apiUrl)
-      .then((responseJson) => {
-        this.handleDataRender(responseJson.data, (res) => {
-          let list = [...this.state.stories];
-          list.push({
-            key:  this.state.state&&!this.state.id?responseJson.data.date:responseJson.data.timestamp,
-            data: res
-          });
-          this.setState({
-            pullUpLoading: false,
-            stories: list
-          });
-        });
-      })
-      .catch((err) => {
-        this.setState({
-          pullUpLoading: false
-        });
+    try {
+      //避免重复请求
+      if (this.state.pullUpLoading) {
+        return false;
+      }
+      this.setState({
+        pullUpLoading: true
       });
+      let date = this.state.stories[this.state.stories.length - 1].key;
+      let apiUrl;
+      if (this.state.date && !this.props.navigation.getParam("dateSelect")) {
+        apiUrl = `${Api.before}${date}`;
+      } else {
+        apiUrl = `${Api.section}${this.state.sectionId}/before/${date}`;
+      }
+      Axios.get(apiUrl)
+        .then(responseJson => {
+          this.handleDataRender(responseJson.data, res => {
+            let list = [...this.state.stories];
+            list.push({
+              key:
+                this.state.date && !this.state.id
+                  ? responseJson.data.date
+                  : responseJson.data.timestamp,
+              data: res
+            });
+            this.setState({
+              pullUpLoading: false,
+              stories: list
+            });
+          });
+        })
+        .catch(err => {
+          this.setState({
+            pullUpLoading: false
+          });
+        });
+    } catch {
+      this.setState({
+        pullUpLoading: false
+      });
+    }
   };
   /**
    *  日期选择器点击行为
    */
-  handleDatePicked = (date) => {
+  handleDatePicked = date => {
     let dateStr = Date.parse(date).toString();
     dateStr = dateStr.substr(0, 10);
     this.initBeforeList(this.state.sectionId, dateStr);
@@ -311,16 +312,21 @@ export default class index extends Component {
     let m = new Date(startDate);
     m = m.getTime();
     let n;
-    this.props.navigation.getParam("endTime")?n= new Date(this.props.navigation.getParam("endTime")):n=new Date()
+    this.props.navigation.getParam("endTime")
+      ? (n = new Date(this.props.navigation.getParam("endTime")))
+      : (n = new Date());
     n = n.getTime();
     let s = n - m;
     s = Math.floor(Math.random() * s);
     s = m + s;
     s = new Date(s);
-    let dateStr = Tools.formatDay(s).split("-").join("");
+    let dateStr = Tools.formatDay(s)
+      .split("-")
+      .join("");
     this.setState({
-      date:dateStr,
-      stories: [] 
+      date: dateStr,
+      stories: [],
+      pullUpLoading: false
     });
     if (this.props.navigation.getParam("dateSelect")) {
       let dateNum = Date.parse(s).toString();
@@ -330,16 +336,27 @@ export default class index extends Component {
       this.initdaliyList();
     }
   };
-  renderSectioHeader = (items) => {
-    let dateStr; 
-    if(this.props.navigation.getParam("dateSelect")){
-      let  date=Tools.formatDay(Tools.getDate(items.section.key))
-      dateStr=date.split('-')[0] +"年" +date.split('-')[1]+"月" +date.split('-')[2]+ "日"
-    }else{
-      dateStr=String(items.section.key).substring(0, 4) +"年" +String(items.section.key).substring(4, 6) +"月" +String(items.section.key).substring(6, 8) + "日";
+  renderSectioHeader = items => {
+    let dateStr;
+    if (this.props.navigation.getParam("dateSelect")) {
+      let date = Tools.formatDay(Tools.getDate(items.section.key));
+      dateStr =
+        date.split("-")[0] +
+        "年" +
+        date.split("-")[1] +
+        "月" +
+        date.split("-")[2] +
+        "日";
+    } else {
+      dateStr =
+        String(items.section.key).substring(0, 4) +
+        "年" +
+        String(items.section.key).substring(4, 6) +
+        "月" +
+        String(items.section.key).substring(6, 8) +
+        "日";
     }
     return <Text style={styles.sectionTitle}>{dateStr}</Text>;
-    
   };
   render() {
     return (
@@ -353,11 +370,11 @@ export default class index extends Component {
         <DateTimePicker
           // 最大日期
           maximumDate={
-            this.props.navigation.getParam("endTime")?
-            new Date(this.props.navigation.getParam("endTime")):
-            //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
-            //如果时间早于7点 ,则最大可选择日起为昨天.
-            Number(Tools.formatTime().split(":")[0]) >= 7
+            this.props.navigation.getParam("endTime")
+              ? new Date(this.props.navigation.getParam("endTime"))
+              : //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
+              //如果时间早于7点 ,则最大可选择日起为昨天.
+              Number(Tools.formatTime().split(":")[0]) >= 7
               ? new Date()
               : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
           }
