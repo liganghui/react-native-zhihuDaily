@@ -9,7 +9,9 @@ import SplashScreen from "react-native-splash-screen";
 import JPushModule from "jpush-react-native";
 import AppNavigation from "./routers/AppRouter";
 import RNRestart from 'react-native-restart';
+import DeviceInfo from 'react-native-device-info';
 import {setJSExceptionHandler,setNativeExceptionHandler} from 'react-native-exception-handler';
+import { Tools } from "./utils";
 /*
  *   应用根组件 , 负责向导航路由(Navigation) 挂载全局组件 , 并导出APP.
  *
@@ -21,7 +23,7 @@ import {setJSExceptionHandler,setNativeExceptionHandler} from 'react-native-exce
 const errorHandler = (e, isFatal) => {
   if (isFatal) {
     Alert.alert(
-        '系统异常',
+        '系统错误',
         `
         应用发生致命错误： ${(isFatal) ? '错误信息:' : ''} ${e.name} ${e.message}
         建议您重启应用.
@@ -40,8 +42,25 @@ const errorHandler = (e, isFatal) => {
 
 setJSExceptionHandler(errorHandler);
 
+
 setNativeExceptionHandler((errorString) => {
-  // TODO 向服务器发送错误日志
+  //向服务器发送错误日志
+  let  errInfo={
+    '品牌':DeviceInfo.getBrand(),
+    '应用版本号':DeviceInfo.getReadableVersion(),
+    '系统版本':DeviceInfo.getSystemVersion(),
+    '是否为平板电脑': DeviceInfo.isTablet(),
+    "触发时间":new Date(), 
+    '错误信息':errorString,
+  }
+  Axios.post("http://106.52.75.247:3000/feedback", {
+    title: '知乎日报APP错误日志',
+    content: errInfo
+  }).then((res) => {
+
+  }).catch(() => {
+  
+  });
 });
 
 

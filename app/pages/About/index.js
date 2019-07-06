@@ -43,7 +43,7 @@ export default class index extends Component {
           </View>
 
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
-          <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/10</Text>
+          <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/06</Text>
           <Text style={{ marginLeft: 20}}>· 动态应用启动屏图片（图片来源：必应搜索）</Text>
           <Text style={{ marginLeft: 20}}>· 增加清楚缓存</Text>
           <Text style={{ marginLeft: 20}}>· 增加意见反馈</Text>
