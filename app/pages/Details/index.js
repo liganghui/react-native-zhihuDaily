@@ -33,6 +33,7 @@ export default class index extends Component {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
+      gesturesEnabled:false,
       headerStyle: {
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor: screenProps.theme,
@@ -575,13 +576,28 @@ export default class index extends Component {
             this.state.idArray.forEach((item, index) => {
               if (item.selected) {
                 i = index;
+     
               }
             });
             if (swipeDirection == "left") {
               ary[i - 1].selected = true;
+              storage
+              .save({
+                key: "visited",
+                id:ary[i-1].id,
+                data: true,
+                expires: null
+              })
 
             } else if (swipeDirection == "right") {
               ary[i + 1].selected = true;
+              storage
+              .save({
+                key: "visited",
+                id:ary[i+1].id,
+                data: true,
+                expires: null
+              })
             }
             // 更新选中状态
             ary[i].selected = false;
@@ -604,6 +620,7 @@ export default class index extends Component {
               collect: false,
               idArray: ary,
             },()=>{
+
               // 根据滑动方向 获取数据
               swipeDirection=='left'?this.init(this.state.idArray[i - 1].id):this.init(this.state.idArray[i + 1].id);
               if(previousIndex===0){

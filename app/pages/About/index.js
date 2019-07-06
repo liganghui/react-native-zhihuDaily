@@ -49,6 +49,7 @@ export default class index extends Component {
           <Text style={{ marginLeft: 20}}>· 增加意见反馈</Text>
           <Text style={{ marginLeft: 20}}>· 增加详情页左右滑动切换</Text>
           <Text style={{ marginLeft: 20}}>· 部分日报栏目支持日期选择</Text>
+          <Text style={{ marginLeft: 20}}>· 除详情页外其他页面开启右滑返回</Text>
           <Text style={{ marginLeft: 20}}>· 其他细节优化</Text>
           <Text style={{ marginLeft: 30}}>--- 已知BUG</Text>
           <Text style={{ marginLeft: 40}}>* 部分机型下 : 启动屏图片加载异常,日报详情页样式加载异常，应用无法正常使用</Text>

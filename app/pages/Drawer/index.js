@@ -13,21 +13,29 @@ const SECTION_INFO=[
     id:2,
     title:'瞎扯',
     startTime:'',
+    endTime:'',
+    dateSelect:true
   },
   {
     id:35,
     title:'小事',
     startTime:'2016-06-22',
+    endTime:'',
+    dateSelect:true
   },
   {
     id:1,
     title:'深夜惊奇',
     startTime:'',
+    endTime:'2016-06-01',
+    dateSelect:true
   },
   {
     id:29,
     title:'大误',
     startTime:'2016-02-01',
+    endTime:'',
+    dateSelect:true
   }
 ]
 
@@ -40,8 +48,6 @@ export default class index extends Component {
       userInfo: ""
     };
   }
-
-
 
 
   /**
@@ -81,7 +87,7 @@ export default class index extends Component {
           <Text style={{color:'#fff',fontSize:16}}>日报专栏</Text>
         </View> 
         <ScrollView>
-          <View style={{backgroundColor:'#f4f4f4',flexDirection:'row',alignItems:'center',paddingLeft:15,paddingVertical:10}}>
+          <View style={{backgroundColor:this.props.theme.colors.listBackground,flexDirection:'row',alignItems:'center',paddingLeft:15,paddingVertical:10}}>
             <Text style={{color:this.props.theme.colors.text,fontSize:12}}>热门栏目</Text>
           </View>
           <View >
@@ -90,7 +96,7 @@ export default class index extends Component {
             <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"深夜惊奇"}  onPress={this.bindSectionTap.bind(this,'深夜惊奇',1)}/>
             <ListItem   containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"大误"}  onPress={this.bindSectionTap.bind(this,'大误',29)}/>
           </View>
-          <View style={{backgroundColor:'#f4f4f4',flexDirection:'row',alignItems:'center',paddingLeft:15,paddingVertical:10}}>
+          <View style={{backgroundColor:this.props.theme.colors.listBackground,flexDirection:'row',alignItems:'center',paddingLeft:15,paddingVertical:10}}>
             <Text style={{color:this.props.theme.colors.text,fontSize:12}}>历史栏目</Text>
           </View>
           <View >
