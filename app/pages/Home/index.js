@@ -95,11 +95,6 @@ export default class index extends Component {
     this.init();
     // 监听应用状态(后台运行/前台运行)
     AppState.addEventListener("change", this.handleAppStateChange);
-    // 初始化 日报详情页访问状态 (用于详情(Details)页使用)
-    global.storage.save({
-      key: "webviewFirst",
-      data: true
-    });
     // 传递到navigation (navigation中无法使用this调用)
     this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
     this.props.navigation.setParams({ handleHistoryClick: this.handleHistoryClick });
@@ -393,10 +388,7 @@ export default class index extends Component {
   handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
-      global.storage.save({
-        key: "webviewFirst",
-        data: true
-      });
+      // .....
     } else if (nextAppState === "active") {
       // 当应用从后台切换到 并且仅有一页数据时 会刷新页面.
       if (this.state.stories.length <= 1) {

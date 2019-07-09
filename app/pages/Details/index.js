@@ -33,7 +33,7 @@ export default class index extends Component {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
-      gesturesEnabled:false,
+      gesturesEnabled: false,
       headerStyle: {
         height: params.height ? params.height : HEAD_HEIGHT,
         backgroundColor: screenProps.theme,
@@ -136,7 +136,6 @@ export default class index extends Component {
       extra: {}, //日报额外信息
       webviewWidth: null, // 动态调整webview为设备的宽度
       webviewInit: null, // 记录webviewI初始化状态
-      webviewFirst: false, // 用于判断页面是否为初次加载
       like: false, //点赞按钮
       collect: false, //收藏按钮
       bigSize: false, //webview大字号
@@ -144,8 +143,8 @@ export default class index extends Component {
       hardwareTextureSwitch: true, //GPU加速开关
       headerHeight: new Animated.Value(HEAD_HEIGHT),
       webViewHeight: System.SCREEN_HEIGHT - 250,
-      silderFristItem:this.props.navigation.getParam("selectdIndex"),
-      activeIndex:this.props.navigation.getParam("selectdIndex")
+      silderFristItem: this.props.navigation.getParam("selectdIndex"),
+      activeIndex: this.props.navigation.getParam("selectdIndex")
     };
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
@@ -158,10 +157,10 @@ export default class index extends Component {
     that = this;
   }
   componentDidMount() {
-    try{
+    try {
       this.init(this.state.idArray[this.state.silderFristItem].id);
-    }catch{
-      Tools.toast('日报参数异常')
+    } catch {
+      Tools.toast("日报参数异常");
     }
   }
   /*
@@ -172,12 +171,12 @@ export default class index extends Component {
    */
   init(id) {
     //避免用户急速滑动切换
-    if(this.state.webviewInit!==null&& !this.state.webviewInit){
-      return false
-    }else{
+    if (this.state.webviewInit !== null && !this.state.webviewInit) {
+      return false;
+    } else {
       this.setState({
-        webviewInit:false
-      })
+        webviewInit: false
+      });
     }
     // 获取日报主体数据
     this.getDailyData(id);
@@ -189,41 +188,23 @@ export default class index extends Component {
     });
     // 监测是否开启了大字体
     storage
-    .load({
-      key: "bigSize"
-    })
-    .then(res => {
-      if (res) {
-        this.setState({
-          bigSize: true
-        });
-      }
-    })
-    .catch(err => []);
-    // 检测页面是否为初次加载
-    storage
       .load({
-        key: "webviewFirst"
+        key: "bigSize"
       })
       .then(res => {
         if (res) {
           this.setState({
-            webviewFirst: true
-          });
-        } else {
-          this.setState({
-            webviewFirst: false
+            bigSize: true
           });
         }
       })
       .catch(err => []);
-  
   }
-   /*
+  /*
    * 日报数据初始化
    *    详情页 首次打开时 WebView初始化会占用大量性能 ,
    *    导致页面push动画丢帧 , 通过判断状态延缓WebView加载.
-  */
+   */
   getDailyData(id) {
     storage
       .load({
@@ -247,54 +228,34 @@ export default class index extends Component {
               <style>${
                 this.state.bigSize
                   ? `*{font-size:125%} .img-place-holder{display:none}`
-                  : `.img-place-holder{ display:none`}</style>
-              <body class=${this.props.theme.colors.themeType == "black" ? "night" : "" }>${htmlString}</body></html>`;
+                  : `.img-place-holder{ display:none`
+              }</style>
+              <body class=${
+                this.props.theme.colors.themeType == "black" ? "night" : ""
+              }>${htmlString}</body></html>`;
           return renderHtml;
         };
         // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
         if (System.SCREEN_WIDTH >= 768 && response.body.length > 850) {
           html = response.body;
         } else {
-          html = response.body.slice(0, 850);
+          html = response.body.slice(0, 900);
           setTimeout(() => {
             this.setState({
               body: formatHtml(response.body)
             });
-          }, 300);
+          }, 450);
         }
-        if (this.state.webviewFirst) {
-          InteractionManager.runAfterInteractions(() => {
-            this.setState(
-              {
-                daily: response,
-                webviewFirst: false,
-                hardwareTextureSwitch: false
-              },
-              () => {
-                setTimeout(() => {
-                  this.setState({
-                    body: formatHtml(html)
-                  });
-                  global.storage.save({
-                    key: "webviewFirst",
-                    data: false
-                  });
-                }, 300);
-              }
-            );
-          });
-        } else {
-          this.setState({
-            daily: response,
-            body: formatHtml(html),
-            hardwareTextureSwitch: false
-          });
-        }
+        this.setState({
+          daily: response,
+          body: formatHtml(html),
+          hardwareTextureSwitch: false
+        });
       })
       .catch(error => {
         this.setState({
-          webviewInit:true
-        })
+          webviewInit: true
+        });
       });
   }
   // 日报额外信息  (评论数,点赞数等)
@@ -327,9 +288,7 @@ export default class index extends Component {
         url: imgUrl
       });
     } else if (String(data).indexOf("init:") !== -1) {
-      setTimeout(() => {
-        this.setState({ webviewInit: true });
-      }, 400);
+      this.setState({ webviewInit: true });
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {
@@ -509,9 +468,7 @@ export default class index extends Component {
               </TouchableOpacity>
             ) : null}
           </ParallaxScrollView>
-        ) : (
-          null
-        )}
+        ) : null}
       </View>
     );
   };
@@ -558,14 +515,20 @@ export default class index extends Component {
           }}
           firstItem={this.state.silderFristItem}
           initialScrollIndex={this.state.silderFristItem}
-          getItemLayout={(data, index) => (
-            {length: System.SCREEN_WIDTH, offset: System.SCREEN_WIDTH * index, index}
-          )}
+          getItemLayout={(data, index) => ({
+            length: System.SCREEN_WIDTH,
+            offset: System.SCREEN_WIDTH * index,
+            index
+          })}
           data={this.state.idArray}
           renderItem={this.renderSilder}
           sliderWidth={System.SCREEN_WIDTH}
           itemWidth={System.SCREEN_WIDTH}
-          scrollEnabled={this.state.webviewInit!==null&& !this.state.webviewInit?false:true}//避免用户急速滑动切换
+          scrollEnabled={
+            this.state.webviewInit !== null && !this.state.webviewInit
+              ? false
+              : true
+          } //避免用户急速滑动切换
           inactiveSlideOpacity={1}
           inactiveSlideScale={1} //去除边距
           onBeforeSnapToItem={previousIndex => {
@@ -576,59 +539,59 @@ export default class index extends Component {
             this.state.idArray.forEach((item, index) => {
               if (item.selected) {
                 i = index;
-     
               }
             });
             if (swipeDirection == "left") {
               ary[i - 1].selected = true;
-              storage
-              .save({
+              storage.save({
                 key: "visited",
-                id:ary[i-1].id,
+                id: ary[i - 1].id,
                 data: true,
                 expires: null
-              })
-
+              });
             } else if (swipeDirection == "right") {
               ary[i + 1].selected = true;
-              storage
-              .save({
+              storage.save({
                 key: "visited",
-                id:ary[i+1].id,
+                id: ary[i + 1].id,
                 data: true,
                 expires: null
-              })
+              });
             }
             // 更新选中状态
             ary[i].selected = false;
             // 重置动画参数
             tempHeight = HEAD_HEIGHT;
-            offsetY = 0; 
+            offsetY = 0;
             this.scrollY.setValue(0);
             this.state.opacity.setValue(1);
             this.state.headerHeight.setValue(HEAD_HEIGHT);
             // 更新选中状态和重置数据
-            this.setState({
-              activeIndex:previousIndex,
-              daily: {
-                body:null,
-                section: null
+            this.setState(
+              {
+                activeIndex: previousIndex,
+                daily: {
+                  body: null,
+                  section: null
+                },
+                body: null,
+                extra: {},
+                like: false,
+                collect: false,
+                idArray: ary
               },
-              body: null,
-              extra: {},
-              like: false,
-              collect: false,
-              idArray: ary,
-            },()=>{
-
-              // 根据滑动方向 获取数据
-              swipeDirection=='left'?this.init(this.state.idArray[i - 1].id):this.init(this.state.idArray[i + 1].id);
-              if(previousIndex===0){
-                Tools.toast('当前为第一项')
-              }else if(previousIndex==this.state.idArray.length-1){
-                Tools.toast('当前为最后一项')
+              () => {
+                // 根据滑动方向 获取数据
+                swipeDirection == "left"
+                  ? this.init(this.state.idArray[i - 1].id)
+                  : this.init(this.state.idArray[i + 1].id);
+                if (previousIndex === 0) {
+                  Tools.toast("当前为第一项");
+                } else if (previousIndex == this.state.idArray.length - 1) {
+                  Tools.toast("当前为最后一项");
+                }
               }
-            });
+            );
           }}
         />
       </Container>

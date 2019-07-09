@@ -43,6 +43,8 @@ export default class index extends Component {
           </View>
 
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
+          <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/08</Text>
+          <Text style={{ marginLeft: 20}}>· 修复详情页偶发性的内容显示不全问题</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/06</Text>
           <Text style={{ marginLeft: 20}}>· 动态应用启动屏图片（图片来源：必应搜索）</Text>
           <Text style={{ marginLeft: 20}}>· 增加清楚缓存</Text>
@@ -55,8 +57,6 @@ export default class index extends Component {
           <Text style={{ marginLeft: 40}}>* 部分机型下 : 启动屏图片加载异常,日报详情页样式加载异常，应用无法正常使用</Text>
           <Text style={{ marginLeft: 40}}>· 应用打开闪退（偶发）</Text>
           <Text style={{ marginLeft: 40}}>· 当天启动屏图片加载异常，显示黑块（偶发）</Text>
-
-          
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/06/17</Text>
           <Text style={{ marginLeft: 20}}>· 增加侧边栏 栏目入口</Text>
           <Text style={{ marginLeft: 20}}>· 随机日报 增加刷新按钮</Text>
