@@ -41,10 +41,10 @@ export default class index extends Component {
               <Icon type='font-awesome' name='github' size={32} color='#000' />
             </TouchableOpacity>
           </View>
-
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/08</Text>
           <Text style={{ marginLeft: 20}}>· 修复详情页偶发性的内容显示不全问题</Text>
+          <Text style={{ marginLeft: 20}}>· 修复详情页字体缩放闪动问题</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/06</Text>
           <Text style={{ marginLeft: 20}}>· 动态应用启动屏图片（图片来源：必应搜索）</Text>
           <Text style={{ marginLeft: 20}}>· 增加清楚缓存</Text>

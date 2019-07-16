@@ -191,6 +191,7 @@ export default class index extends Component {
 
   // 渲染评论列表
   renderCommentItem = ({ item, index, items }) => {
+    // console.debug('[render]  评论列表');
     return (
       <ListItem
         containerStyle={{

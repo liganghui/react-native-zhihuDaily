@@ -218,13 +218,12 @@ export default class index extends Component {
         }
         /*
          *  为了提升页面初始化渲染速度 , HTML内容被裁切分块渲染
-         *  为了减少页面 初次 打开时webview初始化导致导航切换动画丢帧 , 需要延缓webview初始化时间.
          */
         let html;
         // 格式化HTML
         let formatHtml = htmlString => {
-          let renderHtml = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"></head>
-              <link rel="stylesheet" href="${response.css[0]}" />
+          let renderHtml = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+          <link rel="stylesheet" href="${response.css[0]}" /></head>
               <style>${
                 this.state.bigSize
                   ? `*{font-size:125%} .img-place-holder{display:none}`
@@ -236,7 +235,7 @@ export default class index extends Component {
           return renderHtml;
         };
         // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
-        if (System.SCREEN_WIDTH >= 768 && response.body.length > 850) {
+        if (System.SCREEN_WIDTH >= 768 && response.body.length > 900) {
           html = response.body;
         } else {
           html = response.body.slice(0, 900);
