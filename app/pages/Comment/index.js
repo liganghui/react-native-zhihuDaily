@@ -50,6 +50,10 @@ export default class index extends Component {
     this.getCommentsData("long", res => {
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "long";
+        // 根据点赞数降序排序
+        res.data.comments.sort((x,y)=>{
+          return y.likes-x.likes;
+        })
         this.setState({
           hardwareTextureSwitch: false,
           longComments: res.data.comments
@@ -68,6 +72,10 @@ export default class index extends Component {
     this.getCommentsData("short", res => {
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "short";
+        // 根据点赞数降序排序
+        res.data.comments.sort((x,y)=>{
+          return y.likes-x.likes;
+        })
         this.setState(
           {
             shortComments: res.data.comments,
@@ -148,7 +156,7 @@ export default class index extends Component {
       });
     }
   };
-  /*
+  /**
    * 监听安卓返回键
    * 当遮罩层显示时, 点击返回键 先隐藏遮罩层
    */
@@ -191,7 +199,6 @@ export default class index extends Component {
 
   // 渲染评论列表
   renderCommentItem = ({ item, index, items }) => {
-    // console.debug('[render]  评论列表');
     return (
       <ListItem
         containerStyle={{

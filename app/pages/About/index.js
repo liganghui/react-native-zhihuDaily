@@ -42,6 +42,8 @@ export default class index extends Component {
             </TouchableOpacity>
           </View>
           <Text style={{ marginTop:20, fontSize: 16 }}>更新日志</Text>
+          <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/18</Text>
+          <Text style={{ marginLeft: 20}}>· 修改评论页排序方式:根据点赞数降序排序</Text>
           <Text style={{ marginLeft: 5,marginVertical:5,}}>----2019/07/08</Text>
           <Text style={{ marginLeft: 20}}>· 修复详情页偶发性的内容显示不全问题</Text>
           <Text style={{ marginLeft: 20}}>· 修复详情页字体缩放闪动问题</Text>

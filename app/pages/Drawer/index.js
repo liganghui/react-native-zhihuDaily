@@ -8,7 +8,12 @@ import { Tools } from "../../utils";
 import { observer, inject } from "mobx-react";
 
 
-const SECTION_INFO=[
+
+/* 
+ *  为了给部分栏目启用日期选择功能 , 这里需要为栏目追加日期范围信息
+ * 
+*/
+const SectionInfo=[
   {
     id:2,
     title:'瞎扯',
@@ -39,39 +44,36 @@ const SECTION_INFO=[
   }
 ]
 
+
+
+
+
+
 @inject("theme")
 @observer
 export default class index extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      userInfo: ""
-    };
   }
   /**
    * 跳转到栏目列表
    */
   bindSectionTap=(title,id)=>{
     
-    SECTION_INFO.forEach((item,index) => {
+    SectionInfo.forEach((item,index) => {
       if(item.id==id){
         this.props.navigation.navigate("Section", {
             ...item
         });
         return false
       }
-      if(index==SECTION_INFO.length-1){
+      if(index==SectionInfo.length-1){
         this.props.navigation.navigate("Section", {
           id:id,
           title:title
       });
       }
     });
-
-
-
-
-   
   };
   render() {
     return (
@@ -94,6 +96,15 @@ export default class index extends Component {
             <ListItem  containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"深夜惊奇"}  onPress={this.bindSectionTap.bind(this,'深夜惊奇',1)}/>
             <ListItem   containerStyle={{ backgroundColor: this.props.theme.colors.containerBackground,paddingLeft:20}} titleStyle={{color:this.props.theme.colors.text}}   rightElement={<Icon type="font-awesome" name="angle-right" size={22} color={"#d8d6d6"} />}title={"大误"}  onPress={this.bindSectionTap.bind(this,'大误',29)}/>
           </View>
+
+
+
+          {/* 
+          
+            由于日报栏目众多 , 包含一些广告和内容过少的栏目 ,  此处手动给栏目排序. 
+            TODO: 优化此部分实现 , 通过id筛除不需要的栏目 。
+          */}
+
           <View style={{backgroundColor:this.props.theme.colors.listBackground,flexDirection:'row',alignItems:'center',paddingLeft:15,paddingVertical:10}}>
             <Text style={{color:this.props.theme.colors.text,fontSize:12}}>历史栏目</Text>
           </View>
