@@ -508,6 +508,14 @@ export default class index extends Component {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
       >
+        {/* 
+          TODO:  react-native-snap-carousel v3.8.0中 ,firstItem属性 存在问题 , 社区已给出解决方案 , 但还未同步到npm中  需要手动修改文件. 
+          解决方法 :
+          https://github.com/rtalwork/react-native-snap-carousel/commit/73261bbae26e753bb3c3c37bcd03dc8d35919fe1
+        
+          问题讨论 :
+          https://github.com/archriss/react-native-snap-carousel/issues/538
+        */}
         <Carousel
           ref={el => {
             this.carousel = el;
