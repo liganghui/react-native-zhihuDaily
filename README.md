@@ -13,7 +13,7 @@
  
  > 运行前的处理
     
- 由于 react-native-snap-carousel 在当前 v3.8.0 下的[问题](https://github.com/archriss/react-native-snap-carousel/issues/538),  运行项目前需要删除该依赖项的部分代码 , 具体步骤请参考[此处](https://github.com/rtalwork/react-native-snap-carousel/commit/73261bbae26e753bb3c3c37bcd03dc8d35919fe1)
+ 由于 react-native-snap-carousel 在当前 v3.8.0 下的[问题](https://github.com/archriss/react-native-snap-carousel/issues/538),  运行项目前需要删除该依赖项的两行代码 , 具体步骤请参考[此处](https://github.com/rtalwork/react-native-snap-carousel/commit/73261bbae26e753bb3c3c37bcd03dc8d35919fe1)
  
  注 : 如果您不处理 , 项目也可运行 但详情页的滑动翻页会出错 .
  
