@@ -1,15 +1,6 @@
 import Toast from "react-native-root-toast";
 import NetInfo from "@react-native-community/netinfo";
-import {Dimensions, Platform, PixelRatio} from "react-native";
-import {System} from "./system";
 
-const { width } = Dimensions.get('window');
-const basePx = Platform.OS === 'ios' ? 750 : 720;
-
-const Px2Dp = function px2dp(px){
-  const layoutSize = (px / basePx) * width;
-  return PixelRatio.roundToNearestPixel(layoutSize);
-};
 //  工具函数库
 const Tools = {
   /**
@@ -72,7 +63,7 @@ const Tools = {
           ? "0" + currentDate.getDate()
           : currentDate.getDate();
       if (symbol) {
-        return yaer + symbol + month + symbol + day;
+        return year + symbol + month + symbol + day;
       } else {
         return year + "-" + month + "-" + day;
       }
@@ -189,4 +180,4 @@ const Tools = {
 
 
 
-export { Tools,Px2Dp };
+export { Tools };
