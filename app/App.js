@@ -83,8 +83,8 @@ class App extends React.Component {
       if(param.link){
         Linking.openURL(param.link )
       }
-      // ......
     });
+    // 隐藏启动屏图片
     SplashScreen.hide();
   }
 

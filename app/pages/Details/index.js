@@ -212,6 +212,7 @@ export default class index extends Component {
         id
       })
       .then(response => {
+        console.log(response)
         if (!response || !response.body) {
           Tools.toast("服务器数据异常");
           return false;
@@ -403,6 +404,7 @@ export default class index extends Component {
             renderBackground={this.renderSectioHeader}
           >
             <AutoHeightWebView
+            
               style={{ height: this.state.webViewHeight }}
               onSizeUpdated={size => {
                 this.setState({
@@ -410,6 +412,8 @@ export default class index extends Component {
                 });
               }}
               source={{ html: this.state.body }}
+              // 禁止视频自动播放
+              mediaPlaybackRequiresUserAction={true}
               onMessage={this.bindMessage.bind(this)}
               // 为webview图片绑定点击事件 , 触发查看大图
               customScript={`

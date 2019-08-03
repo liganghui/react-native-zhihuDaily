@@ -2956,11 +2956,6 @@ http-errors@1.7.2, http-errors@~1.7.2:
     statuses ">= 1.5.0 < 2"
     toidentifier "1.0.0"
 
-http-https@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npm.taobao.org/http-https/download/http-https-1.0.0.tgz#2f908dd5f1db4068c058cd6e6d4ce392c913389b"
-  integrity sha1-L5CN1fHbQGjAWM1ubUzjkskTOJs=
-
 http-proxy-agent@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npm.taobao.org/http-proxy-agent/download/http-proxy-agent-2.1.0.tgz#e4821beef5b2142a2026bd73926fe537631c5405"
@@ -4975,13 +4970,6 @@ object.pick@^1.3.0:
   dependencies:
     isobject "^3.0.1"
 
-oboe@2.1.4:
-  version "2.1.4"
-  resolved "https://registry.npm.taobao.org/oboe/download/oboe-2.1.4.tgz#20c88cdb0c15371bb04119257d4fdd34b0aa49f6"
-  integrity sha1-IMiM2wwVNxuwQRklfU/dNLCqSfY=
-  dependencies:
-    http-https "^1.0.0"
-
 on-finished@~2.3.0:
   version "2.3.0"
   resolved "https://registry.npm.taobao.org/on-finished/download/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
@@ -5621,9 +5609,10 @@ react-native-autoheight-webview@^1.1.3:
   dependencies:
     prop-types "^15.7.2"
 
-"react-native-cardview@git://github.com/codlab/react-native-cardview.git":
-  version "2.0.2"
-  resolved "git://github.com/codlab/react-native-cardview.git#8eee6f53b8ff1ce0a4ff57ab4f750fbfdf268668"
+react-native-cardview@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npm.taobao.org/react-native-cardview/download/react-native-cardview-2.0.3.tgz#809134c74ec5fcc31973c41093ff35576f1ecf41"
+  integrity sha1-gJE0x07F/MMZc8QQk/81V28ez0E=
   dependencies:
     prop-types "^15.6.0"
 
@@ -6291,13 +6280,13 @@ rimraf@~2.2.6:
   resolved "https://registry.npm.taobao.org/rimraf/download/rimraf-2.2.8.tgz#e439be2aaee327321952730f99a8929e4fc50582"
   integrity sha1-5Dm+Kq7jJzIZUnMPmaiSnk/FBYI=
 
-"rn-fetch-blob@git://github.com/Frekansapp/rn-fetch-blob.git":
-  version "0.10.16"
-  resolved "git://github.com/Frekansapp/rn-fetch-blob.git#9509b62f3f80873011ed04cc0af732740d6284c1"
+rn-fetch-blob@0.10.15:
+  version "0.10.15"
+  resolved "https://registry.npm.taobao.org/rn-fetch-blob/download/rn-fetch-blob-0.10.15.tgz#3526860c1c57e0bf4c09bdbe409c919264afffba"
+  integrity sha1-NSaGDBxX4L9MCb2+QJyRkmSv/7o=
   dependencies:
     base-64 "0.1.0"
     glob "7.0.6"
-    oboe "2.1.4"
 
 rn-placeholder@^2.0.0:
   version "2.0.0"

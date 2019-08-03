@@ -10,7 +10,7 @@ import {
   ActivityIndicator
 } from "react-native";
 import Modal from "react-native-modal";
-import { Icon, Button, Avatar, ListItem } from "react-native-elements";
+import { Icon, Button, ListItem } from "react-native-elements";
 import { Tools, Api, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
 
@@ -70,6 +70,7 @@ export default class index extends Component {
   initShortComments() {
     this.bindModalSwitch(true);
     this.getCommentsData("short", res => {
+      // 判断是否存在数据 
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "short";
         // 根据点赞数降序排序
@@ -92,6 +93,9 @@ export default class index extends Component {
             }, 100);
           }
         );
+      }else{
+        Tools.toast("暂无短评论信息");
+        this.bindModalSwitch(false);
       }
     });
   }
@@ -245,7 +249,8 @@ export default class index extends Component {
                 ]}>
                 {item.content}
               </Text>
-              {item.reply_to && (
+              {/* 判断消息是否存在回复 */}
+              {item.reply_to&& (
                 <TouchableOpacity
                   style={styles.replyContainer}
                   activeOpacity={1}
@@ -253,15 +258,11 @@ export default class index extends Component {
                   <Text
                     ellipsizeMode={"tail"}
                     numberOfLines={item.reply_to.status ? 0 : 2}>
-                    <Text
-                      style={[
-                        styles.author,
-                        { color: this.props.theme.colors.text }
-                      ]}>
-                      //{item.reply_to.author}：
+                    <Text   style={[  styles.author,{ color: this.props.theme.colors.text } ]}>
+                      {item.reply_to.author&&'//'+item.reply_to.author+':'}
                     </Text>
                     <Text style={[styles.mainContent, styles.replyContent]}>
-                      {item.reply_to.content}
+                      {item.reply_to.error_msg?"//"+item.reply_to.error_msg:item.reply_to.content}
                     </Text>
                   </Text>
                 </TouchableOpacity>
@@ -386,28 +387,15 @@ export default class index extends Component {
                 }
               : null
           }>
-          <TouchableOpacity
-            style={[
-              styles.shortCommentsWrapper,
-              { borderColor: this.props.theme.colors.border }
-            ]}
-            onPress={this.toggleShortComments}
-            activeOpacity={0.4}>
-            <Text
-              style={[styles.title, { color: this.props.theme.colors.text }]}>
+          <TouchableOpacity  style={[ styles.shortCommentsWrapper,{ borderColor: this.props.theme.colors.border }]} onPress={this.toggleShortComments}  activeOpacity={0.4}>
+            <Text  style={[styles.title, { color: this.props.theme.colors.text }]}>
               {this.props.navigation.getParam("shortComments")} 条短评
             </Text>
+            {/* 判断短评论是否展开 , 显示不同的箭头 */}
             {!this.state.shortCommentsState ? (
-              <Icon
-                type="material-community"
-                name="chevron-double-down"
-                color={this.props.theme.colors.text}
-              />
+              <Icon  type="material-community" name="chevron-double-down"color={this.props.theme.colors.text}/>
             ) : (
-              <Icon
-                type="material-community"
-                name="chevron-double-up"
-                color={this.props.theme.colors.text}
+              <Icon  type="material-community" name="chevron-double-up"  color={this.props.theme.colors.text}
               />
             )}
           </TouchableOpacity>
