@@ -3,7 +3,6 @@ import NetInfo from "@react-native-community/netinfo";
 import {Dimensions, Platform, PixelRatio} from "react-native";
 import {System} from "./system";
 
-const { width } = Dimensions.get('window');
 
 //  工具函数库
 const Tools = {
@@ -185,4 +184,4 @@ const Tools = {
 
 
 
-export { Tools,Px2Dp };
+export { Tools };
