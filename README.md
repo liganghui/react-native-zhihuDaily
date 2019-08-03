@@ -9,7 +9,7 @@
      yarn install 或  npm install   然后   react-native-android 或  ios 
       
  
- 注: 依赖中包含第三方个人版本依赖项 , 受网络影响 下载较慢 .  如无法下载请将Package.json中的 ```rn-fetch-blob```版本号设置为 0.10.15 , 此版本运行后会产生一些警告信息 ,可无视 .
+ 注: 应用启动后```rn-fetch-blob``` 组件会显示一些警告信息 , 这是组件自身的问题 , 请无视 . 如厌烦请修改```package.json```中的依赖地址 改为```git://github.com/Frekansapp/rn-fetch-blob.git```
  
  > 运行前的处理
     
