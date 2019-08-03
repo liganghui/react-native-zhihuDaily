@@ -6,11 +6,8 @@
 
 运行  
 
-     yarn install  
+     yarn install 或  npm install   然后   react-native-android 或  ios 
       
-或
-
-     npm install 
  
  注: 依赖中包含第三方个人版本依赖项 , 受网络影响 下载较慢 .  如无法下载请将Package.json中的 ```rn-fetch-blob```版本号设置为 0.10.15 , 此版本运行后会产生一些警告信息 ,可无视 .
  
@@ -21,5 +18,5 @@
  注 : 如果您不处理 , 项目也可运行 但详情页的滑动翻页会出错 .
  
  
-    react-native-android 或  ios 
+    
     
