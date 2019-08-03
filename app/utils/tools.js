@@ -1,8 +1,5 @@
 import Toast from "react-native-root-toast";
 import NetInfo from "@react-native-community/netinfo";
-import {Dimensions, Platform, PixelRatio} from "react-native";
-import {System} from "./system";
-
 
 //  工具函数库
 const Tools = {
@@ -14,12 +11,11 @@ const Tools = {
   getNowadays(symbol) {
     let nowDate = new Date();
     let year = nowDate.getFullYear();
-    let month =
+    let month =   
       nowDate.getMonth() + 1 < 10
         ? "0" + (nowDate.getMonth() + 1)
         : nowDate.getMonth() + 1;
-    let day =
-      nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
+    let day = nowDate.getDate() < 10 ? "0" + nowDate.getDate() : nowDate.getDate();
     if (symbol) {
       return year + symbol + month + symbol + day;
     } else {
@@ -86,7 +82,7 @@ const Tools = {
       let month =
         currentDate.getMonth() + 1 < 10
           ? "0" + (currentDate.getMonth() + 1)
-          : nowDate.getMonth() + 1;
+          : currentDate.getMonth() + 1;
       let day =
         currentDate.getDate() < 10
           ? "0" + currentDate.getDate()
