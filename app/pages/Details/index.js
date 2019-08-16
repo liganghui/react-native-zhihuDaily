@@ -1,4 +1,12 @@
 //  日报详情页
+  {/* 
+          TODO:  react-native-snap-carousel v3.8.0中 ,firstItem属性 存在问题 , 社区已给出解决方案 , 但还未同步到npm中  需要手动修改文件. 
+          解决方法 :
+          https://github.com/rtalwork/react-native-snap-carousel/commit/73261bbae26e753bb3c3c37bcd03dc8d35919fe1
+        
+          问题讨论 :
+          https://github.com/archriss/react-native-snap-carousel/issues/538
+  */}
 import React, { Component } from "react";
 import {
   View,
@@ -14,32 +22,31 @@ import { Icon, Button } from "react-native-elements";
 import AutoHeightWebView from "react-native-autoheight-webview";
 import LinearGradient from "react-native-linear-gradient";
 import ParallaxScrollView from "react-native-parallax-scroll-view";
-import {
-  Container,
-} from "native-base";
+import { Container } from "native-base";
 import Share from "react-native-share";
 import * as Animatable from "react-native-animatable";
-import {observer,inject} from 'mobx-react';
-import { Tools, Api, Axios } from "../../utils";
-
-const IMG_MAX_HEIGHT = 200;//图像最大高度
-const HEAD_HEIGHT = 50;//导航栏高度
-const HEADER_MIN_HEIGHT = 0;//导航栏最小高度
-let tempHeight = HEAD_HEIGHT; // 记录当前Header高度
-let offsetY=0; // 记录Y轴坐标
+import { observer, inject } from "mobx-react";
+import { Tools, Api, Axios, System } from "../../utils";
+import Carousel from "react-native-snap-carousel";
+const IMG_MAX_HEIGHT = 200; //图像最大高度
+const HEAD_HEIGHT = 50; //导航栏(Header)高度
+const HEADER_MIN_HEIGHT = 0; //导航栏最小高度
+let tempHeight = HEAD_HEIGHT; // 记录当前导航栏高度
+let offsetY = 0; // 记录Y轴坐标
 let that; //保存this引用
-
-@inject('theme') 
+@inject("theme")
 @observer
 export default class index extends Component {
-  static navigationOptions = ({ navigation,screenProps }) => {
+  static navigationOptions = ({ navigation, screenProps }) => {
     const { params } = navigation.state;
     return {
       headerTransparent: true,
+      gesturesEnabled: false,
       headerStyle: {
         height: params.height ? params.height : HEAD_HEIGHT,
-        backgroundColor:screenProps.theme,
-        opacity: params.opacity
+        backgroundColor: screenProps.theme,
+        opacity: params.opacity,
+        overflow: "hidden"
       },
       headerRight: (
         <View style={styles.headerRightWrapper}>
@@ -82,7 +89,7 @@ export default class index extends Component {
             onPress={() => {
               if (params.extra) {
                 navigation.navigate("Comment", {
-                  id: navigation.getParam("id"),
+                  id: navigation.getParam("idArray")[that.state.activeIndex].id,
                   comments: params.extra.comments,
                   longComments: params.extra.long_comments,
                   shortComments: params.extra.short_comments
@@ -127,66 +134,66 @@ export default class index extends Component {
   };
   constructor(props) {
     super(props);
-    let id = this.props.navigation.getParam("id");
     this.scrollY = new Animated.Value(0); // 记录Y轴滚动坐标 用户计算滚动方向
     this.state = {
-      dailyId: id,
       daily: {
         section: null //栏目分类信息
       },
+      idArray: this.props.navigation.getParam("idArray"),
       body: null, //供webview渲染的HTML格式内容
       extra: {}, //日报额外信息
       webviewWidth: null, // 动态调整webview为设备的宽度
-      webviewInit: false, // 记录webviewI初始化状态
-      webviewFirst: null, // 用于判断页面是否为初次加载
+      webviewInit: null, // 记录webviewI初始化状态
       like: false, //点赞按钮
       collect: false, //收藏按钮
-      bigSize: null, //webview大字号
+      bigSize: false, //webview大字号
       opacity: new Animated.Value(0),
-      headerHeight: new Animated.Value(HEAD_HEIGHT)
+      hardwareTextureSwitch: true, //GPU加速开关
+      headerHeight: new Animated.Value(HEAD_HEIGHT),
+      webViewHeight: System.SCREEN_HEIGHT - 250,
+      silderFristItem: this.props.navigation.getParam("selectdIndex"),
+      activeIndex: this.props.navigation.getParam("selectdIndex")
     };
     let opacity = this.scrollY.interpolate({
       inputRange: [0, IMG_MAX_HEIGHT, 210, 211], //当滚动超出图片高度时 确保导航条为不透明
       outputRange: [1, 0, 0, 1], //导航栏透明度 0 透明 1 不透明
-      extrapolate: "clamp"
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     this.props.navigation.setParams({ height: this.state.headerHeight });
     this.props.navigation.setParams({ opacity: opacity });
     that = this;
   }
   componentDidMount() {
-    this.init();
+    try {
+      this.init(this.state.idArray[this.state.silderFristItem].id);
+    } catch {
+      Tools.toast("日报参数异常");
+    }
   }
   /*
    *  日报内容初始化
-   *    
-   *    详情页 首次打开时 WebView初始化会占用大量性能 , 
-   *    导致页面push动画丢帧 , 这里通过判断状态延缓WebView加载.
+   *
+   *    详情页 首次打开时 WebView初始化会占用大量性能 ,
+   *    导致页面push动画丢帧 , 通过判断状态延缓WebView加载.
    */
-  init() {
+  init(id) {
+    //避免用户急速滑动切换
+    if (this.state.webviewInit !== null && !this.state.webviewInit) {
+      return false;
+    } else {
+      this.setState({
+        webviewInit: false
+      });
+    }
+    // 获取日报主体数据
+    this.getDailyData(id);
+    // 检查网络状态 只有在连接网络下才加载评论
     Tools.getNetworkState().then(newWorkInfo => {
       if (newWorkInfo.online) {
-        this.getExtraData();
+        this.getExtraData(id);
       }
-    })
-    this.getDailyData();
-    // 检测页面是否为初次加载
-    storage
-      .load({
-        key: "webviewFirst"
-      })
-      .then(res => {
-        if (res) {
-          this.setState({
-            webviewFirst: true
-          });
-        } else {
-          this.setState({
-            webviewFirst: false
-          });
-        }
-      }).catch((err)=>[
-      ]);
+    });
     // 监测是否开启了大字体
     storage
       .load({
@@ -198,65 +205,73 @@ export default class index extends Component {
             bigSize: true
           });
         }
-      }).catch((err)=>[
-      ]);
+      })
+      .catch(err => []);
   }
-  // 页面数据初始化
-  getDailyData() {
+  /*
+   * 日报数据初始化
+   *    详情页 首次打开时 WebView初始化会占用大量性能 ,
+   *    导致页面push动画丢帧 , 通过判断状态延缓WebView加载.
+   */
+  getDailyData(id) {
     storage
       .load({
         key: "details",
-        id: this.state.dailyId
+        id
       })
       .then(response => {
+        console.log(response)
         if (!response || !response.body) {
           Tools.toast("服务器数据异常");
           return false;
         }
-        let html = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=0.5, maximum-scale=1, user-scalable=no"></head>
-                    <link rel="stylesheet" href="${response.css[0]}" />
-                    ${this.state.bigSize? " <style>*{font-size:120%;}</style>": ""}
-                    <body class=${this.props.theme.colors.themeType=='black'?'night':''}>${response.body}</body></html>`;
-        if (this.state.webviewFirst) {
-          this.setState(
-            {
-              daily: response
-            },
-            () => {
-              // webview等待动画完成后渲染,减少初次加载页面时卡顿问题
-              InteractionManager.runAfterInteractions(() => {
-                setTimeout(() => {
-                this.setState(
-                  {
-                    body: html,
-                    webviewFirst: false
-                  },
-                  () => {
-                      global.storage.save({
-                        key: "webviewFirst",
-                        data: false
-                      });
-                  }
-                );
-               }, 100);
-              });
-            }
-          );
+        /*
+         *  为了提升页面初始化渲染速度 , HTML内容被裁切分块渲染
+         */
+        let html;
+        // 格式化HTML
+        let formatHtml = htmlString => {
+          let renderHtml = `<!DOCTYPE html><html><head><meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+          <link rel="stylesheet" href="${response.css[0]}" /></head>
+              <style>${
+                this.state.bigSize
+                  ? `*{font-size:125%} .img-place-holder{display:none}`
+                  : `.img-place-holder{ display:none`
+              }</style>
+              <body class=${
+                this.props.theme.colors.themeType == "black" ? "night" : ""
+              }>${htmlString}</body></html>`;
+          return renderHtml;
+        };
+        // 用户为平板设备时不裁切Html且HMTL内容长度大于850时
+        if (System.SCREEN_WIDTH >= 768 && response.body.length > 900) {
+          html = response.body;
         } else {
-          this.setState({
-            daily: response,
-            body: html
-          });
+          html = response.body.slice(0, 900);
+          setTimeout(() => {
+            this.setState({
+              body: formatHtml(response.body)
+            });
+          }, 450);
         }
+        this.setState({
+          daily: response,
+          body: formatHtml(html),
+          hardwareTextureSwitch: false
+        });
       })
-      .catch(error => {});
+      .catch(error => {
+        this.setState({
+          webviewInit: true
+        });
+      });
   }
   // 日报额外信息  (评论数,点赞数等)
-  getExtraData() {
+  getExtraData(id) {
     storage
       .load({
         key: "extra",
-        id: this.state.dailyId
+        id: id
       })
       .then(res => {
         if (res) {
@@ -281,9 +296,7 @@ export default class index extends Component {
         url: imgUrl
       });
     } else if (String(data).indexOf("init:") !== -1) {
-      setTimeout(() => {
-        this.setState({ webviewInit: true });
-      }, 500);
+      this.setState({ webviewInit: true });
     } else if (String(data).indexOf("a:") !== -1) {
       let src = data.split("a:")[1].replace('"', "");
       Linking.openURL(src).catch(err => {
@@ -311,7 +324,7 @@ export default class index extends Component {
   bindOnScroll = event => {
     let y = event.nativeEvent.contentOffset.y;
     let direction = y > offsetY ? "down" : "up";
-    offsetY=y;
+    offsetY = y;
     if (y <= IMG_MAX_HEIGHT) {
       this.state.headerHeight.setValue(HEAD_HEIGHT);
     } else {
@@ -378,17 +391,114 @@ export default class index extends Component {
     }
   }
 
-  // 渲染背景图 
+  renderSilder = (data, index) => {
+    return (
+      <View style={{ flex: 1 }}>
+        {data.item.selected ? (
+          <ParallaxScrollView
+            // 无数据时 禁止滚动
+            ref={el => {
+              this.parallaxScrollView = el;
+            }}
+            scrollEnabled={this.state.body ? true : false}
+            contentBackgroundColor={this.props.theme.colors.containerBackground}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
+              {
+                listener: this.bindOnScroll
+              }
+            )}
+            parallaxHeaderHeight={250}
+            renderBackground={this.renderSectioHeader}
+          >
+            <AutoHeightWebView
+            
+              style={{ height: this.state.webViewHeight }}
+              onSizeUpdated={size => {
+                this.setState({
+                  webViewHeight: size.height
+                });
+              }}
+              source={{ html: this.state.body }}
+              // 禁止视频自动播放
+              mediaPlaybackRequiresUserAction={true}
+              onMessage={this.bindMessage.bind(this)}
+              // 为webview图片绑定点击事件 , 触发查看大图
+              customScript={`
+              window.onload=function(){
+              window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
+              var imgs = document.getElementsByTagName("img");
+              if(imgs){
+                for(var i=0;i<imgs.length;i++){
+                  imgs[i].addEventListener('click',function(e){
+                    window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
+                  })
+                }
+              }
+              var a = document.getElementsByTagName('a');
+              if(a){
+                for(var i = 0; i < a.length; i++){
+                a[i].onclick = function (event) {
+                  window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
+                  event.preventDefault();
+                }
+              }
+            }
+          }
+         `}
+            />
+
+            {/* 栏目信息  */}
+            {this.state.daily.section && this.state.webviewInit ? (
+              <TouchableOpacity
+                style={[
+                  styles.sectionWrapper,
+                  { backgroundColor: this.props.theme.colors.buttonBackground }
+                ]}
+                onPress={this.bindSectionTap}
+              >
+                <Image
+                  style={styles.thumbnailImg}
+                  source={{ uri: this.state.daily.section.thumbnail }}
+                />
+                <Text
+                  style={[
+                    styles.thumbnailName,
+                    { color: this.props.theme.colors.text }
+                  ]}
+                >
+                  本文来自：{this.state.daily.section.name} · 合集
+                </Text>
+                <Icon
+                  iconStyle={styles.iconRightArrow}
+                  name="angle-right"
+                  type="font-awesome"
+                  color="#333"
+                  size={22}
+                />
+              </TouchableOpacity>
+            ) : null}
+          </ParallaxScrollView>
+        ) : null}
+      </View>
+    );
+  };
+
+  // 渲染背景图
   renderSectioHeader = () => {
     const imgTop = this.scrollY.interpolate({
       inputRange: [0, 400],
       outputRange: [HEAD_HEIGHT, -HEAD_HEIGHT],
-      extrapolate: "clamp"
+      extrapolate: "clamp",
+      useNativeDriver: true
     });
     return (
       <Animated.View key="background" style={{ translateY: imgTop }}>
         <Image
-          style={[styles.backgroundImage,{backgroundColor:this.props.theme.colors.containerBackground}]}
+          style={[
+            styles.backgroundImage,
+            { backgroundColor: this.props.theme.colors.containerBackground }
+          ]}
           source={{ uri: this.state.daily.image }}
         />
         <LinearGradient
@@ -404,82 +514,98 @@ export default class index extends Component {
   render() {
     return (
       <Container
-        style={{backgroundColor:this.props.theme.colors.containerBackground}}
+        style={{ backgroundColor: this.props.theme.colors.containerBackground }}
+        renderToHardwareTextureAndroid={this.state.hardwareTextureSwitch}
         onLayout={event => {
           this.setState({ webviewWidth: event.nativeEvent.layout.width });
         }}
       >
-        <ParallaxScrollView
-          // 无数据时 禁止滚动
-          scrollEnabled={this.state.body ? true : false}
-          contentBackgroundColor={this.props.theme.colors.containerBackground}
-          onMessage={this.bindMessage}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.scrollY } } }],
-            {
-              listener: this.bindOnScroll
+      
+        <Carousel
+          ref={el => {
+            this.carousel = el;
+          }}
+          firstItem={this.state.silderFristItem}
+          initialScrollIndex={this.state.silderFristItem}
+          getItemLayout={(data, index) => ({
+            length: System.SCREEN_WIDTH,
+            offset: System.SCREEN_WIDTH * index,
+            index
+          })}
+          data={this.state.idArray}
+          renderItem={this.renderSilder}
+          sliderWidth={System.SCREEN_WIDTH}
+          itemWidth={System.SCREEN_WIDTH}
+          scrollEnabled={
+            this.state.webviewInit !== null && !this.state.webviewInit
+              ? false
+              : true
+          } //避免用户急速滑动切换
+          inactiveSlideOpacity={1}
+          inactiveSlideScale={1} //去除边距
+          onBeforeSnapToItem={previousIndex => {
+            let swipeDirection =
+              previousIndex > this.carousel.currentIndex ? "right" : "left";
+            let i;
+            let ary = this.state.idArray;
+            this.state.idArray.forEach((item, index) => {
+              if (item.selected) {
+                i = index;
+              }
+            });
+            if (swipeDirection == "left") {
+              ary[i - 1].selected = true;
+              storage.save({
+                key: "visited",
+                id: ary[i - 1].id,
+                data: true,
+                expires: null
+              });
+            } else if (swipeDirection == "right") {
+              ary[i + 1].selected = true;
+              storage.save({
+                key: "visited",
+                id: ary[i + 1].id,
+                data: true,
+                expires: null
+              });
             }
-          )}
-          parallaxHeaderHeight={250}
-          renderBackground={this.renderSectioHeader}
-        >
-          {this.state.body ? (
-            <AutoHeightWebView
-              source={{ html: this.state.body }}
-              onMessage={this.bindMessage.bind(this)}
-              // 为webview图片绑定点击事件 , 触发查看大图
-              customScript={`
-                  window.onload=function(){
-                    window.ReactNativeWebView.postMessage(JSON.stringify("init:true"));
-                    var imgs = document.getElementsByTagName("img");
-                    if(imgs){
-                      for(var i=0;i<imgs.length;i++){
-                        imgs[i].addEventListener('click',function(e){
-                          window.ReactNativeWebView.postMessage(JSON.stringify("img:"+this.src));
-                        })
-                      }
-                    }
-                    var a = document.getElementsByTagName('a');
-                    if(a){
-                      for(var i = 0; i < a.length; i++){
-                      a[i].onclick = function (event) {
-                        window.ReactNativeWebView.postMessage(JSON.stringify("a:"+this.href));
-                        event.preventDefault();
-                      }
-                    }
-                  }
+            // 更新选中状态
+            ary[i].selected = false;
+            // 重置动画参数
+            tempHeight = HEAD_HEIGHT;
+            offsetY = 0;
+            this.scrollY.setValue(0);
+            this.state.opacity.setValue(1);
+            this.state.headerHeight.setValue(HEAD_HEIGHT);
+            // 更新选中状态和重置数据
+            this.setState(
+              {
+                activeIndex: previousIndex,
+                daily: {
+                  body: null,
+                  section: null
+                },
+                body: null,
+                extra: {},
+                like: false,
+                collect: false,
+                idArray: ary
+              },
+              () => {
+                // 根据滑动方向 获取数据
+                swipeDirection == "left"
+                  ? this.init(this.state.idArray[i - 1].id)
+                  : this.init(this.state.idArray[i + 1].id);
+                if (previousIndex === 0) {
+                  Tools.toast("当前为第一项");
+                } else if (previousIndex == this.state.idArray.length - 1) {
+                  Tools.toast("当前为最后一项");
                 }
-               `}
-              customStyle={` 
-               .img-place-holder{ 
-                 display:none
-               }
-             `}
-            />
-          ) : null}
-          {/* 栏目信息  */}
-          {this.state.daily.section && this.state.webviewInit ? (
-            <TouchableOpacity
-              style={[styles.sectionWrapper,{backgroundColor:this.props.theme.colors.buttonBackground}]}
-              onPress={this.bindSectionTap}
-            >
-              <Image
-                style={styles.thumbnailImg}
-                source={{ uri: this.state.daily.section.thumbnail }}
-              />
-              <Text style={[styles.thumbnailName,{color:this.props.theme.colors.text}]}>
-                本文来自：{this.state.daily.section.name} · 合集
-              </Text>
-              <Icon
-                iconStyle={styles.iconRightArrow}
-                name="angle-right"
-                type="font-awesome"
-                color="#333"
-                size={22}
-              />
-            </TouchableOpacity>
-          ) : null}
-        </ParallaxScrollView>
+              }
+            );
+          }}
+        />
       </Container>
     );
   }
@@ -490,6 +616,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   headerRightWrapper: {
+    overflow: "hidden",
     justifyContent: "space-around",
     flexDirection: "row",
     width: 230

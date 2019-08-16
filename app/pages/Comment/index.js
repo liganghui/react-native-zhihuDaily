@@ -10,7 +10,7 @@ import {
   ActivityIndicator
 } from "react-native";
 import Modal from "react-native-modal";
-import { Icon, Button, Avatar, ListItem } from "react-native-elements";
+import { Icon, Button, ListItem } from "react-native-elements";
 import { Tools, Api, Axios, System } from "../../utils";
 import { observer, inject } from "mobx-react";
 
@@ -30,37 +30,61 @@ export default class index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isModalVisible: false,
-      id: this.props.navigation.getParam("id"),
-      shortCommentsState: false,
-      longCommentsListHeight: 0,
-      longComments: [],
-      shortComments: []
+      isModalVisible: true, //控制遮罩层显示
+      id: this.props.navigation.getParam("id"), // 日报 id
+      shortCommentsState: false, //控制短评论列表显示
+      longCommentsListHeight: 0, //记录长评论;列表高度
+      longComments: [], //长评论列表数组
+      shortComments: [], //短评论列表数组
+      hardwareTextureSwitch: true //控制GPU加速动画 开关
     };
   }
   componentDidMount() {
     this.initLongComments();
   }
+
+  /*
+   *  初始化长评论
+   */
   initLongComments() {
     this.getCommentsData("long", res => {
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "long";
+        // 根据点赞数降序排序
+        res.data.comments.sort((x,y)=>{
+          return y.likes-x.likes;
+        })
         this.setState({
+          hardwareTextureSwitch: false,
           longComments: res.data.comments
         });
+        this.bindModalSwitch(false); //隐藏遮罩层
+      } else {
+        this.bindModalSwitch(false);
       }
     });
   }
+  /*
+   *  初始化短评论
+   */
   initShortComments() {
+    this.bindModalSwitch(true);
     this.getCommentsData("short", res => {
+      // 判断是否存在数据 
       if (res.data && res.data.comments.length > 0) {
         res.data.comments.type = "short";
+        // 根据点赞数降序排序
+        res.data.comments.sort((x,y)=>{
+          return y.likes-x.likes;
+        })
         this.setState(
           {
             shortComments: res.data.comments,
             shortCommentsState: true
           },
           () => {
+            this.bindModalSwitch(false);
+            // 延迟触发滚动 , 滚动才生效
             setTimeout(() => {
               this.scrollView.scrollTo({
                 y: this.state.longCommentsListHeight,
@@ -69,9 +93,19 @@ export default class index extends Component {
             }, 100);
           }
         );
+      }else{
+        Tools.toast("暂无短评论信息");
+        this.bindModalSwitch(false);
       }
     });
   }
+
+  /**
+   * 根据类型获取指定数据
+   *  @param {String} type 数据类型(long||short)
+   *  @param {Function} callBack 回调函数
+   *
+   */
   getCommentsData(type, callBack) {
     let apiUrl;
     if (type == "long") {
@@ -81,14 +115,12 @@ export default class index extends Component {
     } else {
       return;
     }
-    this.bindModalSwitch();
     Axios.get(apiUrl)
       .then(res => {
-        this.bindModalSwitch();
         callBack && callBack(res);
       })
       .catch(() => {
-        this.bindModalSwitch();
+        this.bindModalSwitch(false);
       });
   }
   toggleShortComments = () => {
@@ -101,8 +133,10 @@ export default class index extends Component {
       });
     }
   };
-  /** 
-   *  监听列表高度
+  /**
+   *  监听并记录长评论列表高度
+   *   @param {Event} event 事件对象
+   *
    */
   listenListHeight(event) {
     var { x, y, width, height } = event.nativeEvent.layout;
@@ -110,11 +144,26 @@ export default class index extends Component {
       longCommentsListHeight: height
     });
   }
-  bindModalSwitch = () => {
-    this.setState({
-      isModalVisible: !this.state.isModalVisible
-    });
+  /**
+   *  控制遮罩层显示与隐藏
+   *   @param {Boolean} val  true or false
+   *
+   */
+  bindModalSwitch = val => {
+    if (val) {
+      this.setState({
+        isModalVisible: val
+      });
+    } else {
+      this.setState({
+        isModalVisible: !this.state.isModalVisible
+      });
+    }
   };
+  /**
+   * 监听安卓返回键
+   * 当遮罩层显示时, 点击返回键 先隐藏遮罩层
+   */
   bindAndroidBack = () => {
     if (this.state.isModalVisible) {
       this.setState({
@@ -124,6 +173,12 @@ export default class index extends Component {
       this.props.navigation.pop();
     }
   };
+  /**
+   * 控制更多内容的展开与收起
+   *
+   * @param {Number} index  评论项数组下标
+   * @param {Object} item   列表项
+   */
   bindMoreToggle(index, item) {
     let type;
     if (
@@ -143,7 +198,10 @@ export default class index extends Component {
       [type]: list
     });
   }
+
   keyExtractor = item => item.id.toString();
+
+  // 渲染评论列表
   renderCommentItem = ({ item, index, items }) => {
     return (
       <ListItem
@@ -162,8 +220,10 @@ export default class index extends Component {
           <View style={styles.rightContainer}>
             <View style={styles.authorContainer}>
               <Text
-                style={[styles.author, { color: this.props.theme.colors.text }]}
-              >
+                style={[
+                  styles.author,
+                  { color: this.props.theme.colors.text }
+                ]}>
                 {item.author}
               </Text>
               <Button
@@ -186,26 +246,23 @@ export default class index extends Component {
                 style={[
                   styles.mainContent,
                   { color: this.props.theme.colors.content }
-                ]}
-              >
+                ]}>
                 {item.content}
               </Text>
-              {item.reply_to && (
-                <TouchableOpacity style={styles.replyContainer} activeOpacity={1} onPress={this.bindMoreToggle.bind(this, index, item)}>
+              {/* 判断消息是否存在回复 */}
+              {item.reply_to&& (
+                <TouchableOpacity
+                  style={styles.replyContainer}
+                  activeOpacity={1}
+                  onPress={this.bindMoreToggle.bind(this, index, item)}>
                   <Text
                     ellipsizeMode={"tail"}
-                    numberOfLines={item.reply_to.status ? 0 : 2}
-                  >
-                    <Text
-                      style={[
-                        styles.author,
-                        { color: this.props.theme.colors.text }
-                      ]}
-                    >
-                      //{item.reply_to.author}：
+                    numberOfLines={item.reply_to.status ? 0 : 2}>
+                    <Text   style={[  styles.author,{ color: this.props.theme.colors.text } ]}>
+                      {item.reply_to.author&&'//'+item.reply_to.author+':'}
                     </Text>
                     <Text style={[styles.mainContent, styles.replyContent]}>
-                      {item.reply_to.content}
+                      {item.reply_to.error_msg?"//"+item.reply_to.error_msg:item.reply_to.content}
                     </Text>
                   </Text>
                 </TouchableOpacity>
@@ -224,6 +281,8 @@ export default class index extends Component {
       />
     );
   };
+
+  // 渲染更多展开按钮
   renderMoreBtn(item, index) {
     if (item.reply_to && String(item.reply_to.content).length > 35) {
       if (!item.reply_to.status) {
@@ -234,7 +293,10 @@ export default class index extends Component {
               styles.moreBtn,
               { backgroundColor: this.props.theme.colors.buttonBackground }
             ]}
-            titleStyle={[styles.moreTitle, { color: this.props.theme.colors.text }]}
+            titleStyle={[
+              styles.moreTitle,
+              { color: this.props.theme.colors.text }
+            ]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
         );
@@ -246,7 +308,10 @@ export default class index extends Component {
               styles.moreBtn,
               { backgroundColor: this.props.theme.colors.buttonBackground }
             ]}
-            titleStyle={[styles.moreTitle, { color: this.props.theme.colors.text }]}
+            titleStyle={[
+              styles.moreTitle,
+              { color: this.props.theme.colors.text }
+            ]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
         );
@@ -255,20 +320,21 @@ export default class index extends Component {
       return;
     }
   }
+
   render() {
     return (
       <ScrollView
         ref={ref => (this.scrollView = ref)}
-        style={{ backgroundColor: this.props.theme.colors.containerBackground }}
-      >
+        style={{
+          backgroundColor: this.props.theme.colors.containerBackground
+        }}>
         <View
           style={[
             this.state.longComments.length == 0
               ? { height: System.SCREEN_HEIGHT - 125 }
               : null
           ]}
-          onLayout={this.listenListHeight.bind(this)}
-        >
+          onLayout={this.listenListHeight.bind(this)}>
           <Text
             style={[
               styles.title,
@@ -277,8 +343,7 @@ export default class index extends Component {
                 borderBottomColor: this.props.theme.colors.border,
                 color: this.props.theme.colors.text
               }
-            ]}
-          >
+            ]}>
             {this.state.longComments.length} 条长评
           </Text>
           {this.state.longComments.length > 0 ? (
@@ -305,8 +370,7 @@ export default class index extends Component {
                 style={[
                   styles.placeholderText,
                   { color: this.props.theme.colors.visitedItem }
-                ]}
-              >
+                ]}>
                 深度长评虚位以待
               </Text>
             </View>
@@ -322,32 +386,16 @@ export default class index extends Component {
                   borderTopWidth: 1
                 }
               : null
-          }
-        >
-          <TouchableOpacity
-            style={[
-              styles.shortCommentsWrapper,
-              { borderColor:this.props.theme.colors.border, }
-            ]}
-            onPress={this.toggleShortComments}
-            activeOpacity={0.4}
-          >
-            <Text
-              style={[styles.title, { color: this.props.theme.colors.text }]}
-            >
+          }>
+          <TouchableOpacity  style={[ styles.shortCommentsWrapper,{ borderColor: this.props.theme.colors.border }]} onPress={this.toggleShortComments}  activeOpacity={0.4}>
+            <Text  style={[styles.title, { color: this.props.theme.colors.text }]}>
               {this.props.navigation.getParam("shortComments")} 条短评
             </Text>
+            {/* 判断短评论是否展开 , 显示不同的箭头 */}
             {!this.state.shortCommentsState ? (
-              <Icon
-                type="material-community"
-                name="chevron-double-down"
-                color={this.props.theme.colors.text}
-              />
+              <Icon  type="material-community" name="chevron-double-down"color={this.props.theme.colors.text}/>
             ) : (
-              <Icon
-                type="material-community"
-                name="chevron-double-up"
-                color={this.props.theme.colors.text}
+              <Icon  type="material-community" name="chevron-double-up"  color={this.props.theme.colors.text}
               />
             )}
           </TouchableOpacity>
@@ -359,22 +407,31 @@ export default class index extends Component {
         </View>
         {/*  遮罩层 */}
         <Modal
-          animationIn={"fadeIn"}
+          onPress={this.bindModalSwitch.bind(this, false)}
+          animationIn={"fadeIn"}//动画类型
           style={styles.moda}
           isVisible={this.state.isModalVisible}
-          backdropTransitionInTiming={400}
-          backdropTransitionOutTiming={400}
-          backdropOpacity={0.5}
-          onBackdropPress={this.bindModalSwitch}
+          backdropTransitionInTiming={300} //动画时间
+          backdropTransitionOutTiming={300}//动画时间
+          backdropOpacity={0.4} //透明度
+          onBackdropPress={this.bindModalSwitch.bind(this, false)}
           onBackButtonPress={this.bindAndroidBack}
-          useNativeDriver={true}
-        >
+          useNativeDriver={true}>
           {this.state.isModalVisible ? (
             <View
-              style={[styles.loadWrapper,{backgroundColor: this.props.theme.colors.containerBackground}]}
-            >
-                <ActivityIndicator animating={true} size="large" />
-              <Text style={[styles.loadText,{ color: this.props.theme.colors.text}]}>努力加载中</Text>
+              renderToHardwareTextureAndroid={this.state.hardwareTextureSwitch} //决定这个视图是否要把它自己（以及所有的子视图）渲染到一个 GPU 上的硬件纹理中。
+              style={[
+                styles.loadWrapper,
+                { backgroundColor: this.props.theme.colors.containerBackground }
+              ]}>
+              <ActivityIndicator animating={true} size={40} />
+              <Text
+                style={[
+                  styles.loadText,
+                  { color: this.props.theme.colors.text }
+                ]}>
+                努力加载中
+              </Text>
             </View>
           ) : (
             <View />

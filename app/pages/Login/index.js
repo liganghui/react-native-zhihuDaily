@@ -14,7 +14,7 @@ export default class index extends Component {
     super(props);
     this.state = {
       paused:false,//视频是否暂停
-      muted: true, //视频是否静音
+      muted: false, //视频是否静音
     };
   }
   componentDidMount() {
@@ -72,7 +72,6 @@ export default class index extends Component {
             this.player = ref;
           }}
         />
-        {/* <Icon name="volume-up" type="material" size={24} color="#fff" /> */}
         {this.state.muted ? (
           <View style={styles.noticeContainer}>
             <View style={styles.noticeBackground}>

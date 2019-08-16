@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, StyleSheet, Text, AppState } from "react-native";
+import { View, StyleSheet, Text, AppState,InteractionManager } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import {
   Menu,
@@ -19,9 +19,10 @@ import MyScrollView from "../../componetns/ScrollView";
 // 轮播图组件
 import HomeSwiper from "./HomeSwiper";
 import { AndroidBackHandler } from "react-navigation-backhandler";
-
+import { DrawerActions } from 'react-navigation-drawer';
 let that; //保存This引用
 @inject("theme") //引入主题Store (Mobx)
+@inject("app") 
 @observer //装饰器语法 , 将其转换成可观察的 (Mobx)
 export default class index extends Component {
   // 配置标题栏参数
@@ -54,6 +55,15 @@ export default class index extends Component {
           <Button
             type="clear"
             onPress={() => {
+              that.handleHistoryClick();
+            }}
+            icon={
+              <Icon type='material' name="history" size={25} color="white" />
+            }
+          />
+          <Button
+            type="clear"
+            onPress={() => {
               that.tooglePopupMenu();
             }}
             icon={
@@ -74,7 +84,7 @@ export default class index extends Component {
       refresh: false, //控制下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
       opened: false, //控制Header弹出菜单显示
-      isDateTimePickerVisible: false, //控制日期选择控件
+      isDateTimePickerVisible: false, //控制日期选择控件显示
       finished: false //判断列表是否全部加载完
     };
     // 默认标题
@@ -86,18 +96,20 @@ export default class index extends Component {
     this.init();
     // 监听应用状态(后台运行/前台运行)
     AppState.addEventListener("change", this.handleAppStateChange);
-    // 初始化 日报详情页访问状态 (用于详情(Details)页使用)
-    global.storage.save({
-      key: "webviewFirst",
-      data: true
-    });
     // 传递到navigation (navigation中无法使用this调用)
     this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
+    this.props.navigation.setParams({ handleHistoryClick: this.handleHistoryClick });
+
   }
   init() {
     // 根据网络状态初始化数据
     // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
     Tools.getNetworkState().then(newWorkInfo => {
+      if(newWorkInfo.online){
+        this.setState({
+          refresh:true
+        })
+      }
       let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({ key: "latest", syncInBackground: syncInBackgroundState })
@@ -105,7 +117,9 @@ export default class index extends Component {
           this.handleDataRender(responseJson);
         })
         .catch(error => {
-          console.warn(error);
+          this.setState({
+            refresh:false
+          })
         });
     });
   }
@@ -146,6 +160,7 @@ export default class index extends Component {
         {
           topStories: responseJson.top_stories,
           stories: data,
+          refresh:false,
           listHeight: [], //重置列表高度数组
           finished: false,
         },
@@ -183,6 +198,7 @@ export default class index extends Component {
           item.visited = false;
           if (index === listData.length - 1) {
             callback(listData);
+            
           }
         });
     });
@@ -199,7 +215,6 @@ export default class index extends Component {
     this.setState({
       pullUpLoading: true
     });
-
     // 获得日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
     storage
@@ -248,11 +263,40 @@ export default class index extends Component {
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
-  bindListTap = item => {
+  bindListTap = (item) => {
     // 页面跳转
+    let idArray=[]; //日报ID数组
+    let selectdIndex; //点击项的数组下标
+    if(item.image){//根据属性判断是列表或轮播图
+      //轮播图时
+      this.state.topStories.forEach((el)=>{
+          idArray.push({
+            id:el.id,
+            selected:el.id==item.id?true:false
+          })
+      })
+    }else{
+      // 列表时
+      this.state.stories.forEach((items)=>{
+        items.data.forEach((el)=>{
+          idArray.push({
+            id:el.id,
+            selected:el.id==item.id?true:false
+          })
+        })
+      })
+    }
+    // 获取数组下标
+    idArray.forEach((el,index)=>{
+      if(el.id==item.id){
+        selectdIndex=index
+      }
+    })
     this.props.navigation.navigate("Details", {
-      id: item.id
+      idArray,
+      selectdIndex
     });
+    InteractionManager.runAfterInteractions(() => {
     // 存储访问状态
     storage
       .save({
@@ -277,6 +321,7 @@ export default class index extends Component {
           stories
         });
       });
+    })
   };
 
   /**
@@ -344,17 +389,29 @@ export default class index extends Component {
   handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
-      global.storage.save({
-        key: "webviewFirst",
-        data: true
-      });
+        this.props.navigation.closeDrawer();
     } else if (nextAppState === "active") {
-      // 当应用从后台切换到 并且仅有一页数据时 会刷新页面.
+      // 当应用从后台切换到前台 并且仅有一页数据时 会刷新页面.
       if (this.state.stories.length <= 1) {
         this.init();
       }
     }
   };
+  /** 
+   * 历史日报点击事件
+  */
+  handleHistoryClick(){
+    // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
+    let m=new Date('October 23 , 2013 00:00:00');
+     m=m.getTime();
+    let n=new Date();
+     n=n.getTime();
+    let s=n-m;
+    s=Math.floor(Math.random()*s)
+    s=m+s;
+    s=new Date(s);
+    this.handleDatePicked(s,'随便看看');
+  }
   /**
    * 控制弹出菜单切换显示
    */
@@ -372,29 +429,40 @@ export default class index extends Component {
     });
   };
 
+  // 
+
+
   /**
    *  日期选择器点击行为
    */
-  handleDatePicked = date => {
+  handleDatePicked = (date,title="") => {
     let dateStr = Tools.formatDay(date)
       .split("-")
       .join("");
     this.props.navigation.navigate("Section", {
-      date: dateStr
+      date: dateStr,
+      title
     });
-    this.toggleDateTimePicker();
+    this.setState({
+      isDateTimePickerVisible:false
+    });
   };
 
   /**
    * 处理安卓返回键行为
    */
   onBackButtonPressAndroid = () => {
-    if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+     //  判断侧边栏抽屉菜单是否为打开状态
+    if(this.props.app.isDrawerOpen){
+      this.props.navigation.closeDrawer();
+      return true;
+    }else  if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
       return false;
+    }else{
+      this.lastBackPressed = Date.now();
+      Tools.toast("再按一次退出应用");
+      return true;
     }
-    this.lastBackPressed = Date.now();
-    Tools.toast("再按一次退出应用");
-    return true;
   };
 
   /**
@@ -403,9 +471,7 @@ export default class index extends Component {
    */
   renderSectioHeader = items => {
     return (
-      <Text
-        style={[styles.sectionTitle, { color: this.props.theme.colors.text }]}
-      >
+      <Text  style={[styles.sectionTitle, { color: this.props.theme.colors.text }]} >
         {this.formatDate(items.section.key)}
       </Text>
     );
@@ -491,7 +557,7 @@ export default class index extends Component {
           <DateTimePicker
             // 最大日期
             maximumDate={
-              //判断当前时间 是否大于早上7点 , 每天日报早上7点更新
+              //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
               //如果时间早于7点 ,则最大可选择日起为昨天.
               Number(Tools.formatTime().split(":")[0]) >= 7
                 ? new Date()
@@ -517,7 +583,7 @@ const styles = StyleSheet.create({
   },
   headerRightWrapper: {
     justifyContent: "space-between",
-    width: 90,
+    width: 140,
     flexDirection: "row"
   },
   popupWrapper: {

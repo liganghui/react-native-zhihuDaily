@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import Bar from "../Bar";
 import hotUpdateBg from "../../assets/images/hot-update-bg.png";
-import { Px2Dp } from "../../utils";
 
 const propTypes = {
   ...Modal.propTypes
@@ -54,7 +53,7 @@ export default class ProgressBarModal extends PureComponent {
           </ImageBackground>
           <View style={styles.subView}>
             <Bar
-              style={{ width: Px2Dp(400), borderRadius: Px2Dp(30) }}
+              style={{ width:400, borderRadius: 30 }}
               progress={progress}
               backgroundStyle={styles.barBackgroundStyle}
             />
@@ -78,8 +77,8 @@ ProgressBarModal.defaultProps = defaultProps;
 
 const styles = StyleSheet.create({
   imageBg: {
-    width: Px2Dp(500),
-    height: Px2Dp(150),
+    width: 500,
+    height:150,
     justifyContent: "center",
     alignItems: "center"
   },
@@ -94,21 +93,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#e0e0e0"
   },
   subView: {
-    width: Px2Dp(500),
-    height: Px2Dp(200),
+    width: 500,
+    height: 200,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center"
   },
   bottomContainer: {
-    width: Px2Dp(500),
-    height: Px2Dp(39),
+    width: 500,
+    height:40,
     backgroundColor: "#FFF"
   },
   textPackageSize: {
     fontSize: 16,
     color: "#686868",
-    marginTop: Px2Dp(36)
+    marginTop: 36
   },
   title: {
     color: "#FFF",

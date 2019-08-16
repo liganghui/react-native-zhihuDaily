@@ -1,28 +1,30 @@
-import React, { Component } from "react";
+import {  DeviceEventEmitter } from "react-native";
 import {
   createStackNavigator,
-  createAppContainer,
+  createAppContainer, 
   createDrawerNavigator,
 } from "react-navigation";
-import { DeviceEventEmitter } from "react-native";
-import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
+import StackViewStyleInterpolator from 'react-navigation-stack/lib/module/views/StackView/StackViewStyleInterpolator'
 import HomeScreen from "../pages/Home";
 import DetailsScreen from "../pages/Details";
-import DrawerScreen from "../pages/Drawer";
 import ImgScreen from "../pages/ImgView";
 import SectionScreen from "../pages/Section";
 import CommentScreen from "../pages/Comment";
+import DrawerScreen from "../pages/Drawer";
+import SettingScreen from "../pages/Setting";
+import AboutScreen from "../pages/About";
+import FeedbackScreen from "../pages/Feedback";
 import LoginScreen from "../pages/Login";
 import SignInScreen from "../pages/Login/SignIn";
 import RegisteredScreen from "../pages/Registered";
 import JoinScreen from "../pages/Registered/Join";
-import SettingScreen from "../pages/Setting";
+import stores from "../store";
+
 
 /*
  *   构建导航
  *
  *   导航结构 ：
- *      >Drawer (抽屉侧边栏)
  *      >Home   (首页)
  *          >>Details (详情页)
  *          >>Comment (评论页)
@@ -37,11 +39,13 @@ const MainScreen = createStackNavigator(
     Details: {
       screen: DetailsScreen,
       path: "details/:id" //定义路径地址,用于路由深连接 id为参数
-      //传参示例 daily://main/details/3892357
+      //传参示例 daily://details/3892357
     },
     ImgView: ImgScreen,
     Section: SectionScreen,
     Comment: CommentScreen,
+    About:AboutScreen,
+    Feedback:FeedbackScreen,
     Login: LoginScreen,
     SignIn: SignInScreen,
     Registered: RegisteredScreen,
@@ -54,6 +58,7 @@ const MainScreen = createStackNavigator(
   {
     // 设置header默认样式
     defaultNavigationOptions: {
+      gesturesEnabled:true,
       headerStyle: {
         backgroundColor: "#00a2ed"
       },
@@ -62,11 +67,11 @@ const MainScreen = createStackNavigator(
         fontSize: 16
       }
     },
-    // 设置转场动画效果（安卓实现类似iOS的push动画)    来源： https://www.jianshu.com/p/dc9df5826651
+      // 设置转场动画效果（安卓实现类似iOS的push动画)    来源： https://www.jianshu.com/p/dc9df5826651
     transitionConfig: () => ({
       screenInterpolator: StackViewStyleInterpolator.forHorizontal,
       transitionSpec: {
-        duration: 300 //动画时间
+        duration: 280 //动画时间
       }
     })
   }
@@ -100,9 +105,11 @@ const DrawerNavigator = createDrawerNavigator(
     }
   },
   {
+    initialRouteName:'Main',
     contentComponent: DrawerScreen
   }
 );
+
 
 /*
  *  监听抽屉是否获得焦点  触发自定义事件
@@ -115,20 +122,21 @@ DrawerNavigator.router.getStateForAction = (action, state) => {
       DeviceEventEmitter.emit("drawerState", {
         focus: true
       });
+      stores.app.isDrawerOpen=true;
     } else if (
       action.type == "Navigation/MARK_DRAWER_SETTLING" &&
       !action.willShow
     ) {
-      /* 
-       *  Drawer 关闭
-       *  ...... 
-      */
+      //  Drawer 关闭
+      stores.app.isDrawerOpen=false;
     }
   }
   return defaultGetStateForAction(action, state);
 };
 
 
-const AppNavigator = createAppContainer(DrawerNavigator); //创建应用
+
+
+const AppNavigator = createAppContainer(DrawerNavigator); 
 
 export default AppNavigator

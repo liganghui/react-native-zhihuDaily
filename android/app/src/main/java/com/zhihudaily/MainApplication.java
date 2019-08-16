@@ -1,46 +1,38 @@
-package com.demo;
+package com.zhihudaily;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import org.devio.rn.splashscreen.SplashScreenReactPackage;
-import com.microsoft.codepush.react.CodePush;
+import com.react.rnspinkit.RNSpinkitPackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
-import com.brentvatne.react.ReactVideoPackage;
-import com.react.rnspinkit.RNSpinkitPackage;
-import cl.json.RNSharePackage;
-import com.reactnativecommunity.netinfo.NetInfoPackage;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.levelasquez.androidopensettings.AndroidOpenSettingsPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import cl.json.RNSharePackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import com.taumu.rnDynamicSplash.DynamicSplashReactPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.kishanjvaghela.cardview.RNCardViewPackage;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import cn.jpush.reactnativejpush.JPushPackage;
+
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
-  // 设置为 true 将不会弹出 toast
-    private boolean SHUTDOWN_TOAST = true;
-    // 设置为 true 将不会打印 log
-    private boolean SHUTDOWN_LOG = true;
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-
-        @Override
-        protected String getJSBundleFile() {
-        return CodePush.getJSBundleFile();
-        }
-    
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -50,24 +42,25 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new AndroidOpenSettingsPackage(),
-            new RNDeviceInfo(),
-            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
-            new SplashScreenReactPackage(),
-            new CodePush(getResources().getString(R.string.reactNativeCodePush_androidDeploymentKey), getApplicationContext(), BuildConfig.DEBUG),
+            new RNSpinkitPackage(),
+            new ReactVideoPackage(),
             new ImagePickerPackage(),
             new PickerPackage(),
-            new ReactVideoPackage(),
-            new RNSpinkitPackage(),
-            new RNSharePackage(),
-            new NetInfoPackage(),
-            new AsyncStoragePackage(),
+            new AndroidOpenSettingsPackage(),
             new RNFetchBlobPackage(),
             new RNCWebViewPackage(),
             new VectorIconsPackage(),
+            new SplashScreenReactPackage(),
+            new RNSharePackage(),
+            new ReactNativeRestartPackage(),
             new LinearGradientPackage(),
             new RNGestureHandlerPackage(),
-            new RNCardViewPackage()
+            new ReactNativeExceptionHandlerPackage(),
+            new DynamicSplashReactPackage(),
+            new RNDeviceInfo(),
+            new RNCardViewPackage(),
+            new NetInfoPackage(),
+            new AsyncStoragePackage()
       );
     }
 

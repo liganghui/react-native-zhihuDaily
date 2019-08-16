@@ -29,7 +29,7 @@ export default class HomeSwiper extends Component {
     return (
       <ImageBackground  source={{ uri: item.image }}  style={styles.sliderWrapper} key={item.id}>
         <LinearGradient
-          colors={["rgba(0,0,0,0)", "rgba(0,0,0,.9)"]}
+          colors={["rgba(0,0,0,0)", "rgba(0,0,0,.8)"]}
           style={styles.linearGradient}
         >
           <TouchableOpacity
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     height: 230
   },
   sliderWrapper: {
-    flex: 1
+    height: 230
   },
   linearGradient: {
     width: "100%",

@@ -11,6 +11,7 @@ import { Tools } from "../../utils";
 import { observer, inject } from "mobx-react";
 
 @inject("theme")
+@inject("app")
 @observer
 class Drawer extends Component {
   constructor(props) {
@@ -18,9 +19,6 @@ class Drawer extends Component {
     this.state = {
       userInfo: "",
     };
-  }
-  componentWillUnmount(){
-    this.listener.remove();
   }
   componentDidMount() {
     // 监听Drawer显示
@@ -39,6 +37,9 @@ class Drawer extends Component {
       .catch(res => {});
     });
    this.initUserInfo()
+  }
+  componentWillUnmount(){
+    this.listener.remove();
   }
   initUserInfo=()=>{
     storage
