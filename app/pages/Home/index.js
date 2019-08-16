@@ -389,7 +389,7 @@ export default class index extends Component {
   handleAppStateChange = nextAppState => {
     // 当切换到后台时,更新状态
     if (nextAppState === "background") {
-        this.props.navigation.closeDrawer();
+        //切换到后台         
     } else if (nextAppState === "active") {
       // 当应用从后台切换到前台 并且仅有一页数据时 会刷新页面.
       if (this.state.stories.length <= 1) {
