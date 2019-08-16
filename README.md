@@ -10,8 +10,8 @@
      
 
 > ### 运行  
-     react-native run-android  或者 react-native run-ios
-   
+    react-native run-android  或者 react-native run-ios
+   注 : 应用启动后rn-fetch 会显示一些警告信息 ，此为组件自身问题 ，请无视 。 
  
 > 运行前的修改
 
@@ -36,14 +36,15 @@
   
   如要开启这两功能  请参考相关文档 , 配置依赖项与Key . 
 
-
+  
 <br/>
 <br/>
 
 
-> ### 演示
+> ### 运行演示
 
-<img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/4.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/5.gif"/>
+<img  width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-d5cbb25e1fae5efa.gif?imageMogr2/auto-orient/strip"/> <img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-6dad2aa89481e4cb.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-31c7c8ea52162c36.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-0bdba4e3ee275440.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-88fe4383128547a8.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-aa471f6aa4c72116.gif?imageMogr2/auto-orient/strip"/>      
+
 <br/>
 <br/>
 
@@ -58,4 +59,50 @@
 
 
 > 
+
+> ### react-native-video 组件 构建错误处理
+
+ react-native-video 组件有些问题 ， 可能导致你无法构建项目  ，如以下方法无法解决 ， 你可以移除相关功能代码 。
+
+> 执行```react-native  run-android ```  react-native-video 报错
+
+ ```javascript
+//  错误代码
+Task :react-native-video:mergeDebugJniLibFolders FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':react-native-video:mergeDebugJniLibFolders'.
+
+ ```
+ 解决方法 ：
+  
+  1. package.json 移除 react-native-video
+  2. 注释 app/pages/Login/index ```react-native-video``` 相关代码如下：
+  ```javascript
+//代码如下 ：
+//.....
+import Video from "react-native-video"; 
+//.....
+  <Video                               
+     style={styles.backgroundVideo}
+     source={require("../../assets/video/login-background.mp4")}
+     muted={this.state.muted}
+     paused={this.state.paused}
+     resizeMode="cover"
+     ref={ref => {
+        this.player = ref;
+    }}
+  />
+  ```
+  
+3. 重新执行 react-native run-android 即可构建成功 ， 之后还原注释的代码 ，下次构建就不会报错了
+
+
+> 执行 cd android  &&./gradlew assembleRelease 时 react-native-video 报错
+
+  更换命令为  ```cd android  &&./gradlew.bat  assembleRelease```
+
+
 
