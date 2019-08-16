@@ -1,22 +1,39 @@
 ## RN版知乎日报
 
-知乎日报的 react-native 开发版本 , 用于日常使用和项目练习.    
-运行项目 请使用 简化(simple) 分支 , 主分支存在一些错误 , 暂无时间修复.
+知乎日报的 react-native 版本 , 用于日常使用和项目练习.    
 <br/>
 
 
 > ### 安装
 
-    yarn
-或者
-  
-    npm install
+    yarn  或者  npm install
      
-  >> 依赖项中存在Github社区版本, 请确保网络访问性.
+
 > ### 运行  
-     react-native run-android
-  >>由于缺少IOS开发环境 , 无法确定IOS存在的问题 , 所以暂时只支持安卓运行 .  
+     react-native run-android  或者 react-native run-ios
+   
  
+> 运行前的修改
+
+ 由于  ```react-native-snap-carousel v3.8.0``` 中 ,  firstItem属性 存在问题 , 社区已给出解决方案 , 但还未同步到npm中  需要手动修改```node_modules```下的文件. 
+   修改内容 :  [点击此处]( https://github.com/rtalwork/react-native-snap-carousel/commit/73261bbae26e753bb3c3c37bcd03dc8d35919fe1)
+         [社区讨论]( https://github.com/archriss/react-native-snap-carousel/issues/538)
+         
+> IOS版本存在的问题
+
+  由于我缺少IOS开发环境 , App没有在IOS环境下的测试过 . 建议先尝试运行Android版本 , 如要运行IOS版本 ,请先解决以下问题 .
+
+  
+  1.  [react-native-image-crop-picker](https://github.com/ivpusic/react-native-image-crop-picker) 需要手动配置 , 请参考文档增加 ios 的配置 .
+
+  2. [react-native-splash-screen(启动图)](https://github.com/crazycodeboy/react-native-splash-screen)  需要手动配置 , 请参考文档增加 ios 的配置 .
+
+  3. 为应用更换IOS的图标和名称 (可选)
+  
+  > 极光推送与热更新功能(CodePush)
+
+  代码包含 极光推送 和 CodePush热更新功能代码 , 但没有增加相关功能的依赖项配置 , 如要开启这两功能请参考相关文档 , 配置依赖项与Key . 
+
 
 <br/>
 <br/>
@@ -27,78 +44,16 @@
 <img  width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/1.gif"/> <img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/2.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/4.gif"/><img width="270" height="480" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/gif/5.gif"/>
 <br/>
 <br/>
-> ### 扫码下载(Anroid)
+
+
+
+<!-- > ### 下载演示(Anroid)
 
  <img  width="210" height="210" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/qrCode.png"/>
 <br/>
 <br/>
+ -->
 
-> ### 功能
-   - 轮播图
-   - 日期选择器
-   - 主题化
-   - 热更新(codePush)
-   - 登录流程
-   - 图片保存
-   - 图像查看器
-   - WebView集成
-   - 启动屏
-   - 极光推送
-   - Mobx集成
-   - 头像拍摄和裁切
-   - 消息推送深连接
-   
-<br/>
-
-> ### 待办项 
-
-- [ ] IOS适配 
-- [ ] 适配iPhoneX和安卓异形屏  
-<br/>
-
->  ### 目录结构
-```
-├─assets 资源文件夹
-│  ├─images  图像资源
-│  └─video   视频文件
-├─componetns  组件文件夹
-│  ├─AvatarPicker  头像选择
-│  ├─Bar   进度条
-│  ├─CountDownButton  倒计时按钮
-│  ├─ProgressBarModal  下载进度弹层
-│  ├─PullUpLoading  下拉加载
-│  ├─ScrollView    集成上拉刷新和下拉加载的ScrollView
-│  └─StoriesList 公共日报列表
-├─pages  页面文件夹
-│  ├─Comment 评论页
-│  ├─Details 详情页
-│  ├─Drawer  侧边栏
-│  ├─Home    首页
-│  ├─ImgView 图像缩放下载
-│  ├─Login    登录
-│  ├─Registered 注册
-│  ├─Section  栏目
-│  └─Setting  设置
-├─routers  路由文件夹
-│ └─AppRouter.js APP主路由
-├─store 状态管理仓库文件夹
-│  ├─index.js 导出Store
-│  └─ThemeStore.js 主题Store
-├─theme  主题文件夹
-│  ├─ blackTheme.js 夜间主题配色 
-│  └─ defaultTheme.js 默认主题配色
-├─utils 工具和配置文件夹
-│  ├─ api.js  API配置文件
-│  ├─ axios.js Axios配置文件
-│  ├─ fontSize.js 字体缩放适配
-│  ├─ index.js  统一导出各工具组件
-│  ├─ storage.js  本地存储初始化配置文件
-│  ├─ strageSync.js 本地存储同步远程数据函数
-|  ├─ system.js   获取系统信息
-|  └─ tools.js 工具函数 
-|   
-|_ App.js  应用根节点 
-
-```
 
 > 
+
