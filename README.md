@@ -41,8 +41,7 @@
 <br/>
 
 
-> ### 运行演示
-
+> ### 运行演示   
 <img  width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-d5cbb25e1fae5efa.gif?imageMogr2/auto-orient/strip"/> <img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-6dad2aa89481e4cb.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-31c7c8ea52162c36.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-0bdba4e3ee275440.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-88fe4383128547a8.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-aa471f6aa4c72116.gif?imageMogr2/auto-orient/strip"/>      
 
 <br/>
@@ -50,12 +49,12 @@
 
 
 
-<!-- > ### 下载演示(Anroid)
+> ## 下载
 
- <img  width="210" height="210" src="https://raw.githubusercontent.com/liganghui/react-native-zhihuDaily/master/doc/qrCode.png"/>
+ [Android版本](https://rink.hockeyapp.net/api/2/apps/5cf4cc3667854feb8088434dd7fc6715/app_versions/6?format=apk&avtoken=8e2b073d7b258cb862cd10e8aea1d25420634311&download_origin=hockeyapp&mctoken=dab91759e10ef3147789e51b70bab4c2abb45e55)    
 <br/>
 <br/>
- -->
+
 
 
 > 
