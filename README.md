@@ -90,9 +90,8 @@ Execution failed for task ':react-native-video:mergeDebugJniLibFolders'.
  解决方法 ：
   
   1. package.json 移除 react-native-video
-  2. 注释 app/pages/Login/index ```react-native-video``` 相关代码如下：
+  2. 注释 app/pages/Login/index 中有关 ```react-native-video``` 代码如下：
   ```javascript
-//代码如下 ：
 //.....
 import Video from "react-native-video"; 
 //.....
