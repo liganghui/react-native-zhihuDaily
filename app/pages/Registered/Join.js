@@ -1,10 +1,6 @@
-import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   Container,
   Content,
@@ -14,17 +10,17 @@ import {
   Icon,
   Button,
   H2,
-} from "native-base";
-import { StackActions, NavigationActions } from "react-navigation";
-import LCCountDownButton from "../../componetns/CountDownButton";
-import { Api, Tools, Axios, System } from "../../utils";
+} from 'native-base';
+import {StackActions, NavigationActions} from 'react-navigation';
+import LCCountDownButton from '../../componetns/CountDownButton';
+import {Tools} from '../../utils';
 let countDown;
 export default class index extends Component {
-  static navigationOptions = ({ navigation,screenProps }) => {
+  static navigationOptions = ({screenProps}) => {
     return {
-      title: "注册",
-      headerStyle:{
-        backgroundColor:screenProps.theme
+      title: '注册',
+      headerStyle: {
+        backgroundColor: screenProps.theme,
       },
     };
   };
@@ -35,7 +31,7 @@ export default class index extends Component {
       passWord: null,
       repeatPassWord: null,
       pwdVisibility: false,
-      phoneNum: this.props.navigation.getParam("phoneNum")
+      phoneNum: this.props.navigation.getParam('phoneNum'),
     };
   }
   componentDidMount() {
@@ -44,17 +40,17 @@ export default class index extends Component {
       this.countDownButtonPressed();
     }
   }
-  componentWillUnmount(){
-    this.clearTime()
+  componentWillUnmount() {
+    this.clearTime();
   }
   bindOnChangeText = (text, name) => {
     this.setState({
-      [name]: text
+      [name]: text,
     });
   };
   switchPwdVisibility = () => {
     this.setState({
-      pwdVisibility: !this.state.pwdVisibility
+      pwdVisibility: !this.state.pwdVisibility,
     });
   };
   countDownButtonPressed = () => {
@@ -63,34 +59,38 @@ export default class index extends Component {
   switchStyle = (attribute, val1, val2) => {
     if (this.state.code && this.state.passWord && this.state.repeatPassWord) {
       return {
-        [attribute]: val1
+        [attribute]: val1,
       };
     } else {
       return {
-        [attribute]: val2
+        [attribute]: val2,
       };
     }
   };
   signOut = () => {
-    if (!this.state.code || !this.state.passWord || !this.state.repeatPassWord) {
-      Tools.toast("请完善注册信息");
-      return
+    if (
+      !this.state.code ||
+      !this.state.passWord ||
+      !this.state.repeatPassWord
+    ) {
+      Tools.toast('请完善注册信息');
+      return;
     }
     const resetAction = StackActions.reset({
       index: 1,
       actions: [
-        NavigationActions.navigate({ routeName: "Home" }),
-        NavigationActions.navigate({ routeName: "SignIn" })
-      ]
+        NavigationActions.navigate({routeName: 'Home'}),
+        NavigationActions.navigate({routeName: 'SignIn'}),
+      ],
     });
     this.clearTime();
     this.props.navigation.dispatch(resetAction);
-    Tools.toast("注册成功，请登录");
+    Tools.toast('注册成功，请登录');
   };
-  clearTime=()=>{
+  clearTime = () => {
     this.countDownButton.clearTime();
-    countDown=null;
-  }
+    countDown = null;
+  };
   render() {
     return (
       <Container>
@@ -104,14 +104,14 @@ export default class index extends Component {
             <Input
               style={styles.input}
               placeholder="请输入验证码"
-              placeholderTextColor={"#999"}
-              clearButtonMode={"unless-editing"}
-              autoComplete={"tel"}
+              placeholderTextColor={'#999'}
+              clearButtonMode={'unless-editing'}
+              autoComplete={'tel'}
               autoFocus={true}
-              keyboardType={"numeric"}
-              returnKeyType={"next"}
+              keyboardType={'numeric'}
+              returnKeyType={'next'}
               onChangeText={text => {
-                this.bindOnChangeText(text, "code");
+                this.bindOnChangeText(text, 'code');
               }}
               onSubmitEditing={() => this.pwdInput._root.focus()}
             />
@@ -122,7 +122,7 @@ export default class index extends Component {
               pressAction={this.countDownButtonPressed}
               changeWithCount={count => {
                 countDown = count;
-                return count + "秒";
+                return count + '秒';
               }}
               id="register"
               ref={ref => {
@@ -136,12 +136,12 @@ export default class index extends Component {
               style={styles.input}
               ref={input => (this.pwdInput = input)}
               placeholder="请输入密码"
-              placeholderTextColor={"#999"}
+              placeholderTextColor={'#999'}
               blurOnSubmit={true}
               secureTextEntry={this.state.pwdVisibility ? false : true}
-              returnKeyType={"next"}
+              returnKeyType={'next'}
               onChangeText={text => {
-                this.bindOnChangeText(text, "passWord");
+                this.bindOnChangeText(text, 'passWord');
               }}
               onSubmitEditing={() => this.repeatPwdInput._root.focus()}
             />
@@ -151,9 +151,7 @@ export default class index extends Component {
                 name="remove-red-eye"
                 style={[
                   styles.icon,
-                  this.state.pwdVisibility
-                    ? { color: "#333" }
-                    : { color: "#999" }
+                  this.state.pwdVisibility ? {color: '#333'} : {color: '#999'},
                 ]}
               />
             </TouchableOpacity>
@@ -164,12 +162,12 @@ export default class index extends Component {
               style={styles.input}
               ref={input => (this.repeatPwdInput = input)}
               placeholder="请再次输入密码"
-              placeholderTextColor={"#999"}
+              placeholderTextColor={'#999'}
               blurOnSubmit={true}
               secureTextEntry={this.state.pwdVisibility ? false : true}
-              returnKeyType={"go"}
+              returnKeyType={'go'}
               onChangeText={text => {
-                this.bindOnChangeText(text, "repeatPassWord");
+                this.bindOnChangeText(text, 'repeatPassWord');
               }}
               onSubmitEditing={this.signOut}
             />
@@ -179,9 +177,7 @@ export default class index extends Component {
                 name="remove-red-eye"
                 style={[
                   styles.icon,
-                  this.state.pwdVisibility
-                    ? { color: "#333" }
-                    : { color: "#999" }
+                  this.state.pwdVisibility ? {color: '#333'} : {color: '#999'},
                 ]}
               />
             </TouchableOpacity>
@@ -190,16 +186,14 @@ export default class index extends Component {
             full
             style={[
               styles.submitBtn,
-              this.switchStyle("backgroundColor", "#00a2ed", "#eaeaea")
+              this.switchStyle('backgroundColor', '#00a2ed', '#eaeaea'),
             ]}
-            onPress={this.signOut}
-          >
+            onPress={this.signOut}>
             <Text
               style={[
                 styles.submitText,
-                this.switchStyle("color", "#fff", "#494949")
-              ]}
-            >
+                this.switchStyle('color', '#fff', '#494949'),
+              ]}>
               完成
             </Text>
           </Button>
@@ -213,29 +207,29 @@ var styles = StyleSheet.create({
     marginTop: 20,
     paddingRight: 20,
     height: 50,
-    borderColor: "#e8e8e8"
+    borderColor: '#e8e8e8',
   },
-  header:{
-    flex:1,
-    justifyContent:'center',
+  header: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitle:{
-    marginVertical:15,
+  headerTitle: {
+    marginVertical: 15,
   },
   label: {
-    marginLeft: 20
+    marginLeft: 20,
   },
   input: {
-    fontSize: 14
+    fontSize: 14,
   },
   submitText: {
-    color: "#494949"
+    color: '#494949',
   },
   submitBtn: {
     borderRadius: 2,
     marginHorizontal: 40,
-    justifyContent: "center",
-    marginTop: 30
-  }
+    justifyContent: 'center',
+    marginTop: 30,
+  },
 });

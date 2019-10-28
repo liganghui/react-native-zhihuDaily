@@ -1,19 +1,22 @@
-import React, { Component } from "react";
-import { Platform,Alert,Linking } from "react-native";
-import { MenuProvider } from "react-native-popup-menu";
-import { Provider, observer } from "mobx-react";
-import stores from "./store";
-// import codePush from "react-native-code-push";
-import "./utils/storage";
-import SplashScreen from "react-native-splash-screen";
-// import JPushModule from "jpush-react-native";
-import AppNavigation from "./routers/AppRouter";
+import React from 'react';
+import {Alert} from 'react-native';
+import {MenuProvider} from 'react-native-popup-menu';
+import {Provider, observer} from 'mobx-react';
+import stores from './store';
+import './utils/storage';
+import AppNavigation from './routers/AppRouter';
 import RNRestart from 'react-native-restart';
 import DeviceInfo from 'react-native-device-info';
-import ProgressBarModal from "./componetns/ProgressBarModal";
-import {setJSExceptionHandler,setNativeExceptionHandler} from 'react-native-exception-handler';
-import {Axios} from "./utils";
+import {
+  setJSExceptionHandler,
+  setNativeExceptionHandler,
+} from 'react-native-exception-handler';
+import {Axios} from './utils';
+import RNBootSplash from 'react-native-bootsplash';
 
+// import ProgressBarModal from './componetns/ProgressBarModal';  //下载进度弹层
+// import JPushModule from "jpush-react-native";  // 极光推送
+// import codePush from "react-native-code-push"; // codePush热更新
 
 /*
  *   应用根组件 , 负责向导航路由(Navigation) 挂载全局组件 , 并导出APP.
@@ -21,57 +24,52 @@ import {Axios} from "./utils";
  *   主要挂载：mobx , 热更新(codepush) , 极光推送 ,启动屏 ,本地存储 ,深连接 , 错误处理.
  *
  */
-const prefix = "daily://"; //react-navigation 深连接的URI前缀
+const prefix = 'daily://'; //react-navigation 深连接的URI前缀
 
 const errorHandler = (e, isFatal) => {
   if (isFatal) {
     Alert.alert(
-        '系统错误',
-        `
-        应用发生致命错误： ${(isFatal) ? '错误信息:' : ''} ${e.name} ${e.message}
+      '系统错误',
+      `
+        应用发生致命错误： ${isFatal ? '错误信息:' : ''} ${e.name} ${e.message}
         建议您重启应用.
         `,
-      [{
-        text: '重启应用',
-        onPress: () => {
-          RNRestart.Restart();
-        }
-      }]
+      [
+        {
+          text: '重启应用',
+          onPress: () => {
+            RNRestart.Restart();
+          },
+        },
+      ],
     );
   } else {
-    console.log(e); 
+    console.log(e);
   }
 };
 
 setJSExceptionHandler(errorHandler);
 
-setNativeExceptionHandler((errorString) => {
+setNativeExceptionHandler(errorString => {
   //向服务器发送错误日志
-  let  errInfo={
-    '品牌':DeviceInfo.getBrand(),
-    '应用版本号':DeviceInfo.getReadableVersion(),
-    '系统版本':DeviceInfo.getSystemVersion(),
-    '是否为平板电脑': DeviceInfo.isTablet(),
-    "触发时间":new Date(), 
-    '错误信息':errorString,
-  }
-  Axios.post("http://106.52.75.247:3000/feedback", {
+  let errInfo = {
+    品牌: DeviceInfo.getBrand(),
+    应用版本号: DeviceInfo.getReadableVersion(),
+    系统版本: DeviceInfo.getSystemVersion(),
+    是否为平板电脑: DeviceInfo.isTablet(),
+    触发时间: new Date(),
+    错误信息: errorString,
+  };
+  Axios.post('http://106.52.75.247:3000/feedback', {
     title: '知乎日报APP错误日志',
-    content: JSON.stringify(errInfo)
-  }).then((res) => {
-
-  }).catch(() => {
-  
-  });
+    content: JSON.stringify(errInfo),
+  })
+    .then(() => {})
+    .catch(() => {});
 });
-
-
-
-
 
 @observer
 class App extends React.Component {
-
   // constructor(props) {
   //   super(props);
   //   this.state = {
@@ -95,15 +93,15 @@ class App extends React.Component {
     //     Linking.openURL(param.link )
     //   }
     // });
+
     // // 隐藏启动屏图片
-    SplashScreen.hide();
+    RNBootSplash.hide({duration: 250});
   }
 
   // componentWillUnmount() {
   //   // 移除事件监听
   //   JPushModule.removeReceiveOpenNotificationListener();
   // }
-
 
   // 热更新状态
   // codePushStatusDidChange(status) {
@@ -132,7 +130,6 @@ class App extends React.Component {
   //   }
   // }
 
-
   // 计算热更新下载进度
   // codePushDownloadDidProgress(progress) {
   //   let percentage = parseInt(
@@ -151,22 +148,20 @@ class App extends React.Component {
         <MenuProvider>
           <AppNavigation
             uriPrefix={prefix}
-            screenProps={{ theme: stores.theme.colors.navBackground }}
+            screenProps={{theme: stores.theme.colors.navBackground}}
           />
           {/* 更新下载进度组件 */}
-            {/* <ProgressBarModal
+          {/* <ProgressBarModal
             progress={this.state.progress}
             totalPackageSize={this.state.totalPackageSize + "MB"}
             receivedPackageSize={this.state.receivedPackageSize}
-            progressModalVisible={this.state.progressModalVisible} 
+            progressModalVisible={this.state.progressModalVisible}
           /> */}
         </MenuProvider>
       </Provider>
     );
   }
 }
-
-
 
 // codePush 热更新配置
 // const CodePushOptions = {
@@ -192,6 +187,6 @@ class App extends React.Component {
 //   installMode: codePush.InstallMode.IMMEDIATE //表示您要安装更新并立即重新启动应用程序。
 // };
 
-
 //export default codePush(CodePushOptions)(App);
 export default App;
+//  react-native-image-crop-picker

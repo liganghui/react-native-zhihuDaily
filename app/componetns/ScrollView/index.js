@@ -5,24 +5,20 @@
  *  @param  {function}   onRefresh    下拉刷新回调函数            [可选]
  *  @param  {bool}       refresh      下拉刷新loading标识符开关   [可选]
  */
-import React, { Component } from "react";
-import {
-  ScrollView,
-  RefreshControl
-} from "react-native";
-import PropTypes from "prop-types";
+import React, {Component} from 'react';
+import {ScrollView, RefreshControl} from 'react-native';
+import PropTypes from 'prop-types';
 
 // 下拉加载控件颜色
-const COLOR=["#008bed"];
+const COLOR = ['#008bed'];
 // 距离底部多少高度触发加载
-const HEIGHT=60 ;
-
+const HEIGHT = 60;
 
 export default class index extends Component {
   static propTypes = {
     pullupfresh: PropTypes.func.isRequired,
     onRefresh: PropTypes.func,
-    refresh: PropTypes.bool
+    refresh: PropTypes.bool,
   };
   constructor(props) {
     super(props);
@@ -40,7 +36,7 @@ export default class index extends Component {
   render() {
     return (
       <ScrollView
-      {...this.props}
+        {...this.props}
         onMomentumScrollEnd={this.handleViewScroll}
         refreshControl={
           this.props.onRefresh && this.props.refresh !== null ? (
@@ -50,8 +46,7 @@ export default class index extends Component {
               onRefresh={this.props.onRefresh}
             />
           ) : null
-        }
-      >
+        }>
         {this.props.children}
       </ScrollView>
     );

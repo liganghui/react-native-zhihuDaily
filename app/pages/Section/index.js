@@ -1,30 +1,31 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import { Button, Icon } from "react-native-elements";
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-undef */
+import React, {Component} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {Button, Icon} from 'react-native-elements';
 // 集成触底和上拉加载的滚动容器
-import MyScrollView from "../../componetns/ScrollView";
+import MyScrollView from '../../componetns/ScrollView';
 // 日报列表组件
-import StoriesList from "../../componetns/StoriesList";
-import { Tools, Axios, Api } from "../../utils";
-import DateTimePicker from "react-native-modal-datetime-picker";
+import StoriesList from '../../componetns/StoriesList';
+import {Tools, Axios, Api} from '../../utils';
+import DateTimePicker from 'react-native-modal-datetime-picker';
 let that; //保存This引用
-export default class index extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => {
+export default class Section extends Component {
+  static navigationOptions = ({navigation, screenProps}) => {
     return {
-      title: navigation.getParam("title"),
+      title: navigation.getParam('title'),
       headerStyle: {
-        backgroundColor: screenProps.theme
+        backgroundColor: screenProps.theme,
       },
       headerRight: (
         <View
           style={[
             styles.headerRightWrapper,
-            navigation.getParam("dateSelect")
-              ? { justifyContent: "space-between" }
-              : { justifyContent: "flex-end" }
-          ]}
-        >
-          {navigation.getParam("dateSelect") ? (
+            navigation.getParam('dateSelect')
+              ? {justifyContent: 'space-between'}
+              : {justifyContent: 'flex-end'},
+          ]}>
+          {navigation.getParam('dateSelect') ? (
             <Button
               type="clear"
               onPress={() => {
@@ -40,11 +41,11 @@ export default class index extends Component {
               }
             />
           ) : null}
-          {navigation.getParam("date") || navigation.getParam("dateSelect") ? (
+          {navigation.getParam('date') || navigation.getParam('dateSelect') ? (
             <Button
               type="clear"
               onPress={() => {
-                that.restList(navigation.getParam("startTime") || "2013-10-20");
+                that.restList(navigation.getParam('startTime') || '2013-10-20');
               }}
               icon={
                 <Icon
@@ -52,31 +53,31 @@ export default class index extends Component {
                   name="refresh"
                   size={24}
                   color="white"
-                  containerStyle={{ marginRight: 20 }}
+                  containerStyle={{marginRight: 20}}
                 />
               }
             />
           ) : null}
         </View>
-      )
+      ),
     };
   };
   constructor(props) {
     super(props);
     this.state = {
-      sectionId: this.props.navigation.getParam("id"),
-      date: this.props.navigation.getParam("date"),
+      sectionId: this.props.navigation.getParam('id'),
+      date: this.props.navigation.getParam('date'),
       pullUpLoading: false,
       stories: [], //栏目列表数据
       loading: false,
       finished: false,
-      minimumDate: this.props.navigation.getParam("startTime") || "2013-10-23",
-      isDateTimePickerVisible: false //控制日期选择控件显示
+      minimumDate: this.props.navigation.getParam('startTime') || '2013-10-23',
+      isDateTimePickerVisible: false, //控制日期选择控件显示
     };
     that = this;
-    let title = this.props.navigation.getParam("title") || null;
-    this.props.navigation.setParams({ title });
-    this.props.navigation.setParams({ loading: this.state.loading });
+    let title = this.props.navigation.getParam('title') || null;
+    this.props.navigation.setParams({title});
+    this.props.navigation.setParams({loading: this.state.loading});
   }
   componentDidMount() {
     // 根据参数区分加载 日报列表或栏目列表
@@ -85,7 +86,7 @@ export default class index extends Component {
     } else if (this.state.sectionId) {
       this.initSectionList();
     } else {
-      Tools.toast("加载失败，参数异常");
+      Tools.toast('加载失败，参数异常');
     }
   }
 
@@ -96,61 +97,61 @@ export default class index extends Component {
           let sectionData = [
             {
               key: responseJson.data.timestamp,
-              data: res
-            }
+              data: res,
+            },
           ];
           this.setState({
-            stories: sectionData
+            stories: sectionData,
           });
         });
       })
-      .catch(error => {});
+      .catch(_error => {});
   }
 
   initdaliyList() {
     storage
       .load({
-        key: "before",
-        id: this.state.date
+        key: 'before',
+        id: this.state.date,
       })
       .then(responseJson => {
         this.handleDataRender(responseJson, res => {
           let sectionData = [
             {
               key: responseJson.date,
-              data: res
-            }
+              data: res,
+            },
           ];
           this.setState({
-            stories: sectionData
+            stories: sectionData,
           });
         });
       })
-      .catch(error => {});
+      .catch(_error => {});
   }
   initSectionList() {
     Tools.getNetworkState().then(newWorkInfo => {
       let syncInBackgroundState = !newWorkInfo.online;
       storage
         .load({
-          key: "section",
+          key: 'section',
           id: this.state.sectionId,
-          syncInBackground: syncInBackgroundState
+          syncInBackground: syncInBackgroundState,
         })
         .then(responseJson => {
           this.handleDataRender(responseJson, res => {
             let sectionData = [
               {
                 key: responseJson.timestamp,
-                data: res
-              }
+                data: res,
+              },
             ];
             this.setState({
-              stories: sectionData
+              stories: sectionData,
             });
           });
         })
-        .catch(error => {});
+        .catch(_error => {});
     });
   }
 
@@ -160,7 +161,7 @@ export default class index extends Component {
         callback(res);
       });
     } else {
-      Tools.toast("加载失败，数据异常");
+      Tools.toast('加载失败，数据异常');
     }
   }
   /*
@@ -172,10 +173,10 @@ export default class index extends Component {
     listData.map((item, index) => {
       storage
         .load({
-          key: "visited",
-          id: item.id
+          key: 'visited',
+          id: item.id,
         })
-        .then(res => {
+        .then(_res => {
           // 标记已访问
           item.visited = true;
           if (index === listData.length - 1) {
@@ -183,7 +184,7 @@ export default class index extends Component {
           }
         })
         // 未访问
-        .catch(error => {
+        .catch(_error => {
           item.visited = false;
           if (index === listData.length - 1) {
             callback(listData);
@@ -203,26 +204,26 @@ export default class index extends Component {
       items.data.forEach(el => {
         idArray.push({
           id: el.id,
-          selected: el.id == item.id ? true : false
+          selected: el.id === item.id ? true : false,
         });
       });
     });
     idArray.forEach((el, index) => {
-      if (el.id == item.id) {
+      if (el.id === item.id) {
         selectdIndex = index;
       }
     });
-    this.props.navigation.navigate("Details", {
+    this.props.navigation.navigate('Details', {
       idArray,
-      selectdIndex
+      selectdIndex,
     });
     // 存储访问状态
     storage
       .save({
-        key: "visited",
+        key: 'visited',
         id: item.id,
         data: true,
-        expires: null
+        expires: null,
       })
       .then(() => {
         // 更新访问状态
@@ -230,14 +231,14 @@ export default class index extends Component {
         let stories = [...this.state.stories];
         stories.forEach(items => {
           items.data.forEach(i => {
-            if (i.id == item.id) {
+            if (i.id === item.id) {
               i.visited = true;
               return false;
             }
           });
         });
         this.setState({
-          stories
+          stories,
         });
       });
   };
@@ -248,11 +249,11 @@ export default class index extends Component {
         return false;
       }
       this.setState({
-        pullUpLoading: true
+        pullUpLoading: true,
       });
       let date = this.state.stories[this.state.stories.length - 1].key;
       let apiUrl;
-      if (this.state.date && !this.props.navigation.getParam("dateSelect")) {
+      if (this.state.date && !this.props.navigation.getParam('dateSelect')) {
         apiUrl = `${Api.before}${date}`;
       } else {
         apiUrl = `${Api.section}${this.state.sectionId}/before/${date}`;
@@ -266,22 +267,22 @@ export default class index extends Component {
                 this.state.date && !this.state.id
                   ? responseJson.data.date
                   : responseJson.data.timestamp,
-              data: res
+              data: res,
             });
             this.setState({
               pullUpLoading: false,
-              stories: list
+              stories: list,
             });
           });
         })
-        .catch(err => {
+        .catch(_err => {
           this.setState({
-            pullUpLoading: false
+            pullUpLoading: false,
           });
         });
     } catch {
       this.setState({
-        pullUpLoading: false
+        pullUpLoading: false,
       });
     }
   };
@@ -293,7 +294,7 @@ export default class index extends Component {
     dateStr = dateStr.substr(0, 10);
     this.initBeforeList(this.state.sectionId, dateStr);
     this.setState({
-      isDateTimePickerVisible: false
+      isDateTimePickerVisible: false,
     });
   };
   /**
@@ -301,19 +302,19 @@ export default class index extends Component {
    */
   toggleDateTimePicker = () => {
     this.setState({
-      isDateTimePickerVisible: !this.state.isDateTimePickerVisible
+      isDateTimePickerVisible: !this.state.isDateTimePickerVisible,
     });
   };
   /**
    *  重新随机日期  , 刷新列表
    */
-  restList = (startDate = "2013-10-23") => {
+  restList = (startDate = '2013-10-23') => {
     // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
     let m = new Date(startDate);
     m = m.getTime();
     let n;
-    this.props.navigation.getParam("endTime")
-      ? (n = new Date(this.props.navigation.getParam("endTime")))
+    this.props.navigation.getParam('endTime')
+      ? (n = new Date(this.props.navigation.getParam('endTime')))
       : (n = new Date());
     n = n.getTime();
     let s = n - m;
@@ -321,14 +322,14 @@ export default class index extends Component {
     s = m + s;
     s = new Date(s);
     let dateStr = Tools.formatDay(s)
-      .split("-")
-      .join("");
+      .split('-')
+      .join('');
     this.setState({
       date: dateStr,
       stories: [],
-      pullUpLoading: false
+      pullUpLoading: false,
     });
-    if (this.props.navigation.getParam("dateSelect")) {
+    if (this.props.navigation.getParam('dateSelect')) {
       let dateNum = Date.parse(s).toString();
       dateNum = dateNum.substr(0, 10);
       this.initBeforeList(this.state.sectionId, dateNum);
@@ -338,23 +339,23 @@ export default class index extends Component {
   };
   renderSectioHeader = items => {
     let dateStr;
-    if (this.props.navigation.getParam("dateSelect")) {
+    if (this.props.navigation.getParam('dateSelect')) {
       let date = Tools.formatDay(Tools.getDate(items.section.key));
       dateStr =
-        date.split("-")[0] +
-        "年" +
-        date.split("-")[1] +
-        "月" +
-        date.split("-")[2] +
-        "日";
+        date.split('-')[0] +
+        '年' +
+        date.split('-')[1] +
+        '月' +
+        date.split('-')[2] +
+        '日';
     } else {
       dateStr =
         String(items.section.key).substring(0, 4) +
-        "年" +
+        '年' +
         String(items.section.key).substring(4, 6) +
-        "月" +
+        '月' +
         String(items.section.key).substring(6, 8) +
-        "日";
+        '日';
     }
     return <Text style={styles.sectionTitle}>{dateStr}</Text>;
   };
@@ -370,20 +371,20 @@ export default class index extends Component {
         <DateTimePicker
           // 最大日期
           maximumDate={
-            this.props.navigation.getParam("endTime")
-              ? new Date(this.props.navigation.getParam("endTime"))
+            this.props.navigation.getParam('endTime')
+              ? new Date(this.props.navigation.getParam('endTime'))
               : //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
               //如果时间早于7点 ,则最大可选择日起为昨天.
-              Number(Tools.formatTime().split(":")[0]) >= 7
+              Number(Tools.formatTime().split(':')[0]) >= 7
               ? new Date()
               : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
           }
           // 最小日期
           minimumDate={
             new Date(
-              this.state.minimumDate.split("-")[0],
-              this.state.minimumDate.split("-")[1],
-              this.state.minimumDate.split("-")[2]
+              this.state.minimumDate.split('-')[0],
+              this.state.minimumDate.split('-')[1],
+              this.state.minimumDate.split('-')[2],
             )
           }
           isVisible={this.state.isDateTimePickerVisible}
@@ -399,10 +400,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     marginBottom: 10,
     marginLeft: 15,
-    color: "#999"
+    color: '#999',
   },
   headerRightWrapper: {
     width: 120,
-    flexDirection: "row"
-  }
+    flexDirection: 'row',
+  },
 });

@@ -1,9 +1,9 @@
-import {observable } from "mobx";
+import {observable} from 'mobx';
 class AppStore {
   constructor() {
-    this.isDrawerOpen = false; 
+    this.isDrawerOpen = false;
   }
   @observable isDrawerOpen;
 }
-const app = new AppStore() 
-export { app };
+const app = new AppStore();
+export {app};
