@@ -62,7 +62,8 @@
 
 > 下载
 
- [Android版本](https://rink.hockeyapp.net/api/2/apps/5cf4cc3667854feb8088434dd7fc6715/app_versions/7?format=apk&avtoken=dffd76161bee2381ca74bfcd121332eed2f47da6&download_origin=hockeyapp&mctoken=df01a976859e617ab19e2e2cd1031e4efc933b83)    
+ [Android版本](https://rink.hockeyapp.net/api/2/apps/5cf4cc3667854feb8088434dd7fc6715/app_versions/7?format=apk&avtoken=dffd76161bee2381ca74bfcd121332eed2f47da6&download_origin=hockeyapp&mctoken=df01a976859e617ab19e2e2cd1031e4efc933b83)  <br/>
+<br/>
 
 > 更新记录 
 
