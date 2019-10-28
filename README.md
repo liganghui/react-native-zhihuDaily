@@ -1,7 +1,7 @@
 <!--
  * @Author: liganghui
  * @Date: 2019-10-28 10:45:03
- * @LastEditTime: 2019-10-28 11:38:19
+ * @LastEditTime: 2019-10-28 12:40:34
  * @Description: 
  -->
 
@@ -20,10 +20,10 @@
 
 
 
-> ### 运行  
+>  运行  
     react-native run-android  或者  react-native run-ios
     注 :  IOS 版本未经测试 , 请先尝试Android版本
-> ### 参考文档
+> 参考文档
 
 1. [项目概况](https://www.jianshu.com/p/8d7e6dd3c152)
 
@@ -33,7 +33,7 @@
 
 4. [页面功能实现](https://www.jianshu.com/p/0383c2e20bcf)
 
-> IOS插件配置
+>  IOS插件配置
 
   由于缺少IOS开发环境 , 此App没有在IOS环境下的运行过 . 建议先尝试运行Android版本 , 如要运行IOS版本 ,请先解决以下问题 .
 
@@ -51,18 +51,15 @@
   App 默认注释这两项功能的代码 , 如果开启请参考对应的插件文档 , 增加依赖性并配置Key值 .
    
 
-> ### 运行演示   
+>  运行演示   
 <img  width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-d5cbb25e1fae5efa.gif?imageMogr2/auto-orient/strip"/> <img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-6dad2aa89481e4cb.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-31c7c8ea52162c36.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-0bdba4e3ee275440.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-88fe4383128547a8.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-aa471f6aa4c72116.gif?imageMogr2/auto-orient/strip"/>      
 
 <br/>
 <br/>
 
-> ### 下载
+> 下载
 
  [Android版本](https://rink.hockeyapp.net/api/2/apps/5cf4cc3667854feb8088434dd7fc6715/app_versions/7?format=apk&avtoken=dffd76161bee2381ca74bfcd121332eed2f47da6&download_origin=hockeyapp&mctoken=df01a976859e617ab19e2e2cd1031e4efc933b83)    
-<br/>
-<br/>
-
 
 > 更新记录 
 
