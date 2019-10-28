@@ -20,9 +20,11 @@
 
 
 
->  运行  
+> #### 运行  
+
     react-native run-android  或者  react-native run-ios
     注 :  IOS 版本未经测试 , 请先尝试Android版本
+    
 > 参考文档
 
 1. [项目概况](https://www.jianshu.com/p/8d7e6dd3c152)
@@ -51,7 +53,8 @@
   App 默认注释这两项功能的代码 , 如果开启请参考对应的插件文档 , 增加依赖性并配置Key值 .
    
 
->  运行演示   
+>  演示   
+
 <img  width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-d5cbb25e1fae5efa.gif?imageMogr2/auto-orient/strip"/> <img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-6dad2aa89481e4cb.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-31c7c8ea52162c36.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-0bdba4e3ee275440.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-88fe4383128547a8.gif?imageMogr2/auto-orient/strip"/><img width="270" height="480" src="https://upload-images.jianshu.io/upload_images/2339090-aa471f6aa4c72116.gif?imageMogr2/auto-orient/strip"/>      
 
 <br/>
