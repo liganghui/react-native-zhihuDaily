@@ -68,6 +68,6 @@
 
  2019/10/28
 
- 1. 升级项目版本到RN v0.61.2 &&   更新所有第三方依赖版本 .
- 2. 调整代码适配 react-navigation V4.0+
+ 1. 升级项目版本到RN v0.61.2 &&   所有第三方依赖更新至最新版本 .
+ 2. 适配 react-navigation V4.0+
  3. 将启动屏组件更换为react-native-bootsplash
