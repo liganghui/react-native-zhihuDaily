@@ -7,7 +7,7 @@
 
 ## RN版知乎日报
 
-知乎日报的 react-native 版本 , 用于日常使用和开发学习.      
+##### 知乎日报的 react-native 版本 , 用于日常使用和开发学习.      
 
 
 
@@ -37,7 +37,7 @@
 
 >  IOS插件配置
 
-  由于缺少IOS开发环境 , 此App没有在IOS环境下的运行过 . 建议先尝试运行Android版本 , 如要运行IOS版本 ,请先解决以下问题 .
+  由于缺少IOS开发环境 , 此App没有在IOS环境下的运行过 . 建议先尝试运行Android版本 , 如要运行IOS版本 ,请先解决以下问题
 
   
   1.  [react-native-image-crop-picker(图像选取器)](https://github.com/ivpusic/react-native-image-crop-picker) 需要手动配置 , 请参考文档增加 ios 的配置 .
