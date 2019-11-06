@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -7,36 +8,36 @@ import {
   ScrollView,
   FlatList,
   TouchableOpacity,
-  ActivityIndicator
-} from "react-native";
-import Modal from "react-native-modal";
-import { Icon, Button, ListItem } from "react-native-elements";
-import { Tools, Api, Axios, System } from "../../utils";
-import { observer, inject } from "mobx-react";
+  ActivityIndicator,
+} from 'react-native';
+import Modal from 'react-native-modal';
+import {Icon, Button, ListItem} from 'react-native-elements';
+import {Tools, Api, Axios, System} from '../../utils';
+import {observer, inject} from 'mobx-react';
 
-@inject("theme")
+@inject('theme')
 @observer
-export default class index extends Component {
-  static navigationOptions = ({ navigation, screenProps }) => {
+class Comment extends Component {
+  static navigationOptions = ({navigation, screenProps}) => {
     return {
-      title: navigation.getParam("comments")
-        ? navigation.getParam("comments") + " 条点评"
+      title: navigation.getParam('comments')
+        ? navigation.getParam('comments') + ' 条点评'
         : null,
       headerStyle: {
-        backgroundColor: screenProps.theme
-      }
+        backgroundColor: screenProps.theme,
+      },
     };
   };
   constructor(props) {
     super(props);
     this.state = {
       isModalVisible: true, //控制遮罩层显示
-      id: this.props.navigation.getParam("id"), // 日报 id
+      id: this.props.navigation.getParam('id'), // 日报 id
       shortCommentsState: false, //控制短评论列表显示
       longCommentsListHeight: 0, //记录长评论;列表高度
       longComments: [], //长评论列表数组
       shortComments: [], //短评论列表数组
-      hardwareTextureSwitch: true //控制GPU加速动画 开关
+      hardwareTextureSwitch: true, //控制GPU加速动画 开关
     };
   }
   componentDidMount() {
@@ -47,16 +48,16 @@ export default class index extends Component {
    *  初始化长评论
    */
   initLongComments() {
-    this.getCommentsData("long", res => {
+    this.getCommentsData('long', res => {
       if (res.data && res.data.comments.length > 0) {
-        res.data.comments.type = "long";
+        res.data.comments.type = 'long';
         // 根据点赞数降序排序
-        res.data.comments.sort((x,y)=>{
-          return y.likes-x.likes;
-        })
+        res.data.comments.sort((x, y) => {
+          return y.likes - x.likes;
+        });
         this.setState({
           hardwareTextureSwitch: false,
-          longComments: res.data.comments
+          longComments: res.data.comments,
         });
         this.bindModalSwitch(false); //隐藏遮罩层
       } else {
@@ -69,18 +70,18 @@ export default class index extends Component {
    */
   initShortComments() {
     this.bindModalSwitch(true);
-    this.getCommentsData("short", res => {
-      // 判断是否存在数据 
+    this.getCommentsData('short', res => {
+      // 判断是否存在数据
       if (res.data && res.data.comments.length > 0) {
-        res.data.comments.type = "short";
+        res.data.comments.type = 'short';
         // 根据点赞数降序排序
-        res.data.comments.sort((x,y)=>{
-          return y.likes-x.likes;
-        })
+        res.data.comments.sort((x, y) => {
+          return y.likes - x.likes;
+        });
         this.setState(
           {
             shortComments: res.data.comments,
-            shortCommentsState: true
+            shortCommentsState: true,
           },
           () => {
             this.bindModalSwitch(false);
@@ -88,13 +89,13 @@ export default class index extends Component {
             setTimeout(() => {
               this.scrollView.scrollTo({
                 y: this.state.longCommentsListHeight,
-                animated: true
+                animated: true,
               });
             }, 100);
-          }
+          },
         );
-      }else{
-        Tools.toast("暂无短评论信息");
+      } else {
+        Tools.toast('暂无短评论信息');
         this.bindModalSwitch(false);
       }
     });
@@ -108,10 +109,10 @@ export default class index extends Component {
    */
   getCommentsData(type, callBack) {
     let apiUrl;
-    if (type == "long") {
-      apiUrl = Api.longComments + this.state.id + "/long-comments";
-    } else if (type == "short") {
-      apiUrl = Api.shortComments + this.state.id + "/short-comments";
+    if (type === 'long') {
+      apiUrl = Api.longComments + this.state.id + '/long-comments';
+    } else if (type === 'short') {
+      apiUrl = Api.shortComments + this.state.id + '/short-comments';
     } else {
       return;
     }
@@ -129,7 +130,7 @@ export default class index extends Component {
     } else {
       this.setState({
         shortComments: [],
-        shortCommentsState: false
+        shortCommentsState: false,
       });
     }
   };
@@ -139,9 +140,9 @@ export default class index extends Component {
    *
    */
   listenListHeight(event) {
-    var { x, y, width, height } = event.nativeEvent.layout;
+    var {height} = event.nativeEvent.layout;
     this.setState({
-      longCommentsListHeight: height
+      longCommentsListHeight: height,
     });
   }
   /**
@@ -152,11 +153,11 @@ export default class index extends Component {
   bindModalSwitch = val => {
     if (val) {
       this.setState({
-        isModalVisible: val
+        isModalVisible: val,
       });
     } else {
       this.setState({
-        isModalVisible: !this.state.isModalVisible
+        isModalVisible: !this.state.isModalVisible,
       });
     }
   };
@@ -167,7 +168,7 @@ export default class index extends Component {
   bindAndroidBack = () => {
     if (this.state.isModalVisible) {
       this.setState({
-        isModalVisible: false
+        isModalVisible: false,
       });
     } else {
       this.props.navigation.pop();
@@ -183,36 +184,36 @@ export default class index extends Component {
     let type;
     if (
       this.state.longComments[index] &&
-      this.state.longComments[index].id == item.id
+      this.state.longComments[index].id === item.id
     ) {
-      type = "longComments";
+      type = 'longComments';
     } else if (
       this.state.shortComments[index] &&
-      this.state.shortComments[index].id == item.id
+      this.state.shortComments[index].id === item.id
     ) {
-      type = "shortComments";
+      type = 'shortComments';
     }
     let list = [...this.state[type]];
     list[index].reply_to.status = !list[index].reply_to.status;
     this.setState({
-      [type]: list
+      [type]: list,
     });
   }
 
   keyExtractor = item => item.id.toString();
 
   // 渲染评论列表
-  renderCommentItem = ({ item, index, items }) => {
+  renderCommentItem = ({item, index}) => {
     return (
       <ListItem
         containerStyle={{
-          alignItems: "flex-start",
+          alignItems: 'flex-start',
           borderBottomWidth: 1,
           backgroundColor: this.props.theme.colors.containerBackground,
-          borderBottomColor: this.props.theme.colors.border
+          borderBottomColor: this.props.theme.colors.border,
         }}
         leftAvatar={{
-          source: { uri: item.avatar }
+          source: {uri: item.avatar},
         }}
         key={item.id}
         pad={5}
@@ -220,10 +221,7 @@ export default class index extends Component {
           <View style={styles.rightContainer}>
             <View style={styles.authorContainer}>
               <Text
-                style={[
-                  styles.author,
-                  { color: this.props.theme.colors.text }
-                ]}>
+                style={[styles.author, {color: this.props.theme.colors.text}]}>
                 {item.author}
               </Text>
               <Button
@@ -236,7 +234,7 @@ export default class index extends Component {
                     type="material"
                     name="thumb-up"
                     size={14}
-                    color={"#999"}
+                    color={'#999'}
                   />
                 }
               />
@@ -245,24 +243,31 @@ export default class index extends Component {
               <Text
                 style={[
                   styles.mainContent,
-                  { color: this.props.theme.colors.content }
+                  {color: this.props.theme.colors.content},
                 ]}>
                 {item.content}
               </Text>
               {/* 判断消息是否存在回复 */}
-              {item.reply_to&& (
+              {item.reply_to && (
                 <TouchableOpacity
                   style={styles.replyContainer}
                   activeOpacity={1}
                   onPress={this.bindMoreToggle.bind(this, index, item)}>
                   <Text
-                    ellipsizeMode={"tail"}
+                    ellipsizeMode={'tail'}
                     numberOfLines={item.reply_to.status ? 0 : 2}>
-                    <Text   style={[  styles.author,{ color: this.props.theme.colors.text } ]}>
-                      {item.reply_to.author&&'//'+item.reply_to.author+':'}
+                    <Text
+                      style={[
+                        styles.author,
+                        {color: this.props.theme.colors.text},
+                      ]}>
+                      {item.reply_to.author &&
+                        '//' + item.reply_to.author + ':'}
                     </Text>
                     <Text style={[styles.mainContent, styles.replyContent]}>
-                      {item.reply_to.error_msg?"//"+item.reply_to.error_msg:item.reply_to.content}
+                      {item.reply_to.error_msg
+                        ? '//' + item.reply_to.error_msg
+                        : item.reply_to.content}
                     </Text>
                   </Text>
                 </TouchableOpacity>
@@ -271,7 +276,7 @@ export default class index extends Component {
             <View style={styles.extraContainer}>
               <Text style={styles.date}>
                 {Tools.formatMonthDay(item.time) +
-                  " " +
+                  ' ' +
                   Tools.formatTime(item.time)}
               </Text>
               {this.renderMoreBtn(item, index)}
@@ -288,14 +293,14 @@ export default class index extends Component {
       if (!item.reply_to.status) {
         return (
           <Button
-            title={"展开"}
+            title={'展开'}
             buttonStyle={[
               styles.moreBtn,
-              { backgroundColor: this.props.theme.colors.buttonBackground }
+              {backgroundColor: this.props.theme.colors.buttonBackground},
             ]}
             titleStyle={[
               styles.moreTitle,
-              { color: this.props.theme.colors.text }
+              {color: this.props.theme.colors.text},
             ]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
@@ -303,14 +308,14 @@ export default class index extends Component {
       } else {
         return (
           <Button
-            title={"收起"}
+            title={'收起'}
             buttonStyle={[
               styles.moreBtn,
-              { backgroundColor: this.props.theme.colors.buttonBackground }
+              {backgroundColor: this.props.theme.colors.buttonBackground},
             ]}
             titleStyle={[
               styles.moreTitle,
-              { color: this.props.theme.colors.text }
+              {color: this.props.theme.colors.text},
             ]}
             onPress={this.bindMoreToggle.bind(this, index, item)}
           />
@@ -326,13 +331,13 @@ export default class index extends Component {
       <ScrollView
         ref={ref => (this.scrollView = ref)}
         style={{
-          backgroundColor: this.props.theme.colors.containerBackground
+          backgroundColor: this.props.theme.colors.containerBackground,
         }}>
         <View
           style={[
-            this.state.longComments.length == 0
-              ? { height: System.SCREEN_HEIGHT - 125 }
-              : null
+            this.state.longComments.length === 0
+              ? {height: System.SCREEN_HEIGHT - 125}
+              : null,
           ]}
           onLayout={this.listenListHeight.bind(this)}>
           <Text
@@ -341,8 +346,8 @@ export default class index extends Component {
               styles.longCommentsText,
               {
                 borderBottomColor: this.props.theme.colors.border,
-                color: this.props.theme.colors.text
-              }
+                color: this.props.theme.colors.text,
+              },
             ]}>
             {this.state.longComments.length} 条长评
           </Text>
@@ -354,14 +359,14 @@ export default class index extends Component {
             />
           ) : (
             <View style={styles.placeholderWrapper}>
-              {this.props.theme.colors.themeType == "black" ? (
+              {this.props.theme.colors.themeType === 'black' ? (
                 <Image
-                  source={require("../../assets/images/comments-placeholder-black.png")}
+                  source={require('../../assets/images/comments-placeholder-black.png')}
                   style={styles.placeholderImg}
                 />
               ) : (
                 <Image
-                  source={require("../../assets/images/comments-placeholder-default.png")}
+                  source={require('../../assets/images/comments-placeholder-default.png')}
                   style={styles.placeholderImg}
                 />
               )}
@@ -369,7 +374,7 @@ export default class index extends Component {
               <Text
                 style={[
                   styles.placeholderText,
-                  { color: this.props.theme.colors.visitedItem }
+                  {color: this.props.theme.colors.visitedItem},
                 ]}>
                 深度长评虚位以待
               </Text>
@@ -380,22 +385,35 @@ export default class index extends Component {
           rippleDuration={600}
           rippleOpacity={0.1}
           style={
-            this.state.longComments.length == 0
+            this.state.longComments.length === 0
               ? {
                   borderTopColor: this.props.theme.colors.border,
-                  borderTopWidth: 1
+                  borderTopWidth: 1,
                 }
               : null
           }>
-          <TouchableOpacity  style={[ styles.shortCommentsWrapper,{ borderColor: this.props.theme.colors.border }]} onPress={this.toggleShortComments}  activeOpacity={0.4}>
-            <Text  style={[styles.title, { color: this.props.theme.colors.text }]}>
-              {this.props.navigation.getParam("shortComments")} 条短评
+          <TouchableOpacity
+            style={[
+              styles.shortCommentsWrapper,
+              {borderColor: this.props.theme.colors.border},
+            ]}
+            onPress={this.toggleShortComments}
+            activeOpacity={0.4}>
+            <Text style={[styles.title, {color: this.props.theme.colors.text}]}>
+              {this.props.navigation.getParam('shortComments')} 条短评
             </Text>
             {/* 判断短评论是否展开 , 显示不同的箭头 */}
             {!this.state.shortCommentsState ? (
-              <Icon  type="material-community" name="chevron-double-down"color={this.props.theme.colors.text}/>
+              <Icon
+                type="material-community"
+                name="chevron-double-down"
+                color={this.props.theme.colors.text}
+              />
             ) : (
-              <Icon  type="material-community" name="chevron-double-up"  color={this.props.theme.colors.text}
+              <Icon
+                type="material-community"
+                name="chevron-double-up"
+                color={this.props.theme.colors.text}
               />
             )}
           </TouchableOpacity>
@@ -408,11 +426,11 @@ export default class index extends Component {
         {/*  遮罩层 */}
         <Modal
           onPress={this.bindModalSwitch.bind(this, false)}
-          animationIn={"fadeIn"}//动画类型
+          animationIn={'fadeIn'} //动画类型
           style={styles.moda}
           isVisible={this.state.isModalVisible}
           backdropTransitionInTiming={300} //动画时间
-          backdropTransitionOutTiming={300}//动画时间
+          backdropTransitionOutTiming={300} //动画时间
           backdropOpacity={0.4} //透明度
           onBackdropPress={this.bindModalSwitch.bind(this, false)}
           onBackButtonPress={this.bindAndroidBack}
@@ -422,13 +440,13 @@ export default class index extends Component {
               renderToHardwareTextureAndroid={this.state.hardwareTextureSwitch} //决定这个视图是否要把它自己（以及所有的子视图）渲染到一个 GPU 上的硬件纹理中。
               style={[
                 styles.loadWrapper,
-                { backgroundColor: this.props.theme.colors.containerBackground }
+                {backgroundColor: this.props.theme.colors.containerBackground},
               ]}>
               <ActivityIndicator animating={true} size={40} />
               <Text
                 style={[
                   styles.loadText,
-                  { color: this.props.theme.colors.text }
+                  {color: this.props.theme.colors.text},
                 ]}>
                 努力加载中
               </Text>
@@ -443,94 +461,95 @@ export default class index extends Component {
 }
 const styles = StyleSheet.create({
   modal: {
-    justifyContent: "center",
-    alignItems: "center"
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     paddingLeft: 15,
     height: 45,
     lineHeight: 45,
     fontSize: 14,
-    color: "#000"
+    color: '#000',
   },
   loadWrapper: {
-    backgroundColor: "#fff",
-    flexDirection: "row",
+    backgroundColor: '#fff',
+    flexDirection: 'row',
     paddingHorizontal: 30,
-    justifyContent: "flex-start",
-    alignItems: "center",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     width: 300,
-    height: 80
+    height: 80,
   },
   longCommentsText: {
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   shortCommentsWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingRight: 15,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
   },
   placeholderWrapper: {
-    justifyContent: "center",
-    alignItems: "center",
-    flex: 1
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
   },
   placeholderText: {
-    marginTop: 10
+    marginTop: 10,
   },
   placeholderImg: {
     width: 130,
-    height: 130
+    height: 130,
   },
   loadText: {
     fontSize: 16,
-    marginLeft: 30
+    marginLeft: 30,
   },
   rightContainer: {
-    alignContent: "flex-start",
-    flex: 100
+    alignContent: 'flex-start',
+    flex: 100,
   },
   authorContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   author: {
-    fontWeight: "bold",
-    fontSize: 16
+    fontWeight: 'bold',
+    fontSize: 16,
   },
   likesText: {
     fontSize: 12,
-    color: "#999",
-    marginLeft: 3
+    color: '#999',
+    marginLeft: 3,
   },
   likesButton: {
-    height: 20
+    height: 20,
   },
   contentContainer: {
-    marginVertical: 10
+    marginVertical: 10,
   },
   mainContent: {
     fontSize: 16,
-    lineHeight: 22
+    lineHeight: 22,
   },
   replyContent: {
-    color: "#767676"
+    color: '#767676',
   },
   moreBtn: {
     height: 24,
-    borderRadius: 0
+    borderRadius: 0,
   },
   moreTitle: {
-    fontSize: 14
+    fontSize: 14,
   },
   date: {
-    color: "#b6b6b6",
-    fontSize: 12
+    color: '#b6b6b6',
+    fontSize: 12,
   },
   extraContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between"
-  }
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
+export default Comment;

@@ -1,35 +1,40 @@
-import React, { Component } from "react";
-import { View, StyleSheet, Text, AppState,InteractionManager } from "react-native";
-import { Icon, Button } from "react-native-elements";
+/* eslint-disable no-undef */
+import React, {Component} from 'react';
+import {View, StyleSheet, Text, InteractionManager} from 'react-native';
+import {Icon, Button} from 'react-native-elements';
 import {
   Menu,
   MenuOptions,
   MenuOption,
-  MenuTrigger
-} from "react-native-popup-menu";
-import { observer, inject } from "mobx-react";
-import DateTimePicker from "react-native-modal-datetime-picker";
-import { Api, Tools, Axios } from "../../utils";
+  MenuTrigger,
+} from 'react-native-popup-menu';
+import {observer, inject} from 'mobx-react';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import {Api, Tools, Axios} from '../../utils';
 // 日报列表组件
-import StoriesList from "../../componetns/StoriesList";
+import StoriesList from '../../componetns/StoriesList';
 // 上滑触底加载状态
-import PullUpLoad from "../../componetns/PullUpLoading";
+import PullUpLoad from '../../componetns/PullUpLoading';
 // 集成触底和上拉加载的滚动容器
-import MyScrollView from "../../componetns/ScrollView";
+import MyScrollView from '../../componetns/ScrollView';
 // 轮播图组件
-import HomeSwiper from "./HomeSwiper";
-import { AndroidBackHandler } from "react-navigation-backhandler";
-
+import HomeSwiper from './HomeSwiper';
+import {AndroidBackHandler} from 'react-navigation-backhandler';
+import {YellowBox} from 'react-native';
+YellowBox.ignoreWarnings([
+  'Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.',
+]);
 let that; //保存This引用
-@inject("theme") //引入主题Store (Mobx)
+@inject('theme') //引入主题Store (Mobx)
+@inject('app')
 @observer //装饰器语法 , 将其转换成可观察的 (Mobx)
-export default class index extends Component {
+class Home extends Component {
   // 配置标题栏参数
-  static navigationOptions = ({ navigation, screenProps }) => {
+  static navigationOptions = ({navigation, screenProps}) => {
     return {
-      title: navigation.getParam("title"),
+      title: navigation.getParam('title'),
       headerStyle: {
-        backgroundColor: screenProps.theme
+        backgroundColor: screenProps.theme,
       },
       headerLeft: (
         <Button
@@ -57,7 +62,7 @@ export default class index extends Component {
               that.handleHistoryClick();
             }}
             icon={
-              <Icon type='material' name="history" size={25} color="white" />
+              <Icon type="material" name="history" size={25} color="white" />
             }
           />
           <Button
@@ -70,7 +75,7 @@ export default class index extends Component {
             }
           />
         </View>
-      )
+      ),
     };
   };
   constructor(props) {
@@ -79,46 +84,50 @@ export default class index extends Component {
       stories: [], //列表数据
       topStories: [], //轮播图数据
       pullUpLoading: false, //控制上滑加载Loading显示标识符
-      title: "", //标题栏(Header)标题
+      title: '', //标题栏(Header)标题
       refresh: false, //控制下拉刷新loading显示标识符
       listHeight: [], //记录日报列表高度变化
       opened: false, //控制Header弹出菜单显示
       isDateTimePickerVisible: false, //控制日期选择控件显示
-      finished: false //判断列表是否全部加载完
+      finished: false, //判断列表是否全部加载完
     };
     // 默认标题
-    this.props.navigation.setParams({ title: "首页" });
+    this.props.navigation.setParams({title: '首页'});
     // 保存this引用
     that = this;
   }
   componentDidMount() {
+    // 页面初始化
     this.init();
-    // 监听应用状态(后台运行/前台运行)
-    AppState.addEventListener("change", this.handleAppStateChange);
     // 传递到navigation (navigation中无法使用this调用)
-    this.props.navigation.setParams({ tooglePopupMenu: this.tooglePopupMenu });
-    this.props.navigation.setParams({ handleHistoryClick: this.handleHistoryClick });
-
+    this.props.navigation.setParams({tooglePopupMenu: this.tooglePopupMenu});
+    this.props.navigation.setParams({
+      handleHistoryClick: this.handleHistoryClick,
+    });
   }
   init() {
-    // 根据网络状态初始化数据
-    // 连接网络时 获取最新数据 ，无网络时显示缓存的数据
+    /*
+     * 根据网络状态初始化数据
+     * 连接网络时 获取最新数据 ，无网络时显示缓存的数据
+     */
     Tools.getNetworkState().then(newWorkInfo => {
-      if(newWorkInfo.online){
+      if (newWorkInfo.online) {
         this.setState({
-          refresh:true
-        })
+          refresh: true,
+        });
       }
+      // 是否获取远程数据
       let syncInBackgroundState = !newWorkInfo.online;
+      // 获取远程或者本地的数据
       storage
-        .load({ key: "latest", syncInBackground: syncInBackgroundState })
+        .load({key: 'latest', syncInBackground: syncInBackgroundState})
         .then(responseJson => {
           this.handleDataRender(responseJson);
         })
-        .catch(error => {
+        .catch(() => {
           this.setState({
-            refresh:false
-          })
+            refresh: false,
+          });
         });
     });
   }
@@ -127,14 +136,14 @@ export default class index extends Component {
    */
   bindOnRefresh() {
     // 下拉刷新请求最新数据
-    this.setState({ refresh: true });
+    this.setState({refresh: true});
     Axios.get(Api.latest)
       .then(responseJson => {
-        this.setState({ refresh: false });
+        this.setState({refresh: false});
         this.handleDataRender(responseJson.data);
       })
-      .catch(error => {
-        this.setState({ refresh: false });
+      .catch(() => {
+        this.setState({refresh: false});
       });
   }
 
@@ -144,7 +153,7 @@ export default class index extends Component {
    */
   handleDataRender(responseJson) {
     if (!responseJson || !responseJson.stories) {
-      Tools.toast("服务器数据格式异常");
+      Tools.toast('服务器数据格式异常');
       return false;
     }
     // 读取数据访问状态
@@ -152,14 +161,14 @@ export default class index extends Component {
       let data = [
         {
           key: responseJson.date,
-          data: res
-        }
+          data: res,
+        },
       ];
       this.setState(
         {
           topStories: responseJson.top_stories,
           stories: data,
-          refresh:false,
+          refresh: false,
           listHeight: [], //重置列表高度数组
           finished: false,
         },
@@ -168,7 +177,7 @@ export default class index extends Component {
           if (this.state.stories[0].data.length <= 3) {
             this.pullupfresh();
           }
-        }
+        },
       );
     });
   }
@@ -179,25 +188,24 @@ export default class index extends Component {
    * @param {Function} callback 回调函数
    */
   updateVistedState(listData, callback) {
-    listData.map((item, index) => {
+    listData.map((item, listIndex) => {
       storage
         .load({
-          key: "visited",
-          id: item.id
+          key: 'visited',
+          id: item.id,
         })
-        .then(res => {
+        .then(() => {
           // 标记已访问
           item.visited = true;
-          if (index === listData.length - 1) {
+          if (listIndex === listData.length - 1) {
             callback(listData);
           }
         })
         // 未访问
-        .catch(error => {
+        .catch(() => {
           item.visited = false;
-          if (index === listData.length - 1) {
+          if (listIndex === listData.length - 1) {
             callback(listData);
-            
           }
         });
     });
@@ -212,25 +220,25 @@ export default class index extends Component {
       return false;
     }
     this.setState({
-      pullUpLoading: true
+      pullUpLoading: true,
     });
     // 获得日期
     let beforeDay = this.state.stories[this.state.stories.length - 1].key;
     storage
       .load({
-        key: "before",
-        id: beforeDay
+        key: 'before',
+        id: beforeDay,
       })
       .then(responseJson => {
-        if (responseJson && responseJson.stories.length== 0) {
+        if (responseJson && responseJson.stories.length === 0) {
           this.setState({
             finished: true,
-            pullUpLoading: false
+            pullUpLoading: false,
           });
         } else if (!responseJson || !responseJson.stories) {
-          Tools.toast("服务器数据异常");
+          Tools.toast('服务器数据异常');
           this.setState({
-            pullUpLoading: false
+            pullUpLoading: false,
           });
         } else {
           // 获取数据访问状态
@@ -238,23 +246,23 @@ export default class index extends Component {
             // 合并数据
             let newData = this.state.stories.concat({
               key: responseJson.date,
-              data: res
+              data: res,
             });
             // 更新数据
-            this.setState({ stories: newData }, () => {
+            this.setState({stories: newData}, () => {
               // 等待数据渲染完成,避免loading状态早于渲染结束
               setTimeout(() => {
                 this.setState({
-                  pullUpLoading: false
+                  pullUpLoading: false,
                 });
               }, 550);
             });
           });
         }
       })
-      .catch(error => {
+      .catch(() => {
         this.setState({
-          pullUpLoading: false
+          pullUpLoading: false,
         });
       });
   };
@@ -262,65 +270,66 @@ export default class index extends Component {
    * 监听列表项点击 跳转到详情页  记录点击状态
    * @param {Object} item 列表项
    */
-  bindListTap = (item) => {
+  bindListTap = item => {
     // 页面跳转
-    let idArray=[]; //日报ID数组
+    let idArray = []; //日报ID数组
     let selectdIndex; //点击项的数组下标
-    if(item.image){//根据属性判断是列表或轮播图
+    if (item.image) {
+      //根据属性判断是列表或轮播图
       //轮播图时
-      this.state.topStories.forEach((el)=>{
-          idArray.push({
-            id:el.id,
-            selected:el.id==item.id?true:false
-          })
-      })
-    }else{
-      // 列表时
-      this.state.stories.forEach((items)=>{
-        items.data.forEach((el)=>{
-          idArray.push({
-            id:el.id,
-            selected:el.id==item.id?true:false
-          })
-        })
-      })
-    }
-    // 获取数组下标
-    idArray.forEach((el,index)=>{
-      if(el.id==item.id){
-        selectdIndex=index
-      }
-    })
-    this.props.navigation.navigate("Details", {
-      idArray,
-      selectdIndex
-    });
-    InteractionManager.runAfterInteractions(() => {
-    // 存储访问状态
-    storage
-      .save({
-        key: "visited",
-        id: item.id,
-        data: true,
-        expires: null
-      })
-      .then(() => {
-        // 更新访问状态
-        // PS：这里需要将旧数据解构成一个新数组 , 可以避免setState不生效问题，因为setState是浅比较 。
-        let stories = [...this.state.stories];
-        stories.forEach(items => {
-          items.data.forEach(i => {
-            if (i.id == item.id) {
-              i.visited = true;
-              return false;
-            }
-          });
-        });
-        this.setState({
-          stories
+      this.state.topStories.forEach(el => {
+        idArray.push({
+          id: el.id,
+          selected: el.id === item.id ? true : false,
         });
       });
-    })
+    } else {
+      // 列表时
+      this.state.stories.forEach(items => {
+        items.data.forEach(el => {
+          idArray.push({
+            id: el.id,
+            selected: el.id === item.id ? true : false,
+          });
+        });
+      });
+    }
+    // 获取数组下标
+    idArray.forEach((el, index) => {
+      if (el.id === item.id) {
+        selectdIndex = index;
+      }
+    });
+    this.props.navigation.navigate('Details', {
+      idArray,
+      selectdIndex,
+    });
+    InteractionManager.runAfterInteractions(() => {
+      // 存储访问状态
+      storage
+        .save({
+          key: 'visited',
+          id: item.id,
+          data: true,
+          expires: null,
+        })
+        .then(() => {
+          // 更新访问状态
+          // PS：这里需要将旧数据解构成一个新数组 , 可以避免setState不生效问题，因为setState是浅比较 。
+          let stories = [...this.state.stories];
+          stories.forEach(items => {
+            items.data.forEach(i => {
+              if (i.id === item.id) {
+                i.visited = true;
+                return false;
+              }
+            });
+          });
+          this.setState({
+            stories,
+          });
+        });
+    });
   };
 
   /**
@@ -331,13 +340,13 @@ export default class index extends Component {
    */
   formatDate(date) {
     let currentDate = Tools.formatDay()
-      .split("-")
-      .join("");
-    if (currentDate == date) {
-      return "今日热闻";
+      .split('-')
+      .join('');
+    if (currentDate === date) {
+      return '今日热闻';
     } else {
-      return String(date).length == 8
-        ? Tools.formatMonthDay(date) + " " + Tools.formatWeek(date)
+      return String(date).length === 8
+        ? Tools.formatMonthDay(date) + ' ' + Tools.formatWeek(date)
         : null;
     }
   }
@@ -352,13 +361,13 @@ export default class index extends Component {
     let y = event.nativeEvent.contentOffset.y - 230;
     let heightArr = this.state.listHeight;
     if (y < 0) {
-      this.props.navigation.setParams({ title: "首页" });
+      this.props.navigation.setParams({title: '首页'});
     } else {
       for (let i = 0; i < heightArr.length; i++) {
         if (heightArr[i] >= y) {
           let title = this.formatDate(this.state.stories[i].key);
-          if (this.props.navigation.getParam({ title }) !== title) {
-            this.props.navigation.setParams({ title });
+          if (this.props.navigation.getParam({title}) !== title) {
+            this.props.navigation.setParams({title});
           }
           break;
         }
@@ -370,53 +379,38 @@ export default class index extends Component {
    * @param {Object} event 列表高度数值
    */
   listenListHeight(event) {
-    var { x, y, width, height } = event.nativeEvent.layout;
+    var {height} = event.nativeEvent.layout;
     let heightArr = this.state.listHeight;
-    heightArr.push(Number.parseInt(height));
+    heightArr.push(Number.parseInt(height, 10));
     // 每次组件高度变化 实际上会触发两次函数 , 只取组件渲染完毕后的高度。
     if (heightArr.length > this.state.stories.length) {
       heightArr.splice(heightArr.length - 2, 1);
     }
     this.setState({
-      listHeight: heightArr
+      listHeight: heightArr,
     });
   }
-
   /**
-   * 监听监听应用状态的变化
-   */
-  handleAppStateChange = nextAppState => {
-    // 当切换到后台时,更新状态
-    if (nextAppState === "background") {
-      // .....
-    } else if (nextAppState === "active") {
-      // 当应用从后台切换到 并且仅有一页数据时 会刷新页面.
-      if (this.state.stories.length <= 1) {
-        this.init();
-      }
-    }
-  };
-  /** 
    * 历史日报点击事件
-  */
-  handleHistoryClick(){
+   */
+  handleHistoryClick() {
     // 生成随机日期 作者:// https://cloud.tencent.com/developer/news/391925
-    let m=new Date('October 23 , 2013 00:00:00');
-     m=m.getTime();
-    let n=new Date();
-     n=n.getTime();
-    let s=n-m;
-    s=Math.floor(Math.random()*s)
-    s=m+s;
-    s=new Date(s);
-    this.handleDatePicked(s,'随便看看');
+    let m = new Date('October 23 , 2013 00:00:00');
+    m = m.getTime();
+    let n = new Date();
+    n = n.getTime();
+    let s = n - m;
+    s = Math.floor(Math.random() * s);
+    s = m + s;
+    s = new Date(s);
+    this.handleDatePicked(s, '随便看看');
   }
   /**
    * 控制弹出菜单切换显示
    */
   tooglePopupMenu = () => {
     this.setState({
-      opened: !this.state.opened
+      opened: !this.state.opened,
     });
   };
   /**
@@ -424,26 +418,25 @@ export default class index extends Component {
    */
   toggleDateTimePicker = () => {
     this.setState({
-      isDateTimePickerVisible: !this.state.isDateTimePickerVisible
+      isDateTimePickerVisible: !this.state.isDateTimePickerVisible,
     });
   };
 
-  // 
-
+  //
 
   /**
    *  日期选择器点击行为
    */
-  handleDatePicked = (date,title="") => {
+  handleDatePicked = (date, title = '') => {
     let dateStr = Tools.formatDay(date)
-      .split("-")
-      .join("");
-    this.props.navigation.navigate("Section", {
+      .split('-')
+      .join('');
+    this.props.navigation.navigate('Section', {
       date: dateStr,
-      title
+      title,
     });
     this.setState({
-      isDateTimePickerVisible:false
+      isDateTimePickerVisible: false,
     });
   };
 
@@ -451,12 +444,20 @@ export default class index extends Component {
    * 处理安卓返回键行为
    */
   onBackButtonPressAndroid = () => {
-    if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+    //  判断侧边栏抽屉菜单是否为打开状态
+    if (this.props.app.isDrawerOpen) {
+      this.props.navigation.closeDrawer();
+      return true;
+    } else if (
+      this.lastBackPressed &&
+      this.lastBackPressed + 2000 >= Date.now()
+    ) {
       return false;
+    } else {
+      this.lastBackPressed = Date.now();
+      Tools.toast('再按一次退出应用');
+      return true;
     }
-    this.lastBackPressed = Date.now();
-    Tools.toast("再按一次退出应用");
-    return true;
   };
 
   /**
@@ -466,8 +467,7 @@ export default class index extends Component {
   renderSectioHeader = items => {
     return (
       <Text
-        style={[styles.sectionTitle, { color: this.props.theme.colors.text }]}
-      >
+        style={[styles.sectionTitle, {color: this.props.theme.colors.text}]}>
         {this.formatDate(items.section.key)}
       </Text>
     );
@@ -476,8 +476,8 @@ export default class index extends Component {
    * 渲染右上角自定义菜单
    */
   renderCustomMenu = props => {
-    const { style, children, layouts, ...other } = props;
-    const position = { top: 0, right: 0 };
+    const {style, children, layouts, ...other} = props;
+    const position = {top: 0, right: 0};
     return (
       <View {...other} style={[style, position]}>
         {children}
@@ -493,8 +493,7 @@ export default class index extends Component {
           pullupfresh={this.pullupfresh}
           onScroll={this.bindOnScroll.bind(this)}
           refresh={this.state.refresh}
-          onRefresh={this.bindOnRefresh.bind(this)}
-        >
+          onRefresh={this.bindOnRefresh.bind(this)}>
           {/* 轮播图 */}
           <HomeSwiper data={this.state.topStories} onPress={this.bindListTap} />
           {/* 日报列表 */}
@@ -518,32 +517,30 @@ export default class index extends Component {
           <Menu
             opened={this.state.opened}
             style={styles.popupWrapper}
-            onBackdropPress={this.tooglePopupMenu}
-          >
+            onBackdropPress={this.tooglePopupMenu}>
             <MenuTrigger />
             <MenuOptions
               customStyles={{
                 optionsContainer: styles.popupOptionsContainer,
-                optionText: styles.popupOptionText
-              }}
-            >
+                optionText: styles.popupOptionText,
+              }}>
               <MenuOption
                 onSelect={() => {
                   this.props.theme.switchTheme();
                   this.setState({
-                    opened: false
+                    opened: false,
                   });
                 }}
                 text={
-                  this.props.theme.colors.themeType == "default"
-                    ? "夜间主题"
-                    : "日间主题"
+                  this.props.theme.colors.themeType === 'default'
+                    ? '夜间主题'
+                    : '日间主题'
                 }
               />
               <MenuOption
                 onSelect={() => {
                   this.tooglePopupMenu();
-                  this.props.navigation.navigate("Setting");
+                  this.props.navigation.navigate('Setting');
                 }}
                 text="设置选项"
               />
@@ -555,7 +552,7 @@ export default class index extends Component {
             maximumDate={
               //判断当前时间 是否大于早上7点 , 日报每天早上7点更新
               //如果时间早于7点 ,则最大可选择日起为昨天.
-              Number(Tools.formatTime().split(":")[0]) >= 7
+              Number(Tools.formatTime().split(':')[0]) >= 7
                 ? new Date()
                 : new Date(new Date().getTime() - 24 * 60 * 60 * 1000)
             }
@@ -575,25 +572,27 @@ const styles = StyleSheet.create({
   sectionTitle: {
     marginTop: 15,
     marginBottom: 10,
-    marginLeft: 15
+    marginLeft: 15,
   },
   headerRightWrapper: {
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
     width: 140,
-    flexDirection: "row"
+    flexDirection: 'row',
   },
   popupWrapper: {
-    position: "absolute",
+    position: 'absolute',
     right: 5,
-    top: -50
+    top: -50,
   },
   popupOptionsContainer: {
-    width: 180
+    width: 180,
   },
   popupOptionText: {
     paddingLeft: 5,
     fontSize: 16,
-    color: "#333",
-    lineHeight: 30
-  }
+    color: '#333',
+    lineHeight: 30,
+  },
 });
+
+export default Home;

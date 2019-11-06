@@ -1,5 +1,8 @@
-import {theme} from './ThemeStore'
+import {theme} from './themeStore';
+import {app} from './appStore';
+
 const stores = {
-    theme,
-}
-export default stores
+  theme,
+  app,
+};
+export default stores;
